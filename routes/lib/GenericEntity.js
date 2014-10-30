@@ -6,4 +6,5 @@ function GenericEntity(givenName) {
         this.properties.push(genProp);
     }
 }
+
 module.exports = GenericEntity;
