@@ -1,0 +1,39 @@
+<html ng-app="EAG_Home">
+    <head>
+        <title>Entity Access Gateway Home</title>
+
+        <script type="text/javascript" src="/javascripts/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/javascripts/angular.min.js"></script>
+        <script type="text/javascript" src="/javascripts/angular-resource.min.js"></script>
+        <script type="text/javascript" src="/javascripts/eag_home/NavigationController.js"></script>
+        <script type="text/javascript" src="/javascripts/eag_home/EntityDetailController.js"></script>
+        <script type="text/javascript" src="/javascripts/eag_home/app.js"></script>
+
+        <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"/>
+        <link rel="stylesheet" href="/stylesheets/style.css"/>
+    </head>
+    <body class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="page-header">Welcome to the Entity Access Gateway</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" ng-controller="NavigationController">
+                <!-- Navigation -->
+                <div class="list-group" ng-repeat="entity in entities">
+                    <a href="#" class="list-group-item" ng-click="displayDetail(entity._id)">\{{entity.name}}</a>
+                </div>
+            </div>
+            <div class="col-md-8" ng-controller="EntityDetailController">
+                <div class="card" ng-show="entity != undefined">
+                    Entity Details
+                    <h2>\{{entity.name}}</h2>
+                    <hr/>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

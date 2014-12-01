@@ -10,6 +10,7 @@ var entitySchema = mongoose.Schema({
     }
 });
 
-var SavedGenericEntity = mongoose.model("FLOW2_Entities", entitySchema);
+var entityDBName = "FLOW2_Entities";
+var SavedGenericEntity = mongoose.model(entityDBName, entitySchema, entityDBName);
 
 module.exports = SavedGenericEntity;

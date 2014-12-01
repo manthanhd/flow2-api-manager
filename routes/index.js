@@ -26,6 +26,27 @@ router.get('/', function(req, res) {
   res.render('index', { title: 'Express', layout: 'layouts/layout' });
 });
 
+router.get('/resetDB', function(req, res){
+    mongoose.connection.db.dropDatabase();
+    res.send({status: 'OK'});
+});
+
+router.get('/EAG', function(req, res){
+
+    res.render("eag_home");
+});
+
+router.get('/EAG/listEntities', function(req, res){
+    SavedGenericEntity.find({}, function(err, result){
+        if(err){
+            console.log("An error occurred while listing entity definitions.");
+            console.log(err);
+            res.send(ErrorObject.create("EntityDefinitionListError", 30));
+        }
+        res.send({entities: result});
+    });
+});
+
 router.get('/createEntity', function(req, res) {
   res.render('create_entity', { title: 'Express', layout: 'layouts/layout' });
 });
@@ -37,26 +58,26 @@ router.post("/createEntity", function(req, res) {
         var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
         entity.addProperty(prop);
     }
-    
+
     console.log(entity.name + "entity has been created.");
     console.log(entity);
-    
+
     var dbGenericEntity = new SavedGenericEntity();
     dbGenericEntity.name = entity.name;
     dbGenericEntity.properties = entity.properties;
     dbGenericEntity.save();
-    
+
     var mongooseSchemaObject = {};
     for(var i = 0; i < entity.properties.length; i++){
         mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
     }
-    
+
     console.log("Mongoose schema object created for " + entity.name + ".");
-    
+
     var entitySchema = mongoose.Schema(mongooseSchemaObject);
-    var EntityObject = mongoose.model(entity.name, entitySchema);
-    
-    router.get('/' + entity.name + '/list', function(req, res){
+    var EntityObject = mongoose.model(entity.name, entitySchema, entity.name);
+    // EAG = Entity Access Gateway
+    router.get('/EAG/access/' + entity.name + '/list', function(req, res){
         EntityObject.find({}).exec(function(err, result){
             if(err){
                 console.log("Error finding " + entity.name);
@@ -67,7 +88,7 @@ router.post("/createEntity", function(req, res) {
             }
         });
     });
-    
+
     router.post("/" + entity.name + "/create", function(req, res){
         var newObject = new EntityObject();
         for(var i = 0; i < entity.properties.length; i++){
@@ -76,7 +97,7 @@ router.post("/createEntity", function(req, res) {
                 return;
             }
         }
-        
+
         for(var i = 0; i < entity.properties.length; i++){
             newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
         }
