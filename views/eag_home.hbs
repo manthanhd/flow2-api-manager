@@ -5,9 +5,8 @@
         <script type="text/javascript" src="/javascripts/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
         <script type="text/javascript" src="/javascripts/angular.min.js"></script>
-        <script type="text/javascript" src="/javascripts/angular-resource.min.js"></script>
-        <script type="text/javascript" src="/javascripts/eag_home/NavigationController.js"></script>
-        <script type="text/javascript" src="/javascripts/eag_home/EntityDetailController.js"></script>
+        <!--<script type="text/javascript" src="/javascripts/angular-resource.min.js"></script>-->
+        <script type="text/javascript" src="/javascripts/eag_home/controllers.js"></script>
         <script type="text/javascript" src="/javascripts/eag_home/app.js"></script>
 
         <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>
@@ -22,6 +21,7 @@
         </div>
         <div class="row">
             <div class="col-md-4" ng-controller="NavigationController">
+              <h3>Entities</h3>
                 <!-- Navigation -->
                 <div class="list-group" ng-repeat="entity in entities">
                     <a href="#" class="list-group-item" ng-click="displayDetail(entity._id)">\{{entity.name}}</a>
@@ -29,9 +29,13 @@
             </div>
             <div class="col-md-8" ng-controller="EntityDetailController">
                 <div class="card" ng-show="entity != undefined">
-                    Entity Details
+                    <!-- Entity Details-->
                     <h2>\{{entity.name}}</h2>
                     <hr/>
+                    <h3>Properties</h3>
+                    <ul ng-repeat="property in entity.properties">
+                      <li>\{{property.name}} = \{{property.type}}</li>
+                    </ul>
                 </div>
             </div>
         </div>

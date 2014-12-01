@@ -2,12 +2,12 @@ var mongoose = require("mongoose");
 
 var entitySchema = mongoose.Schema({
     name: String,
-    properties: {
+    properties: [{
         name: String,
         value: String,
-        type: String,
-        required: Boolean
-    }
+        type: { type: String, required: false },
+        required: { type: Boolean, required: false }
+    }]
 });
 
 var entityDBName = "FLOW2_Entities";

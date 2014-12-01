@@ -1,1 +1,1 @@
-var app = angular.module("EAG_Home", ["NavigationController", "EntityDetailController"]);
+var app = angular.module("EAG_Home", ["Controllers"]);

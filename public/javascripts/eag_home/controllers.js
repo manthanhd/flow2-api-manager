@@ -1,4 +1,4 @@
-var app = angular.module("EAG_Home", []);
+var app = angular.module("Controllers", []);
 
 app.controller("NavigationController", function($scope, $http){
     $scope.entities = [];
@@ -19,8 +19,15 @@ app.controller("NavigationController", function($scope, $http){
 
     $http.get("/EAG/listEntities").success(function(data, status){
         if(status == 200){
-            console.log(data.entities);
             $scope.entities = data.entities;
         }
     });
+});
+
+
+app.controller("EntityDetailController", function($scope){
+  $scope.$on("DisplayDetail", function(event, entity){
+    console.log(entity);
+    $scope.entity = entity;
+  });
 });
