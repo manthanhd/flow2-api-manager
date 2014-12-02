@@ -84,13 +84,12 @@ var webbifyEntity = function(entity){
 
   router.get('/EAG/access/' + entity.name + '/list', function(req, res){
   EntityObject.find({}).exec(function(err, result){
-      if(err){
-          console.log("Error finding " + entity.name);
-          res.send(ErrorObject.create("NullPointerException", 500));
-      } else {
-          console.log(ErrorObject.create("TestErrorObject", 98));
-          res.send({ entityList: result });
-      }
+    if(err){
+        console.log("Error finding " + entity.name);
+        res.send(ErrorObject.create("NullPointerException", 500));
+    } else {
+        res.send({ entityList: result });
+    }
     });
   });
 
