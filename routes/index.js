@@ -89,6 +89,27 @@ router.get("/readEntity/:entityId", function(req, res){
   });
 });
 
+router.get("/deleteEntity/:entityId", function(req, res){
+  var entityId = req.params.entityId;
+  SavedGenericEntity.findOne({_id: new mongoose.Types.ObjectId(entityId)}, function(err, entity){
+    if(err){
+      console.log(err);
+      res.send(ErrorObject.create("EntityDefinitionListError", 30));
+    }
+    
+    if(entity == undefined){
+      res.send({});
+      return;
+    }
+    router.get('/EAG/access/' + entity.name + '/list', function(){});
+    router.post('/EAG/access/' + entity.name + '/create', function(){});
+    
+    entity.remove();
+    console.log("Entity deleted.");
+    res.send({ status: "OK", description: "Entity deleted. Changes will be in full effect after reboot." });
+  });
+});
+
 var webbifyEntity = function(entity){
   var mongooseSchemaObject = {};
   for(var i = 0; i < entity.properties.length; i++){
@@ -106,7 +127,7 @@ var webbifyEntity = function(entity){
         console.log("Error finding " + entity.name);
         res.send(ErrorObject.create("NullPointerException", 500));
     } else {
-        res.send({ entityList: result });
+        res.send({ instanceList: result });
     }
     });
   });
