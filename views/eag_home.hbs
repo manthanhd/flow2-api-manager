@@ -44,17 +44,15 @@
                   <div class="row">
                     <div class="well" ng-show="showCreateInstancePanel == true">
                       <div class="form">
-<!--                        <div class="row">-->
-                      <div class="form-group" ng-repeat="property in entity.properties">
-                        <div class="input-group">
-                          <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : 'number'}}" ng-model="newObject.props[property.name]" class="form-control"/>
+                        <div class="form-group" ng-repeat="property in entity.properties">
+                          <div class="input-group">
+                            <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : 'number'}}" ng-model="newObject.props[property.name]" class="form-control"/>
+                          </div>
                         </div>
                       </div>
-<!--                        </div>-->
-                        </div>
                       <button ng-click="createInstance()">Create</button>
                     </div>
-                    <div class="well text-center" ng-show="showListInstancePanel == true">
+                    <div class="well text-center consoleText" ng-show="showListInstancePanel == true">
                       <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
                     </div>
                   </div>
