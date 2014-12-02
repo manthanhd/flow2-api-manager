@@ -67,44 +67,72 @@ router.post("/createEntity", function(req, res) {
     dbGenericEntity.properties = entity.properties;
     dbGenericEntity.save();
 
-    var mongooseSchemaObject = {};
-    for(var i = 0; i < entity.properties.length; i++){
-        mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
-    }
-
-    console.log("Mongoose schema object created for " + entity.name + ".");
-
-    var entitySchema = mongoose.Schema(mongooseSchemaObject);
-    var EntityObject = mongoose.model(entity.name, entitySchema, entity.name);
-    // EAG = Entity Access Gateway
-    router.get('/EAG/access/' + entity.name + '/list', function(req, res){
-        EntityObject.find({}).exec(function(err, result){
-            if(err){
-                console.log("Error finding " + entity.name);
-                res.send(ErrorObject.create("NullPointerException", 500));
-            } else {
-                console.log(ErrorObject.create("TestErrorObject", 98));
-                res.send(result);
-            }
-        });
-    });
-
-    router.post("/" + entity.name + "/create", function(req, res){
-        var newObject = new EntityObject();
-        for(var i = 0; i < entity.properties.length; i++){
-            if(req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true){
-                res.send(entity.properties[i].name + " field is a required field.");
-                return;
-            }
-        }
-
-        for(var i = 0; i < entity.properties.length; i++){
-            newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
-        }
-        newObject.save();
-        res.send(newObject);
-    });
+    webbifyEntity(entity);
     res.send(entity);
 });
+
+var webbifyEntity = function(entity){
+  var mongooseSchemaObject = {};
+  for(var i = 0; i < entity.properties.length; i++){
+    mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
+  }
+
+  console.log("Mongoose schema object created for " + entity.name + ".");
+
+  var entitySchema = mongoose.Schema(mongooseSchemaObject);
+  var EntityObject = mongoose.model(entity.name, entitySchema, entity.name);
+
+  router.get('/EAG/access/' + entity.name + '/list', function(req, res){
+  EntityObject.find({}).exec(function(err, result){
+      if(err){
+          console.log("Error finding " + entity.name);
+          res.send(ErrorObject.create("NullPointerException", 500));
+      } else {
+          console.log(ErrorObject.create("TestErrorObject", 98));
+          res.send({ entityList: result });
+      }
+    });
+  });
+
+  router.post("/EAG/access/" + entity.name + "/create", function(req, res){
+    var newObject = new EntityObject();
+    for(var i = 0; i < entity.properties.length; i++){
+      if(req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true){
+          res.send(entity.properties[i].name + " field is a required field.");
+          return;
+      }
+    }
+
+    for(var i = 0; i < entity.properties.length; i++){
+      newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
+    }
+
+    newObject.save();
+    res.send(newObject);
+  });
+};
+
+var reloadEntities = function() {
+  SavedGenericEntity.find({}, function(err, entities){
+    if(err){
+      console.log("Error has occurred while reloading entities.");
+      console.log(err);
+      return;
+    }
+    
+    if(entities == undefined){
+      console.log("Undefined entities to reload.");
+      return;
+    }
+    
+    for(var i = 0; i < entities.length; i++){
+      var entity = entities[i];
+      webbifyEntity(entity);
+    }
+  });
+};
+
+// Only do this once.
+reloadEntities();
 
 module.exports = router;
