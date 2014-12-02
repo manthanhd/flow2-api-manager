@@ -25,9 +25,50 @@ app.controller("NavigationController", function($scope, $http){
 });
 
 
-app.controller("EntityDetailController", function($scope){
+app.controller("EntityDetailController", function($scope, $http){
+  $scope.newObject = {props: {}};
+  $scope.instanceList = [];
+  $scope.showCreateInstancePanel = false;
+  $scope.showListInstancePanel = false;
+  
+  $scope.hideAllPanels = function(){
+    $scope.showCreateInstancePanel = false;
+    $scope.showListInstancePanel = false;
+  };
+  
+  $scope.createInstancePanelClick = function(){
+    $scope.hideAllPanels();
+    $scope.showCreateInstancePanel = true;
+  }
+  
+  $scope.listInstancePanelClick = function(){
+    $scope.hideAllPanels();
+    $scope.showListInstancePanel = true;
+  }
+  
   $scope.$on("DisplayDetail", function(event, entity){
-    console.log(entity);
     $scope.entity = entity;
+    
+    var listPath = "http://localhost:3000/EAG/access/" + entity.name + "/list";
+  
+    $http.get(listPath).success(function(data, status){
+      if(status == 200){
+        $scope.instanceList = JSON.stringify(data, null, 4);
+      }
+    });
   });
+  
+  
+  
+  $scope.createInstance = function(){
+    var instance = $scope.newObject.props;
+    var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/create";
+    
+    console.log("Posting to " + path);
+    
+    $http.post(creationPath, instance).success(function(data, status){
+      console.log("Response code " + status);
+      console.log("Return data " + data);
+    });
+  };
 });
