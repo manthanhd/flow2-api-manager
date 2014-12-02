@@ -17,9 +17,9 @@ app.controller("NavigationController", function($scope, $http){
         }
     };
 
-    $http.get("/EAG/listEntities").success(function(data, status){
+    $http.get("/listEntities").success(function(data, status){
         if(status == 200){
-            $scope.entities = data.entities;
+            $scope.entities = data.entityList;
         }
     });
 });
@@ -64,7 +64,7 @@ app.controller("EntityDetailController", function($scope, $http){
     var instance = $scope.newObject.props;
     var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/create";
     
-    console.log("Posting to " + path);
+    console.log("Posting to " + creationPath);
     
     $http.post(creationPath, instance).success(function(data, status){
       console.log("Response code " + status);
