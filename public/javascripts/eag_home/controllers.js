@@ -24,7 +24,6 @@ app.controller("NavigationController", function($scope, $http){
     });
 });
 
-
 app.controller("EntityDetailController", function($scope, $http){
   $scope.newObject = {props: {}};
   $scope.instanceList = [];
@@ -58,17 +57,19 @@ app.controller("EntityDetailController", function($scope, $http){
     });
   });
   
-  
-  
   $scope.createInstance = function(){
     var instance = $scope.newObject.props;
     var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/create";
     
-    console.log("Posting to " + creationPath);
-    
-    $http.post(creationPath, instance).success(function(data, status){
-      console.log("Response code " + status);
-      console.log("Return data " + data);
+    $http.post(creationPath, instance).success(function(instance, status){
+      if(status == 200 && instance != undefined && instance._id != undefined){
+        $scope.$parent.$broadcast("DisplayDetail", $scope.entity);
+        $scope.newObject.props = {};
+      } else {
+        console.log("Failed to create instance.");
+        console.log(instance);
+        console.log(status);
+      }
     });
   };
 });
