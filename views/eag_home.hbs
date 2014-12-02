@@ -20,23 +20,50 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4" ng-controller="NavigationController">
-              <h3>Entities</h3>
-                <!-- Navigation -->
-                <div class="list-group" ng-repeat="entity in entities">
-                    <a href="#" class="list-group-item" ng-click="displayDetail(entity._id)">\{{entity.name}}</a>
+            <div class="col-md-3" ng-controller="NavigationController">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <h3>Entities</h3>
+                  <!-- Navigation -->
+                  <br/>
+                  <div class="list-group" ng-repeat="entity in entities">
+                      <a href="#" class="list-group-item" ng-click="displayDetail(entity._id)">\{{entity.name}}</a>
+                  </div>
                 </div>
+              </div>
             </div>
-            <div class="col-md-8" ng-controller="EntityDetailController">
-                <div class="card" ng-show="entity != undefined">
-                    <!-- Entity Details-->
-                    <h2>\{{entity.name}}</h2>
-                    <hr/>
-                    <h3>Properties</h3>
-                    <ul ng-repeat="property in entity.properties">
-                      <li>\{{property.name}} = \{{property.type}}</li>
-                    </ul>
+            <div class="col-md-9" ng-controller="EntityDetailController">
+              <div class="panel panel-default" ng-show="entity != undefined">
+                <div class="panel-body">
+                  <!-- Entity Details-->
+                  <h2>\{{entity.name}}</h2>
+                  <hr/>
+                  <div class="row-fluid">
+                    <button class="btn btn-primary" ng-click="createInstancePanelClick()">Create Instance</button> <button class="btn btn-primary" ng-click="listInstancePanelClick()">View Instances</button>
+                  </div>
+                  <div class="row">
+                    <div class="well" ng-show="showCreateInstancePanel == true">
+                      <div class="form">
+<!--                        <div class="row">-->
+                      <div class="form-group" ng-repeat="property in entity.properties">
+                        <div class="input-group">
+                          <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : 'number'}}" ng-model="newObject.props[property.name]" class="form-control"/>
+                        </div>
+                      </div>
+<!--                        </div>-->
+                        </div>
+                      <button ng-click="createInstance()">Create</button>
+                    </div>
+                    <div class="well text-center" ng-show="showListInstancePanel == true">
+                      <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
+                    </div>
+                  </div>
+                  <h3>Properties</h3>
+                  <ul ng-repeat="property in entity.properties">
+                    <li>\{{property.name}} = \{{property.type}}</li>
+                  </ul>
                 </div>
+              </div>
             </div>
         </div>
     </body>
