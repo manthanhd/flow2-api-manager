@@ -36,15 +36,15 @@ router.get('/EAG', function(req, res){
     res.render("eag_home");
 });
 
-router.get('/EAG/listEntities', function(req, res){
-    SavedGenericEntity.find({}, function(err, result){
-        if(err){
-            console.log("An error occurred while listing entity definitions.");
-            console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-        }
-        res.send({entities: result});
-    });
+router.get('/listEntities', function(req, res){
+  SavedGenericEntity.find({}, function(err, result){
+    if(err){
+      console.log("An error occurred while listing entity definitions.");
+      console.log(err);
+      res.send(ErrorObject.create("EntityDefinitionListError", 30));
+    }
+    res.send({entityList: result});
+  });
 });
 
 router.get('/createEntity', function(req, res) {
@@ -52,23 +52,41 @@ router.get('/createEntity', function(req, res) {
 });
 
 router.post("/createEntity", function(req, res) {
-    var entity = new GenericEntity(req.body.entityName);
+  var entity = new GenericEntity(req.body.entityName);
 
-    for(var i = 1; i < Object.keys(req.body).length / 2; i++){
-        var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
-        entity.addProperty(prop);
+  for(var i = 1; i < Object.keys(req.body).length / 2; i++){
+      var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+      entity.addProperty(prop);
+  }
+
+  console.log(entity.name + "entity has been created.");
+  console.log(entity);
+
+  var dbGenericEntity = new SavedGenericEntity();
+  dbGenericEntity.name = entity.name;
+  dbGenericEntity.properties = entity.properties;
+  dbGenericEntity.save();
+
+  webbifyEntity(entity);
+  res.send(entity);
+});
+
+router.get("/readEntity/:entityId", function(req, res){
+  var entityId = req.params.entityId;
+  SavedGenericEntity.findOne({_id: new mongoose.Types.ObjectId(entityId)}, function(err, entity) {
+    if(err){
+      console.log(err);
+      res.send(ErrorObject.create("EntityDefinitionListError", 30));
+      return;
     }
-
-    console.log(entity.name + "entity has been created.");
-    console.log(entity);
-
-    var dbGenericEntity = new SavedGenericEntity();
-    dbGenericEntity.name = entity.name;
-    dbGenericEntity.properties = entity.properties;
-    dbGenericEntity.save();
-
-    webbifyEntity(entity);
+    
+    if(entity == undefined){
+      res.send({});
+      return;
+    }
+    
     res.send(entity);
+  });
 });
 
 var webbifyEntity = function(entity){
