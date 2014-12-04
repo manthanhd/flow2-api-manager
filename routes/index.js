@@ -51,46 +51,79 @@ router.get('/createEntity', function(req, res) {
   res.render('create_entity', { title: 'Express', layout: 'layouts/layout' });
 });
 
+var checkEntityNameExists = function(entityName, doesNotExist, exists) {
+  SavedGenericEntity.findOne({name: entityName}, function(err, entity) {
+    if(err){
+      console.log(err);
+    }
+
+    if(entity == undefined){
+      doesNotExist();
+    } else {
+      exists();
+    }
+  });
+}
+
 router.post("/createEntity", function(req, res) {
+  var entityName = req.body.entityName;
   var entity = new GenericEntity(req.body.entityName);
+  
+  checkEntityNameExists(entityName, function(){
+    for(var i = 1; i < Object.keys(req.body).length / 2; i++){
+        var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+        entity.addProperty(prop);
+    }
 
-  for(var i = 1; i < Object.keys(req.body).length / 2; i++){
-      var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
-      entity.addProperty(prop);
-  }
+    console.log(entity.name + "entity has been created.");
+    console.log(entity);
 
-  console.log(entity.name + "entity has been created.");
-  console.log(entity);
+    var dbGenericEntity = new SavedGenericEntity();
+    dbGenericEntity.name = entity.name;
+    dbGenericEntity.active = true;
+    dbGenericEntity.properties = entity.properties;
+    dbGenericEntity.save();
 
-  var dbGenericEntity = new SavedGenericEntity();
-  dbGenericEntity.name = entity.name;
-  dbGenericEntity.properties = entity.properties;
-  dbGenericEntity.save();
-
-  webbifyEntity(entity);
-  res.send(entity);
+    webbifyEntity(entity);
+    res.send(entity);
+  }, function(){
+    res.status(401).send("EntityExistsException");
+  })
 });
 
-router.get("/readEntity/:entityId", function(req, res){
-  var entityId = req.params.entityId;
+var findEntityDefinitionById = function(entityId, found, notFound){
   SavedGenericEntity.findOne({_id: new mongoose.Types.ObjectId(entityId)}, function(err, entity) {
     if(err){
       console.log(err);
-      res.send(ErrorObject.create("EntityDefinitionListError", 30));
+      found();
       return;
     }
     
     if(entity == undefined){
-      res.send({});
+      notFound();
       return;
     }
     
-    res.send(entity);
+    found(entity);
+    return;
+  });
+};
+
+router.get("/readEntity/:entityId", function(req, res){
+  var entityId = req.params.entityId;
+  findEntityDefinitionById(entityId, function(entity){
+    if(entity != undefined)
+      res.send(entity);
+    else
+      res.status(500).send("Internal Server Error");
+  }, function(){
+    res.status(401).send("EntityNotFoundException");
   });
 });
 
 router.get("/deleteEntity/:entityId", function(req, res){
   var entityId = req.params.entityId;
+  
   SavedGenericEntity.findOne({_id: new mongoose.Types.ObjectId(entityId)}, function(err, entity){
     if(err){
       console.log(err);
@@ -101,16 +134,32 @@ router.get("/deleteEntity/:entityId", function(req, res){
       res.send({});
       return;
     }
-    router.get('/EAG/access/' + entity.name + '/list', function(){});
-    router.post('/EAG/access/' + entity.name + '/create', function(){});
     
-    entity.remove();
-    console.log("Entity deleted.");
-    res.send({ status: "OK", description: "Entity deleted. Changes will be in full effect after reboot." });
+    var entityName = entity.name;
+    var EntityObject = entityObjectModels[entity.name];
+
+    mongoose.connection.db.dropCollection(entityName, function(err, result){
+      if(err){
+        console.log(err);
+        res.send(ErrorObject.create("EntityDeleteError", 70));
+        return;
+      }
+      
+      entity.remove();
+      console.log("Entity deleted.");
+      res.send({ status: "OK", description: "Entity deleted." });
+    });
+    
   });
 });
 
-var webbifyEntity = function(entity){
+var entityObjectModels = {};
+
+var getEntityObjectModel = function(entity){  // Call once per entity
+  if(entityObjectModels[entity.name] != undefined){
+    return entityObjectModels[entity.name];
+  }
+  
   var mongooseSchemaObject = {};
   for(var i = 0; i < entity.properties.length; i++){
     mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
@@ -120,33 +169,68 @@ var webbifyEntity = function(entity){
 
   var entitySchema = mongoose.Schema(mongooseSchemaObject);
   var EntityObject = mongoose.model(entity.name, entitySchema, entity.name);
+  
+  entityObjectModels[entity.name] = EntityObject;
+  
+  return EntityObject;
+}
 
+var webbifyEntity = function(entity){
+  
+  EntityObject = getEntityObjectModel(entity);
+  
   router.get('/EAG/access/' + entity.name + '/list', function(req, res){
-  EntityObject.find({}).exec(function(err, result){
-    if(err){
-        console.log("Error finding " + entity.name);
-        res.send(ErrorObject.create("NullPointerException", 500));
-    } else {
-        res.send({ instanceList: result });
-    }
+    SavedGenericEntity.findOne({name: entity.name}, function(err, result){
+      if(err){
+        console.log(err);
+        res.send(ErrorObject.create("EntityDefinitionListError", 30));
+        return;
+      }
+      
+      if(result == undefined){
+        res.status(401).send("EntityDoesNotExistError");
+        return;
+      }
+      
+      EntityObject.find({}).exec(function(err, result){
+        if(err){
+            console.log("Error finding " + entity.name);
+            res.send(ErrorObject.create("NullPointerException", 500));
+        } else {
+            res.send({ instanceList: result });
+        }
+      });
     });
   });
 
   router.post("/EAG/access/" + entity.name + "/create", function(req, res){
-    var newObject = new EntityObject();
-    for(var i = 0; i < entity.properties.length; i++){
-      if(req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true){
-          res.send(entity.properties[i].name + " field is a required field.");
-          return;
+    SavedGenericEntity.findOne({name: entity.name}, function(err, result){
+      if(err){
+        console.log(err);
+        res.send(ErrorObject.create("EntityDefinitionListError", 30));
+        return;
       }
-    }
+      
+      if(result == undefined){
+        res.status(401).send("EntityDoesNotExistError");
+        return;
+      }
+      
+      var newObject = new EntityObject();
+      for(var i = 0; i < entity.properties.length; i++){
+        if(req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true){
+            res.send(entity.properties[i].name + " field is a required field.");
+            return;
+        }
+      }
 
-    for(var i = 0; i < entity.properties.length; i++){
-      newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
-    }
+      for(var i = 0; i < entity.properties.length; i++){
+        newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
+      }
 
-    newObject.save();
-    res.send(newObject);
+      newObject.save();
+      res.send(newObject);
+    });
   });
 };
 
