@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 
 var entitySchema = mongoose.Schema({
     name: String,
+    active: Boolean,
     properties: [{
         name: String,
         value: String,
