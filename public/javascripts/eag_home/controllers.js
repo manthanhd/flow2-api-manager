@@ -41,7 +41,7 @@ app.controller("CreateEntityController", function($scope, $http){
   };
 
   $scope.createEntityButton = function(){
-    console.log(newEntity);
+    console.log($scope.newEntity);
   };
 
   $scope.cancelCreateEntity = function(){

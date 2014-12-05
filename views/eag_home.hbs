@@ -36,7 +36,6 @@
               <div class="panel panel-default">
                 <div class="panel-body">
                   <h3>Entities</h3>
-                  <!-- Navigation -->
                   <br/>
                   <div class="list-group" ng-repeat="entity in entities">
                       <a href="#" class="list-group-item" ng-click="displayDetail(entity._id)">\{{entity.name}}</a>
@@ -105,10 +104,6 @@
               <div class="col-md-12" ng-controller="EntityDetailController">
                 <div class="panel panel-default" ng-show="entity != undefined">
                   <div class="panel-body">
-                    <!-- Entity Details-->
-                    
-  <!--                  <hr/>-->
-                    
                     <div class="row">
                       <div class="col-md-8">
                         <h2 class="inline-block">\{{entity.name}}</h2>
