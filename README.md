@@ -1,4 +1,4 @@
-flow2-api-manager
+Flow2 API Manager
 =================
 
-API Management written in Node.js
+Real time API Management solution written in Node.js.
