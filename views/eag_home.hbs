@@ -19,6 +19,12 @@
                 <h2 class="page-header">Welcome to the Entity Access Gateway</h2>
             </div>
         </div>
+        <div class="row" ng-controller="AlertsController">
+          <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.entityDelete != undefined">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              Entity deleted successfully
+          </div>
+        </div>
         <div class="row">
             <div class="col-md-3" ng-controller="NavigationController">
               <div class="panel panel-default">
@@ -38,6 +44,7 @@
                   <!-- Entity Details-->
                   
 <!--                  <hr/>-->
+                  
                   <div class="row">
                     <div class="col-md-8">
                       <h2 class="inline-block">\{{entity.name}}</h2>
@@ -83,7 +90,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" ng-click="deleteEntityConfirmClick(entity._id)">Confirm delete</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteEntityConfirmClick(entity._id)">Confirm delete</button>
                           </div>
                         </div>
                       </div>

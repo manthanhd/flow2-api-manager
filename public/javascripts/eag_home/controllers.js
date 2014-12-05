@@ -1,27 +1,58 @@
 var app = angular.module("Controllers", []);
 
+app.controller("AlertsController", function($scope, $http){
+  $scope.success = {};
+  $scope.warning = {};
+  $scope.fail = {};
+  
+  $scope.$on("EntityDeleteSuccessfulEvent", function(event){
+    $scope.resetAlerts();
+    $scope.success.entityDelete = true;
+  });
+  
+  $scope.$on("EntityDeleteFailEvent", function(event){
+    $scope.resetAlerts();
+    $scope.success.entityDelete = true;
+  });
+  
+  $scope.resetAlerts = function(){
+    $scope.success = {};
+    $scope.warning = {};
+    $scope.fail = {};
+  };
+});
+
 app.controller("NavigationController", function($scope, $http){
-    $scope.entities = [];
+  $scope.entities = [];
 
-    $scope.displayDetail = function(id){
-        if($scope.entities == undefined || $scope.entities == []){
-            return;
-        }
+  $scope.$on("ReloadEntityListEvent", function(event){
+    $scope.listEntities();
+  });
 
-        for(var i = 0; i < $scope.entities.length; i++){
-            var entity = $scope.entities[i];
-            if(entity._id == id){
-                $scope.$parent.$broadcast('DisplayDetail', entity);
-                break;
-            }
-        }
-    };
-
+  $scope.listEntities = function(){
     $http.get("/listEntities").success(function(data, status){
-        if(status == 200){
-            $scope.entities = data.entityList;
-        }
+      if(status == 200){
+        $scope.entities = data.entityList;
+      }
     });
+  }
+
+  $scope.displayDetail = function(id){
+    if($scope.entities == undefined || $scope.entities == []){
+      return;
+    }
+
+    for(var i = 0; i < $scope.entities.length; i++){
+      var entity = $scope.entities[i];
+      if(entity._id == id){
+        $scope.$parent.$broadcast('DisplayDetail', entity);
+        break;
+      }
+    }
+  };
+
+  $scope.listEntities();
+    
 });
 
 app.controller("EntityDetailController", function($scope, $http){
@@ -29,6 +60,9 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.instanceList = [];
   $scope.showCreateInstancePanel = false;
   $scope.showListInstancePanel = false;
+  $scope.success = {};
+  $scope.warning = {};
+  $scope.fail = {};
   
   $scope.hideAllPanels = function(){
     $scope.showCreateInstancePanel = false;
@@ -53,8 +87,33 @@ app.controller("EntityDetailController", function($scope, $http){
     return instances.instanceList.length;
   }
   
+  $scope.resetAlerts = function(){
+    $scope.success = {};
+    $scope.warning = {};
+    $scope.fail = {};
+  }
+  
+  $scope.clearDetail = function(){
+    $scope.hideAllPanels();
+    $scope.resetAlerts();
+    $scope.entity = undefined;
+  }
+  
   $scope.deleteEntityConfirmClick = function(entityId){
     console.log("Just confirmed to delete " + entityId + " entity");
+    var entityDeletePath = "http://localhost:3000/deleteEntity/" + entityId;
+    
+    $http.get(entityDeletePath).success(function(data, statusCode) {
+      if(statusCode == 200 && data.status == 'OK'){
+        $scope.$parent.$broadcast("EntityDeleteSuccessfulEvent");
+        $scope.clearDetail();
+        $scope.$parent.$broadcast("ReloadEntityListEvent");
+      } else {
+        $scope.$parent.$broadcast("EntityDeleteFailEvent");
+      }
+    }).error(function(){
+      $scope.$parent.$broadcast("EntityDeleteFailEvent");
+    });
   }
   
   $scope.$on("DisplayDetail", function(event, entity){
