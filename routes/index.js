@@ -141,8 +141,6 @@ router.get("/deleteEntity/:entityId", function(req, res){
     mongoose.connection.db.dropCollection(entityName, function(err, result){
       if(err){
         console.log(err);
-        res.send(ErrorObject.create("EntityDeleteError", 70));
-        return;
       }
       
       entity.remove();
