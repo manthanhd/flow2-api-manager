@@ -1,5 +1,57 @@
 var app = angular.module("Controllers", []);
 
+app.controller("GlobalMenuController", function($scope) {
+  $scope.showCreateEntityPanelClick = function(){
+    $scope.$parent.$broadcast("showCreateEntityPanel");
+  };
+});
+
+app.controller("CreateEntityController", function($scope, $http){
+  $scope.showCreateEntityPanel == false;
+
+  $scope.hideAllPanels = function(){
+    $scope.showCreateEntityPanel = undefined;
+  };
+
+  $scope.showCreateEntityPanelClick = function(){
+    $scope.showCreateEntityPanel = true;
+  }
+
+  $scope.$on("showCreateEntityPanel", function(event){
+    $scope.showCreateEntityPanel = true;
+  });
+
+  $scope.addNewProperty = function(){
+    $scope.newEntity.newProperties.push({name: "", type: ""});
+  };
+
+  $scope.removeProperty = function(index){
+    $scope.newEntity.newProperties.splice(index, 1);
+  };
+
+  $scope.resetNewEntity = function(){
+    $scope.newEntity = {
+      name: "",
+      newProperties: [{
+        name: "",
+        type: "",
+        required: true
+      }]
+    };
+  };
+
+  $scope.createEntityButton = function(){
+    console.log(newEntity);
+  };
+
+  $scope.cancelCreateEntity = function(){
+    $scope.resetNewEntity();
+    $scope.hideAllPanels();
+  };
+
+  $scope.resetNewEntity();
+});
+
 app.controller("AlertsController", function($scope, $http){
   $scope.success = {};
   $scope.warning = {};
