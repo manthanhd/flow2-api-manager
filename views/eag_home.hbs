@@ -36,10 +36,38 @@
               <div class="panel panel-default" ng-show="entity != undefined">
                 <div class="panel-body">
                   <!-- Entity Details-->
-                  <h2>\{{entity.name}}</h2>
-                  <hr/>
-                  <div class="row-fluid">
-                    <button class="btn btn-primary" ng-click="createInstancePanelClick()">Create Instance</button> <button class="btn btn-primary" ng-click="listInstancePanelClick()">View Instances</button>
+                  
+<!--                  <hr/>-->
+                  <div class="row">
+                    <div class="col-md-8">
+                      <h2 class="inline-block">\{{entity.name}}</h2>
+                    </div>
+                    <div class="col-md-4">
+                      <h2></h2>
+                      <div class="pull-right">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                            <li class="divider"></li>
+                            <li class="divider"></li>
+                            <li class="text-center"><strong>Instance actions</strong></li>
+                            <li class="divider"></li>
+                            <li><a href="" ng-click="createInstancePanelClick()">Create Instance</a></li>
+                            <li><a href="" ng-click="listInstancePanelClick()">View Instances</a></li>
+                            <li class="divider"></li>
+                            <li class="divider"></li>
+                            <li class="text-center"><strong>Entity actions</strong></li>
+                            <li class="divider"></li>
+                            <li class="danger"><a href="">Delete Entity</a></li>
+                          </ul>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <hr/>
                   </div>
                   <div class="row">
                     <div class="well" ng-show="showCreateInstancePanel == true">
