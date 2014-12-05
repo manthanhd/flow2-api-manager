@@ -70,9 +70,17 @@ router.post("/createEntity", function(req, res) {
   var entity = new GenericEntity(req.body.entityName);
   
   checkEntityNameExists(entityName, function(){
-    for(var i = 1; i < Object.keys(req.body).length / 2; i++){
-        var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+    if(req.property1_name != undefined){  // Consider a form post
+      for(var i = 1; i < Object.keys(req.body).length / 2; i++){
+          var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+          entity.addProperty(prop);
+      }
+    } else {  // It must be AJAX post
+      for(var i = 0; i < req.body.properties.length; i++){
+        var property = req.body.properties[i];
+        var prop = new GenericEntityProperty(property.name, "", property.type);
         entity.addProperty(prop);
+      }
     }
 
     console.log(entity.name + "entity has been created.");

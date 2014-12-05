@@ -30,6 +30,11 @@
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
               Entity deleted successfully
           </div>
+
+          <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.entityCreate != undefined">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              Entity created successfully
+          </div>
         </div>
         <div class="row">
             <div class="col-md-3" ng-controller="NavigationController">
@@ -60,12 +65,12 @@
                           <form role="form">
                             <div class="input-group">
                               <label for="entityNameText">Entity Name:</label>
-                              <input type="text" class="form-control" id="entityNameText" placeholder="Entity Name" ng-model="newEntity.name"/>
+                              <input type="text" class="form-control" id="entityNameText" placeholder="Entity Name" ng-model="newEntity.entityName"/>
                             </div>
                             <br/>
                             <div class="input-group">
                               <label for="propertiesList">Properties:</label>
-                              <div ng-repeat="newProperty in newEntity.newProperties">
+                              <div ng-repeat="newProperty in newEntity.properties">
                                 <div class="row">
                                   <div class="col-md-5">
                                     <input type="text" ng-model="newProperty.name" class="form-control" placeholder="Name"/>

@@ -22,17 +22,17 @@ app.controller("CreateEntityController", function($scope, $http){
   });
 
   $scope.addNewProperty = function(){
-    $scope.newEntity.newProperties.push({name: "", type: ""});
+    $scope.newEntity.properties.push({name: "", type: ""});
   };
 
   $scope.removeProperty = function(index){
-    $scope.newEntity.newProperties.splice(index, 1);
+    $scope.newEntity.properties.splice(index, 1);
   };
 
   $scope.resetNewEntity = function(){
     $scope.newEntity = {
-      name: "",
-      newProperties: [{
+      entityName: "",
+      properties: [{
         name: "",
         type: "",
         required: true
@@ -42,6 +42,15 @@ app.controller("CreateEntityController", function($scope, $http){
 
   $scope.createEntityButton = function(){
     console.log($scope.newEntity);
+    var entityCreationPath = "http://localhost:3000/createEntity";
+    $http.post(entityCreationPath, $scope.newEntity).success(function(data, statusCode) {
+      if(statusCode == 200){
+        $scope.$parent.$broadcast("EntityCreateSuccessful");
+        $scope.resetNewEntity();
+        $scope.hideAllPanels();
+        $scope.$parent.$broadcast("ReloadEntityListEvent");
+      };
+    });
   };
 
   $scope.cancelCreateEntity = function(){
@@ -67,6 +76,11 @@ app.controller("AlertsController", function($scope, $http){
     $scope.success.entityDelete = true;
   });
   
+  $scope.$on("EntityCreateSuccessful", function(event) {
+    $scope.resetAlerts();
+    $scope.success.entityCreate = true;
+  })
+
   $scope.resetAlerts = function(){
     $scope.success = {};
     $scope.warning = {};
