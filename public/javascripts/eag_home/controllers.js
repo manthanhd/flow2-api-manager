@@ -45,6 +45,18 @@ app.controller("EntityDetailController", function($scope, $http){
     $scope.showListInstancePanel = true;
   }
   
+  $scope.countInstances = function(){
+    var instances = angular.fromJson($scope.instanceList);
+    if(instances == undefined || instances.instanceList == undefined){
+      return 0;
+    }
+    return instances.instanceList.length;
+  }
+  
+  $scope.deleteEntityConfirmClick = function(entityId){
+    console.log("Just confirmed to delete " + entityId + " entity");
+  }
+  
   $scope.$on("DisplayDetail", function(event, entity){
     $scope.entity = entity;
     

@@ -60,10 +60,33 @@
                             <li class="divider"></li>
                             <li class="text-center"><strong>Entity actions</strong></li>
                             <li class="divider"></li>
-                            <li class="danger"><a href="">Delete Entity</a></li>
+                            <li class="danger"><a href="" data-toggle="modal" data-target="#entityDeleteConfirmationModal">Delete Entity</a></li>
                           </ul>
                       </div>
                     </div>
+                    </div>
+                    
+                    <div class="modal fade" id="entityDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="entityDeleteConfirmationModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+                          </div>
+                          <div class="modal-body">
+                            <p>
+                              This action will delete <strong>\{{entity.name}}</strong> entity. All instances associated with this entity will be deleted. 
+                            </p>
+                            <p>
+                              Currently, there are <strong>\{{countInstances()}}</strong> instance(s) associated with this Entity.
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" ng-click="deleteEntityConfirmClick(entity._id)">Confirm delete</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="row">
