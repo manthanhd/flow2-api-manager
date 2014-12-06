@@ -50,10 +50,8 @@ app.controller("CreateEntityController", function($scope, $http){
         $scope.hideAllPanels();
         $scope.$parent.$broadcast("ReloadEntityListEvent");
       };
-      console.log(statusCode);
     }).error(function(data, status){
       if(status == 501){
-        //console.log(data);
         $scope.showTypeError(data.name, data.type);
       }
     });
@@ -64,8 +62,6 @@ app.controller("CreateEntityController", function($scope, $http){
       name: name,
       type: type
     };
-    // $scope.showTypeErrorPanel.type = type;
-    // $scope.showTypeErrorPanel.name = name;
   }
 
   $scope.cancelCreateEntity = function(){
