@@ -7,12 +7,16 @@ app.controller("GlobalMenuController", function($scope) {
 });
 
 app.controller("CreateEntityController", function($scope, $http){
-  $scope.showCreateEntityPanel == false;
+  $scope.showCreateEntityPanel = undefined;
 
   $scope.hideAllPanels = function(){
-    $scope.showCreateEntityPanel = undefined;
     $scope.showTypeErrorPanel = undefined;
+    $scope.showEntityExistsErrorPanel = undefined;
   };
+
+  $scope.closePanel = function() {
+    $scope.showCreateEntityPanel = undefined;
+  }
 
   $scope.showCreateEntityPanelClick = function(){
     $scope.showCreateEntityPanel = true;
@@ -27,7 +31,9 @@ app.controller("CreateEntityController", function($scope, $http){
   };
 
   $scope.removeProperty = function(index){
-    $scope.newEntity.properties.splice(index, 1);
+    if($scope.newEntity.properties.length > 1){
+      $scope.newEntity.properties.splice(index, 1);
+    }
   };
 
   $scope.resetNewEntity = function(){
@@ -51,13 +57,21 @@ app.controller("CreateEntityController", function($scope, $http){
         $scope.$parent.$broadcast("ReloadEntityListEvent");
       };
     }).error(function(data, status){
-      if(status == 501){
+      if(status == 422){
         $scope.showTypeError(data.name, data.type);
+      } else if(status == 409){
+        $scope.showEntityExistsError();
       }
     });
   };
 
+  $scope.showEntityExistsError = function(){
+    $scope.showCreateEntityPanel == false;
+    $scope.showEntityExistsErrorPanel = {};
+  }
+
   $scope.showTypeError = function(name, type){
+    $scope.hideAllPanels();
     $scope.showTypeErrorPanel = {
       name: name,
       type: type
@@ -67,6 +81,7 @@ app.controller("CreateEntityController", function($scope, $http){
   $scope.cancelCreateEntity = function(){
     $scope.resetNewEntity();
     $scope.hideAllPanels();
+    $scope.closePanel();
   };
 
   $scope.resetNewEntity();
