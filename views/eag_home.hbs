@@ -87,16 +87,23 @@
                                     <input type="text" ng-model="newProperty.name" class="form-control" placeholder="Name"/>
                                   </div>
                                   <div class="col-md-5">
-                                    <input type="text" ng-model="newProperty.type" class="form-control" placeholder="Type"/>
+                                    <input type="text" ng-model="newProperty.type" class="form-control" placeholder="Type" ng-enter="addNewProperty()"/>
                                   </div>
                                   <div class="col-md-2">
-                                    <button ng-click="removeProperty($index)" class="btn btn-default">&times;</button>
+                                    <button ng-click="removeProperty($index)" type="button" class="btn btn-default" tabindex="-1" aria-left="true">
+                                      &nbsp;<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;
+                                    </button>
                                   </div>
                                 </div>
                               </div>
                               
                             </div>
-                            <button class="btn btn-default" ng-click="addNewProperty()">+</button>
+                            <div class="input-group">
+                              <br/>
+                              <button type="button" class="btn btn-default" ng-click="addNewProperty()">
+                                <span class="glyphicon glyphicon-plus"></span> Add property
+                              </button>
+                            </div>
                           </form>
                         </div>
                       </div>
@@ -179,7 +186,7 @@
                         <div class="form">
                           <div class="form-group" ng-repeat="property in entity.properties">
                             <div class="input-group">
-                              <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : 'number'}}" ng-model="newObject.props[property.name]" class="form-control"/>
+                              <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control"/>
                             </div>
                           </div>
                         </div>
