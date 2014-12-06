@@ -75,9 +75,13 @@ router.post("/createEntity", function(req, res) {
           var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
           entity.addProperty(prop);
       }
-    } else {  // It must be AJAX post
+    } else {  // It must be an AJAX post
       for(var i = 0; i < req.body.properties.length; i++){
         var property = req.body.properties[i];
+        if(GenericEntityProperty.isValidType(property.type) == false){
+          res.status(501).send({name: property.name, type: property.type});
+          return;
+        }
         var prop = new GenericEntityProperty(property.name, "", property.type);
         entity.addProperty(prop);
       }

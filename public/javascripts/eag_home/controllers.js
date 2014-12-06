@@ -11,6 +11,7 @@ app.controller("CreateEntityController", function($scope, $http){
 
   $scope.hideAllPanels = function(){
     $scope.showCreateEntityPanel = undefined;
+    $scope.showTypeErrorPanel = undefined;
   };
 
   $scope.showCreateEntityPanelClick = function(){
@@ -41,7 +42,6 @@ app.controller("CreateEntityController", function($scope, $http){
   };
 
   $scope.createEntityButton = function(){
-    console.log($scope.newEntity);
     var entityCreationPath = "http://localhost:3000/createEntity";
     $http.post(entityCreationPath, $scope.newEntity).success(function(data, statusCode) {
       if(statusCode == 200){
@@ -50,8 +50,23 @@ app.controller("CreateEntityController", function($scope, $http){
         $scope.hideAllPanels();
         $scope.$parent.$broadcast("ReloadEntityListEvent");
       };
+      console.log(statusCode);
+    }).error(function(data, status){
+      if(status == 501){
+        //console.log(data);
+        $scope.showTypeError(data.name, data.type);
+      }
     });
   };
+
+  $scope.showTypeError = function(name, type){
+    $scope.showTypeErrorPanel = {
+      name: name,
+      type: type
+    };
+    // $scope.showTypeErrorPanel.type = type;
+    // $scope.showTypeErrorPanel.name = name;
+  }
 
   $scope.cancelCreateEntity = function(){
     $scope.resetNewEntity();
