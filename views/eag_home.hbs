@@ -207,10 +207,23 @@
                         <button class="btn btn-default" ng-click="showListInstancePanel = undefined">Close</button>
                       </div>
                     </div>
-                    <h3>Properties</h3>
-                    <ul ng-repeat="property in entity.properties">
-                      <li>\{{property.name}} = \{{property.type}}</li>
-                    </ul>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h3>Properties</h3>
+                        <ul ng-repeat="property in entity.properties">
+                          <li>\{{property.name}} = \{{property.type}}</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <br/>
+                        <hr/>
+                        <div class="pull-left">
+                          <button class="btn btn-default" ng-click="entity = undefined">Close</button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
