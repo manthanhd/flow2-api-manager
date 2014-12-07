@@ -12,6 +12,8 @@ GenericEntityProperty.TYPE_STRING = "string";
 GenericEntityProperty.TYPE_NUMBER = "number";
 GenericEntityProperty.TYPE_DATE = "date";
 
+var supportedTypes = [GenericEntityProperty.TYPE_STRING, GenericEntityProperty.TYPE_DATE, GenericEntityProperty.TYPE_NUMBER];
+
 GenericEntityProperty.getMongooseType = function(localType){
     if(localType == GenericEntityProperty.TYPE_STRING){
         return String;
@@ -20,5 +22,14 @@ GenericEntityProperty.getMongooseType = function(localType){
     } else if(localType == GenericEntityProperty.TYPE_DATE) {
         return Date;
     }
+}
+
+GenericEntityProperty.isValidType = function(localType){
+    for(var i = 0; i < supportedTypes.length; i++){
+        if(localType.toLowerCase() == supportedTypes[i].toLowerCase()){
+            return true;
+        }
+    }
+    return false;
 }
 module.exports = GenericEntityProperty;

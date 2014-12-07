@@ -41,7 +41,7 @@ router.get('/listEntities', function(req, res){
     if(err){
       console.log("An error occurred while listing entity definitions.");
       console.log(err);
-      res.send(ErrorObject.create("EntityDefinitionListError", 30));
+      res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
     }
     res.send({entityList: result});
   });
@@ -70,9 +70,21 @@ router.post("/createEntity", function(req, res) {
   var entity = new GenericEntity(req.body.entityName);
   
   checkEntityNameExists(entityName, function(){
-    for(var i = 1; i < Object.keys(req.body).length / 2; i++){
-        var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+    if(req.property1_name != undefined){  // Probably a form post
+      for(var i = 1; i < Object.keys(req.body).length / 2; i++){
+          var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+          entity.addProperty(prop);
+      }
+    } else {  // It must be an AJAX post
+      for(var i = 0; i < req.body.properties.length; i++){
+        var property = req.body.properties[i];
+        if(GenericEntityProperty.isValidType(property.type) == false){
+          res.status(422).send({name: property.name, type: property.type});
+          return;
+        }
+        var prop = new GenericEntityProperty(property.name, "", property.type);
         entity.addProperty(prop);
+      }
     }
 
     console.log(entity.name + "entity has been created.");
@@ -87,7 +99,7 @@ router.post("/createEntity", function(req, res) {
     webbifyEntity(entity);
     res.send(entity);
   }, function(){
-    res.status(401).send("EntityExistsException");
+    res.status(409).send(ErrorObject.create("EntityExistsError", 409));
   })
 });
 
@@ -138,16 +150,17 @@ router.get("/deleteEntity/:entityId", function(req, res){
     var entityName = entity.name;
     var EntityObject = entityObjectModels[entity.name];
 
-    mongoose.connection.db.dropCollection(entityName, function(err, result){
+    //mongoose.connection.collections[entity.name].drop( function(err) {
+    mongoose.connection.db.dropCollection(entityName, function(err){
       if(err){
         console.log(err);
       }
       
+      delete entityObjectModels[entityName];  // Removing from our cache of object schemas.
       entity.remove();
       console.log("Entity deleted.");
       res.send({ status: "OK", description: "Entity deleted." });
     });
-    
   });
 });
 
@@ -175,7 +188,7 @@ var getEntityObjectModel = function(entity){  // Call once per entity
 
 var webbifyEntity = function(entity){
   
-  EntityObject = getEntityObjectModel(entity);
+  var EntityObject = getEntityObjectModel(entity);
   
   router.get('/EAG/access/' + entity.name + '/list', function(req, res){
     SavedGenericEntity.findOne({name: entity.name}, function(err, result){
@@ -216,6 +229,8 @@ var webbifyEntity = function(entity){
       
       var newObject = new EntityObject();
       for(var i = 0; i < entity.properties.length; i++){
+        console.log("Validating properties:");
+        console.log(entity.properties);
         if(req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true){
             res.send(entity.properties[i].name + " field is a required field.");
             return;
