@@ -57,28 +57,29 @@
             <div class="col-md-9">
               <div class="row">
                 <div class="col-md-12" ng-controller="CreateEntityController">
-                  <div class="panel panel-default" ng-show="showCreateEntityPanel != undefined">
-                    <div class="panel-body">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <h2 class="inline-block">Create Entity</h2>
-                          <hr/>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showTypeErrorPanel != undefined">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                              <span class="glyphicon glyphicon-exclamation-sign"></span> Invalid type <strong>\{{showTypeErrorPanel.type}}</strong> for property <strong>\{{showTypeErrorPanel.name}}</strong>
-                          </div>
-                          
-                          <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEntityExistsErrorPanel != undefined">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                              <span class="glyphicon glyphicon-exclamation-sign"></span> Entity that you are trying to create already exists.
+                  <form role="form" ng-submit="submitCreateEntityForm()">
+                    <div class="panel panel-default" ng-show="showCreateEntityPanel != undefined">
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h2 class="inline-block">Create Entity</h2>
+                            <hr/>
                           </div>
                         </div>
-                      </div>
-                      <form role="form" ng-submit="submitCreateEntityForm()">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showTypeErrorPanel != undefined">
+                              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> Invalid type <strong>\{{showTypeErrorPanel.type}}</strong> for property <strong>\{{showTypeErrorPanel.name}}</strong>
+                            </div>
+                            
+                            <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEntityExistsErrorPanel != undefined">
+                              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> Entity that you are trying to create already exists.
+                            </div>
+                          </div>
+                        </div>
+                        
                         <div class="row">
                           <div class="col-md-12">
                             <div class="input-group">
@@ -103,7 +104,6 @@
                                   </div>
                                 </div>
                               </div>
-                              
                             </div>
                             <div class="input-group">
                               <br/>
@@ -113,21 +113,18 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                            <br/>
-                            <hr/>
-                            <div class="pull-left">
-                              <button class="btn btn-default" ng-click="cancelCreateEntity()">Cancel</button>
-                            </div>
-                            <div class="pull-right">
-                              <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
-                            </div>
-                          </div>
+                      </div>
+                      <div class="panel-footer">
+                        <div class="pull-left">
+                          <button class="btn btn-default" ng-click="cancelCreateEntity()">Cancel</button>
                         </div>
-                      </form> 
+                        <div class="pull-right">
+                          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+                        </div>
+                        <br/><br/>
+                      </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             <div class="row">
@@ -215,15 +212,9 @@
                         </ul>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <br/>
-                        <hr/>
-                        <div class="pull-left">
-                          <button class="btn btn-default" ng-click="entity = undefined">Close</button>
-                        </div>
-                      </div>
-                    </div>
+                  </div>
+                  <div class="panel-footer">
+                    <button class="btn btn-default" ng-click="entity = undefined">Close</button>
                   </div>
                 </div>
               </div>

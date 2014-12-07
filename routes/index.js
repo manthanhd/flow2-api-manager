@@ -252,9 +252,7 @@ var webbifyEntity = function(entity){
 
     var queryObject = {};
     queryObject[propertyName] = propertyValue;
-    console.log("Querying by property:");
-    console.log(queryObject);
-    //var EntityObject = entityObjectModels[entity.name];
+
     EntityObject.find(queryObject, function(err, result) {
       if(err){
         console.log(err);
