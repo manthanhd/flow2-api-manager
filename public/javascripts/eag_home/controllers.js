@@ -47,7 +47,7 @@ app.controller("CreateEntityController", function($scope, $http){
     };
   };
 
-  $scope.createEntityButton = function(){
+  $scope.submitCreateEntityForm = function(){
     var entityCreationPath = "http://localhost:3000/createEntity";
     $http.post(entityCreationPath, $scope.newEntity).success(function(data, statusCode) {
       if(statusCode == 200){
