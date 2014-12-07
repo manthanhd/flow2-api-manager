@@ -193,7 +193,7 @@
                         <div class="form">
                           <div class="form-group" ng-repeat="property in entity.properties">
                             <div class="input-group">
-                              <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control"/>
+                              <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control" placeholder="\{{property.type}} value"/>
                             </div>
                           </div>
                         </div>
