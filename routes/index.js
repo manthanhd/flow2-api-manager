@@ -9,8 +9,11 @@ var SavedGenericEntity = require('./lib/GenericEntityModel');
 var properties = require("properties");
 properties.parse ("db.properties", { path: true }, function (error, obj){
   if (error) return console.error (error);
+  var hostname = obj.hostname || "localhost";
+  var port = obj.port || 27017;
+  var dbname = obj.dbname || "flow2";
   
-  var uri = "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.dbname;
+  var uri = "mongodb://" + hostname + ":" + port + "/" + dbname;
   var options = {};
   
   var dbuser = process.env.FLOW2_DBUSER;
@@ -18,7 +21,6 @@ properties.parse ("db.properties", { path: true }, function (error, obj){
   if(dbuser && dbpass){
     options.user = dbuser;
     options.pass = dbpass;
-    console.log(options);
   }
   
   mongoose.connect(uri, options, function(err, res) {
