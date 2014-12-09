@@ -34,7 +34,6 @@
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
               <span class="glyphicon glyphicon-info-sign"></span> Entity deleted successfully
           </div>
-
           <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.entityCreate != undefined">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
               <span class="glyphicon glyphicon-info-sign"></span> Entity created successfully
@@ -49,6 +48,7 @@
                     <br/>
                     <div class="list-group">
                         <a href="" class="list-group-item" ng-click="displayDetail(entity._id)" ng-repeat="entity in entities">\{{entity.name}}</a>
+                        <span class="text-center" ng-show="entities.length == 0"><em>No entities exist</em></span>
                     </div>
                   </div>
                 </div>
