@@ -245,6 +245,24 @@ var webbifyEntity = function(entity){
       res.send(newObject);
     });
   });
+
+  router.get('/EAG/access/' + entity.name + '/findByProperty/:propertyName/:propertyValue', function(req, res){
+    var propertyName = req.params.propertyName;
+    var propertyValue = req.params.propertyValue;
+
+    var queryObject = {};
+    queryObject[propertyName] = propertyValue;
+
+    EntityObject.find(queryObject, function(err, result) {
+      if(err){
+        console.log(err);
+        res.status(404).send({error: "InstanceNotFound", queryObject: queryObject});
+        return;
+      }
+
+      res.send({result: result});
+    });
+  });
 };
 
 var reloadEntities = function() {

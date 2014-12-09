@@ -55,30 +55,31 @@
               </div>
             </div>
             <div class="col-md-9">
-              <div class="row">
-                <div class="col-md-12" ng-controller="CreateEntityController">
-                  <div class="panel panel-default" ng-show="showCreateEntityPanel != undefined">
-                    <div class="panel-body">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <h2 class="inline-block">Create Entity</h2>
-                          <hr/>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showTypeErrorPanel != undefined">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                              <span class="glyphicon glyphicon-exclamation-sign"></span> Invalid type <strong>\{{showTypeErrorPanel.type}}</strong> for property <strong>\{{showTypeErrorPanel.name}}</strong>
-                          </div>
-                          
-                          <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEntityExistsErrorPanel != undefined">
-                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                              <span class="glyphicon glyphicon-exclamation-sign"></span> Entity that you are trying to create already exists.
+              <div class="row" ng-controller="CreateEntityController" ng-show="showCreateEntityPanel != undefined">
+                <div class="col-md-12">
+                  <form role="form" ng-submit="submitCreateEntityForm()">
+                    <div class="panel panel-default">
+                      <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h2 class="inline-block">Create Entity</h2>
+                            <hr/>
                           </div>
                         </div>
-                      </div>
-                      <form role="form" ng-submit="submitCreateEntityForm()">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showTypeErrorPanel != undefined">
+                              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> Invalid type <strong>\{{showTypeErrorPanel.type}}</strong> for property <strong>\{{showTypeErrorPanel.name}}</strong>
+                            </div>
+                            
+                            <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEntityExistsErrorPanel != undefined">
+                              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> Entity that you are trying to create already exists.
+                            </div>
+                          </div>
+                        </div>
+                        
                         <div class="row">
                           <div class="col-md-12">
                             <div class="input-group">
@@ -103,7 +104,6 @@
                                   </div>
                                 </div>
                               </div>
-                              
                             </div>
                             <div class="input-group">
                               <br/>
@@ -113,121 +113,112 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                            <br/>
-                            <hr/>
-                            <div class="pull-left">
-                              <button class="btn btn-default" ng-click="cancelCreateEntity()">Cancel</button>
-                            </div>
-                            <div class="pull-right">
-                              <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
-                            </div>
-                          </div>
-                        </div>
-                      </form> 
-                    </div>
-                  </div>
-                </div>
-              </div>
-            <div class="row">
-              <div class="col-md-12" ng-controller="EntityDetailController">
-                <div class="panel panel-default" ng-show="entity != undefined">
-                  <div class="panel-body">
-                    <div class="row">
-                      <div class="col-md-8">
-                        <h2 class="inline-block">\{{entity.name}}</h2>
                       </div>
-                      <div class="col-md-4">
-                        <h2></h2>
-                        <div class="pull-right">
-                          <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                              Actions <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                              <li class="divider"></li>
-                              <li class="divider"></li>
-                              <li class="text-center"><strong>Instance actions</strong></li>
-                              <li class="divider"></li>
-                              <li><a href="" ng-click="createInstancePanelClick()">Create Instance</a></li>
-                              <li><a href="" ng-click="listInstancePanelClick()">View Instances</a></li>
-                              <li class="divider"></li>
-                              <li class="divider"></li>
-                              <li class="text-center"><strong>Entity actions</strong></li>
-                              <li class="divider"></li>
-                              <li class="danger"><a href="" data-toggle="modal" data-target="#entityDeleteConfirmationModal">Delete Entity</a></li>
-                            </ul>
-                        </div>
-                      </div>
-                      </div>
-                      
-                      <div class="modal fade" id="entityDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="entityDeleteConfirmationModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                              <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
-                            </div>
-                            <div class="modal-body">
-                              <p>
-                                This action will delete <strong>\{{entity.name}}</strong> entity. All instances associated with this entity will be deleted. 
-                              </p>
-                              <p>
-                                Currently, there are <strong>\{{countInstances()}}</strong> instance(s) associated with this Entity.
-                              </p>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                              <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteEntityConfirmClick(entity._id)"><span class="glyphicon glyphicon-ok-sign"></span> Confirm delete</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <hr/>
-                    </div>
-                    <div class="row">
-                      <div class="well" ng-show="showCreateInstancePanel == true">
-                        <div class="form">
-                          <div class="form-group" ng-repeat="property in entity.properties">
-                            <div class="input-group">
-                              <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control" placeholder="\{{property.type}} value"/>
-                            </div>
-                          </div>
-                        </div>
-                        <button class="btn btn-default" ng-click="showCreateInstancePanel = undefined">Cancel</button> <button ng-click="createInstance()" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
-                      </div>
-                      <div class="well text-center consoleText" ng-show="showListInstancePanel == true">
-                        <div class="text-center consoleText">
-                          <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
-                        </div>
-                        <br/>
-                        <button class="btn btn-default" ng-click="showListInstancePanel = undefined">Close</button>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <h3>Properties</h3>
-                        <ul ng-repeat="property in entity.properties">
-                          <li>\{{property.name}} = \{{property.type}}</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <br/>
-                        <hr/>
+                      <div class="panel-footer">
                         <div class="pull-left">
-                          <button class="btn btn-default" ng-click="entity = undefined">Close</button>
+                          <button class="btn btn-default" ng-click="cancelCreateEntity()">Cancel</button>
+                        </div>
+                        <div class="pull-right">
+                          <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+                        </div>
+                        <br/><br/>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12" ng-controller="EntityDetailController">
+                  <div class="panel panel-default" ng-show="entity != undefined">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-8">
+                          <h2 class="inline-block">\{{entity.name}}</h2>
+                        </div>
+                        <div class="col-md-4">
+                          <h2></h2>
+                          <div class="pull-right">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Actions <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" role="menu">
+                                <li class="divider"></li>
+                                <li class="divider"></li>
+                                <li class="text-center"><strong>Instance actions</strong></li>
+                                <li class="divider"></li>
+                                <li><a href="" ng-click="createInstancePanelClick()">Create Instance</a></li>
+                                <li><a href="" ng-click="listInstancePanelClick()">View Instances</a></li>
+                                <li class="divider"></li>
+                                <li class="divider"></li>
+                                <li class="text-center"><strong>Entity actions</strong></li>
+                                <li class="divider"></li>
+                                <li class="danger"><a href="" data-toggle="modal" data-target="#entityDeleteConfirmationModal">Delete Entity</a></li>
+                              </ul>
+                          </div>
+                        </div>
+                        </div>
+
+                        <div class="modal fade" id="entityDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="entityDeleteConfirmationModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+                              </div>
+                              <div class="modal-body">
+                                <p>
+                                  This action will delete <strong>\{{entity.name}}</strong> entity. All instances associated with this entity will be deleted. 
+                                </p>
+                                <p>
+                                  Currently, there are <strong>\{{countInstances()}}</strong> instance(s) associated with this Entity.
+                                </p>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteEntityConfirmClick(entity._id)"><span class="glyphicon glyphicon-ok-sign"></span> Confirm delete</button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      <div class="row">
+                        <hr/>
+                      </div>
+                      <div class="row">
+                        <div class="well" ng-show="showCreateInstancePanel == true">
+                          <div class="form">
+                            <div class="form-group" ng-repeat="property in entity.properties">
+                              <div class="input-group">
+                                <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control" placeholder="\{{property.type}} value"/>
+                              </div>
+                            </div>
+                          </div>
+                          <button class="btn btn-default" ng-click="showCreateInstancePanel = undefined">Cancel</button> <button ng-click="createInstance()" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+                        </div>
+                        <div class="well text-center consoleText" ng-show="showListInstancePanel == true">
+                          <div class="text-center consoleText">
+                            <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
+                          </div>
+                          <br/>
+                          <button class="btn btn-default" ng-click="showListInstancePanel = undefined">Close</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <h3>Properties</h3>
+                          <ul ng-repeat="property in entity.properties">
+                            <li>\{{property.name}} = \{{property.type}}</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel-footer">
+                      <button class="btn btn-default" ng-click="entity = undefined">Close</button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
         </div>
     </body>
 </html>
