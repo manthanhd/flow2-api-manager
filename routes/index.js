@@ -6,20 +6,36 @@ var GenericEntity = require('./lib/GenericEntity');
 var GenericEntityProperty = require('./lib/GenericEntityProperty');
 var SavedGenericEntity = require('./lib/GenericEntityModel');
 
+var properties = require("properties");
+properties.parse ("db.properties", { path: true }, function (error, obj){
+  if (error) return console.error (error);
+  
+  var uri = "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.dbname;
+  var options = {};
+  
+  var dbuser = process.env.FLOW2_DBUSER;
+  var dbpass = process.env.FLOW2_DBPASS;
+  if(dbuser && dbpass){
+    options.user = dbuser;
+    options.pass = dbpass;
+    console.log(options);
+  }
+  
+  mongoose.connect(uri, options, function(err, res) {
+      if(err) {
+          console.log("Error connecting to DB.");
+      } else {
+          console.log("Successfully connected to DB.");
+      }
+  });
+});
+
 modelCollection.add("GenericEntityModel", SavedGenericEntity);
 
 var express = require('express');
 var router = express.Router();
 
-var uri = 'mongodb://localhost:27017/flow2';
 
-mongoose.connect(uri, function(err, res) {
-    if(err) {
-        console.log("Error connecting to DB.");
-    } else {
-        console.log("Successfully connected to DB.");
-    }
-});
 
 /* GET home page. */
 router.get('/', function(req, res) {
