@@ -5,6 +5,7 @@ var modelCollection = require('./lib/ModelCollection');
 var GenericEntity = require('./lib/GenericEntity');
 var GenericEntityProperty = require('./lib/GenericEntityProperty');
 var SavedGenericEntity = require('./lib/GenericEntityModel');
+var GenericEntityInstance = require("./lib/GenericEntityInstance");
 
 var properties = require("properties");
 properties.parse ("db.properties", { path: true }, function (error, obj){
@@ -166,7 +167,7 @@ router.get("/deleteEntity/:entityId", function(req, res){
     }
     
     var entityName = entity.name;
-    var EntityObject = entityObjectModels[entity.name];
+    var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
 
     //mongoose.connection.collections[entity.name].drop( function(err) {
     mongoose.connection.db.dropCollection(entityName, function(err){
@@ -182,31 +183,7 @@ router.get("/deleteEntity/:entityId", function(req, res){
   });
 });
 
-var entityObjectModels = {};
-
-var getEntityObjectModel = function(entity){  // Call once per entity
-  if(entityObjectModels[entity.name] != undefined){
-    return entityObjectModels[entity.name];
-  }
-  
-  var mongooseSchemaObject = {};
-  for(var i = 0; i < entity.properties.length; i++){
-    mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
-  }
-
-  console.log("Mongoose schema object created for " + entity.name + ".");
-
-  var entitySchema = mongoose.Schema(mongooseSchemaObject);
-  var EntityObject = mongoose.model(entity.name, entitySchema, entity.name);
-  
-  entityObjectModels[entity.name] = EntityObject;
-  
-  return EntityObject;
-}
-
 var webbifyEntity = function(entity){
-  
-  var EntityObject = getEntityObjectModel(entity);
   
   router.get('/EAG/access/' + entity.name + '/list', function(req, res){
     SavedGenericEntity.findOne({name: entity.name}, function(err, result){
@@ -221,15 +198,17 @@ var webbifyEntity = function(entity){
         return;
       }
       
-      EntityObject.find({}).exec(function(err, result){
-        if(err){
-            console.log("Error finding " + entity.name);
-            res.send(ErrorObject.create("NullPointerException", 500));
-        } else {
-            res.send({ instanceList: result });
-        }
-      });
+      var foundCallback = function(instances){
+        res.send({ instanceList: instances });
+      };
+      
+      var notFoundCallback = function(){
+        res.status(401).send("EntityDoesNotExistError");
+      };
+      
+      GenericEntityInstance.listAll(entity, foundCallback, notFoundCallback);
     });
+    
   });
 
   router.post("/EAG/access/" + entity.name + "/create", function(req, res){
@@ -239,46 +218,78 @@ var webbifyEntity = function(entity){
         res.send(ErrorObject.create("EntityDefinitionListError", 30));
         return;
       }
-      
+
       if(result == undefined){
-        res.status(401).send("EntityDoesNotExistError");
+        res.status(401).send({error: "EntityDoesNotExistError", errorCode: 401});
         return;
       }
-      
-      var newObject = new EntityObject();
+
       for(var i = 0; i < entity.properties.length; i++){
         console.log("Validating properties:");
         console.log(entity.properties);
         if(req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true){
-            res.send(entity.properties[i].name + " field is a required field.");
+            res.status(401).send({error: entity.properties[i].name + " field is a required field.", errorCode: 401});
             return;
         }
       }
 
+      var newObject = {};
       for(var i = 0; i < entity.properties.length; i++){
         newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
       }
-
-      newObject.save();
-      res.send(newObject);
-    });
+      
+      var savedInstance = GenericEntityInstance.create(entity, newObject);
+      if(savedInstance == undefined){
+        res.status(500).send({error: "InstanceSaveFailedError", errorCode: 500});
+      } else {
+        res.send(savedInstance);
+      }
+   });
+    
+    
   });
 
   router.get('/EAG/access/' + entity.name + '/findByProperty/:propertyName/:propertyValue', function(req, res){
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
 
-    var queryObject = {};
-    queryObject[propertyName] = propertyValue;
-
-    EntityObject.find(queryObject, function(err, result) {
+    SavedGenericEntity.findOne({name: entity.name}, function(err, result){
       if(err){
         console.log(err);
-        res.status(404).send({error: "InstanceNotFound", queryObject: queryObject});
+        res.send(ErrorObject.create("EntityDefinitionListError", 30));
         return;
       }
 
-      res.send({result: result});
+      if(result == undefined){
+        res.status(401).send({error: "EntityDoesNotExistError", errorCode: 401});
+        return;
+      }
+      
+      // Validate the property
+      var isValidProperty = undefined;
+      for(var i = 0; i < entity.properties.length; i++){
+        var property = entity.properties[i];
+        if(property.name == propertyName){
+          isValidProperty = true;
+          break;
+        }
+      }
+      
+      if(!isValidProperty){
+        res.status(404).send({error: "InvalidPropertyError"});
+        return;
+      }
+      
+      // It's valid now. Define the callbacks and execute the final call.
+      var foundCallback = function(instances){
+        res.send({result: instances});
+      };
+      
+      var notFoundCallback = function(){
+        res.status(404).send({error: "InstanceNotFound"});
+      };
+      
+      GenericEntityInstance.findInstanceByProperty(entity, propertyName, propertyValue, foundCallback, notFoundCallback);
     });
   });
 };
