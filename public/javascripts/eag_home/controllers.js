@@ -152,6 +152,7 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.instanceList = [];
   $scope.showCreateInstancePanel = false;
   $scope.showListInstancePanel = false;
+  $scope.showDeleteInstancePanel = false;
   $scope.success = {};
   $scope.warning = {};
   $scope.fail = {};
@@ -159,6 +160,7 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.hideAllPanels = function(){
     $scope.showCreateInstancePanel = false;
     $scope.showListInstancePanel = false;
+    $scope.showDeleteInstancePanel = false;
   };
   
   $scope.createInstancePanelClick = function(){
@@ -169,6 +171,11 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.listInstancePanelClick = function(){
     $scope.hideAllPanels();
     $scope.showListInstancePanel = true;
+  }
+  
+  $scope.deleteInstancePanelClick = function(){
+    $scope.hideAllPanels();
+    $scope.showDeleteInstancePanel = true;
   }
   
   $scope.countInstances = function(){
@@ -235,4 +242,35 @@ app.controller("EntityDetailController", function($scope, $http){
       }
     });
   };
+  
+  $scope.deleteInstance = function(){
+    $scope.showDeleteSuccessPanel = undefined;
+    $scope.showDeleteErrorPanel = undefined;
+    var id = $scope.deleteIDString;
+    var deleteEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/" + id;
+    
+    $http.delete(deleteEndpoint).success(function(data, status){
+      $scope.showDeleteSuccessPanel = undefined;
+      $scope.showDeleteErrorPanel = undefined;
+
+      if(status == 200) {
+        $scope.showDeleteSuccessPanel = "Instance with ID " + id + " was successfully deleted.";
+        $scope.$parent.$broadcast("DisplayDetail", $scope.entity);
+        $scope.deleteIDString = undefined;    // Because it's initial state is undefined.
+      } else if(status == 401) {
+        $scope.showDeleteErrorPanel = "Failed to delete instance. Invalid or missing ID."
+      } else if (status == 404) {
+        $scope.showDeleteErrorPanel = "Instance with ID " + id + " does not exist.";
+      }
+    }).error(function(error, status) {
+      $scope.showDeleteSuccessPanel = undefined;
+      $scope.showDeleteErrorPanel = undefined;
+
+      if(status == 401) {
+        $scope.showDeleteErrorPanel = "Failed to delete instance. Invalid or missing ID."
+      } else if (status == 404) {
+        $scope.showDeleteErrorPanel = "Instance with ID " + id + " does not exist.";
+      }
+    });
+  }
 });

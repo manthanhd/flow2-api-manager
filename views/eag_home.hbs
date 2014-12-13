@@ -149,6 +149,7 @@
                                 <li class="divider"></li>
                                 <li><a href="" ng-click="createInstancePanelClick()">Create Instance</a></li>
                                 <li><a href="" ng-click="listInstancePanelClick()">View Instances</a></li>
+                                <li><a href="" ng-click="deleteInstancePanelClick()">Delete Instance</a></li>
                                 <li class="divider"></li>
                                 <li class="divider"></li>
                                 <li class="text-center"><strong>Entity actions</strong></li>
@@ -195,6 +196,34 @@
                             </div>
                           </div>
                           <button class="btn btn-default" ng-click="showCreateInstancePanel = undefined">Cancel</button> <button ng-click="createInstance()" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+                        </div>
+                        <div class="well" ng-show="showDeleteInstancePanel == true">
+                          <form>
+                            <div class="form">
+  <!--
+                              <div class="form-group" ng-repeat="property in entity.properties">
+                                <div class="input-group">
+                                  <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control" placeholder="\{{property.type}} value"/>
+                                </div>
+                              </div>
+  -->                         
+                              <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showDeleteErrorPanel != undefined">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteErrorPanel = undefined">Close</span></button>
+                                  <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteErrorPanel}}
+                              </div>
+                              <div class="alert alert-success alert-dismissible" role="alert" ng-show="showDeleteSuccessPanel != undefined">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteSuccessPanel = undefined">Close</span></button>
+                                  <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteSuccessPanel}}
+                              </div>
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <label for="idText">ID:</label>
+                                  <input id="idText" name="idText" type="text" ng-model="deleteIDString" placeholder="ID of the instance to be deleted" class="form-control" required/>
+                                </div>
+                              </div>
+                            </div>
+                            <button class="btn btn-default" ng-click="showDeleteInstancePanel = undefined">Cancel</button> <button type="submit" ng-click="deleteInstance()" class="btn btn-danger"><span class="glyphicon glyphicon-ok-sign"></span> Delete</button>
+                          </form>
                         </div>
                         <div class="well text-center consoleText" ng-show="showListInstancePanel == true">
                           <div class="text-center consoleText">

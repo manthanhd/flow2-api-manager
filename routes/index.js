@@ -248,8 +248,8 @@ var webbifyEntity = function(entity){
   });
   
   /*API endpoint to allow deletion of instances belonging to an entity by ID.*/
-  router.delete("/EAG/access/" + entity.name, function(req, res) {
-    var id = req.body.id;
+  router.delete("/EAG/access/" + entity.name + "/:id", function(req, res) {
+    var id = req.params.id;
     
     if(id == undefined || id == ""){
       res.status(401).send({error: "MissingArgumentException", errorCode: 401});
@@ -257,12 +257,17 @@ var webbifyEntity = function(entity){
     }
     
     var foundCallback = function(instance) {
-      instance.remove();
-      res.send({status: "OK"});
+      if(instance != undefined){
+        instance.remove();
+        res.send({status: "OK"});
+      } else {
+        res.status(404).send({error: "InstanceNotFoundError", errorCode: 404});
+      }
+      
     }
 
     var notFoundCallback = function() {
-      res.status(404).send({error: "InstanceNotFoundError", errorCode: 404, originalArgs: {id: id}});
+      res.status(404).send({error: "InstanceNotFoundError", errorCode: 404});
     }
     
     GenericEntityInstance.findInstanceById(id, entity, foundCallback, notFoundCallback);
@@ -340,6 +345,7 @@ var webbifyEntity = function(entity){
   
   router.put("/EAG/access/" + entity.name, function(req, res){
     var instance = req.body.instance;
+    console.log(req.body);
     if(instance == undefined || instance._id == undefined) {
       res.status(401).send({error: "MissingArgumentException", errorCode: 401});
       return;
