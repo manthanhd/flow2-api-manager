@@ -211,7 +211,7 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.$on("DisplayDetail", function(event, entity){
     $scope.entity = entity;
     
-    var listPath = "http://localhost:3000/EAG/access/" + entity.name + "/list";
+    var listPath = "http://localhost:3000/EAG/access/" + entity.name;
   
     $http.get(listPath).success(function(data, status){
       if(status == 200){
@@ -222,7 +222,7 @@ app.controller("EntityDetailController", function($scope, $http){
   
   $scope.createInstance = function(){
     var instance = $scope.newObject.props;
-    var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/create";
+    var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name;
     
     $http.post(creationPath, instance).success(function(instance, status){
       if(status == 200 && instance != undefined && instance._id != undefined){
