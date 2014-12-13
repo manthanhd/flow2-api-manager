@@ -263,8 +263,32 @@ var webbifyEntity = function(entity){
     }
     
     GenericEntityInstance.findInstanceById(id, entity, foundCallback, notFoundCallback);
-  })
+  });
 
+  router.delete("/EAG/access/" + entity.name + "/:propertyName/:propertyValue", function(req, res) {
+    var propertyName = req.params.propertyName;
+    var propertyValue = req.params.propertyValue;
+    
+    if(propertyName == undefined || propertyName == "" || propertyValue == undefined || propertyValue == ""){
+      res.status(401).send({error: "MissingArgumentException", errorCode: 401});
+      return;
+    }
+    
+    var foundCallback = function(instances) {
+      for(var i = 0; i < instances.length; i++){
+        instances[i].remove();
+      }
+      
+      res.send({status: "OK"});
+    }
+
+    var notFoundCallback = function() {
+      res.status(404).send({error: "InstanceNotFoundError", errorCode: 404, originalArgs: {id: id}});
+    }
+    
+    GenericEntityInstance.findInstanceByProperty(entity, propertyName, propertyValue, foundCallback, notFoundCallback);
+  });
+  
   router.get('/EAG/access/' + entity.name + '/findByProperty/:propertyName/:propertyValue', function(req, res){
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
