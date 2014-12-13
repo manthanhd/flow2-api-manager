@@ -146,4 +146,25 @@ GenericEntityInstance.removeInstanceModelFromCache = function(entityName){
   }
 };
 
+/**
+* 
+*/
+GenericEntityInstance.update = function(instance, entity, successCallback, errorCallback){
+  var foundCallback = function(existingInstance) {
+    // Assuming all required fields have been validated...
+    for(var i = 0; i < entity.properties.length; i++){
+      var property = entity.properties[i];
+      existingInstance[property.name] = instance[property.name];  // Make properties same.
+    }
+    existingInstance.save();
+    successCallback(existingInstance);
+  }
+  
+  var notFoundCallback = function() {
+    errorCallback();
+  }
+  
+  GenericEntityInstance.findInstanceById(instance._id, entity, foundCallback, notFoundCallback);
+}
+
 module.exports = GenericEntityInstance;

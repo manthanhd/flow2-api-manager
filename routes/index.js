@@ -183,7 +183,8 @@ router.get("/deleteEntity/:entityId", function(req, res){
 
 var webbifyEntity = function(entity){
   
-  router.get('/EAG/access/' + entity.name + '/list', function(req, res){
+  /*API endpoint to allow listing of all instances for a specific Entity.*/
+  router.get('/EAG/access/' + entity.name, function(req, res){
     SavedGenericEntity.findOne({name: entity.name}, function(err, result){
       if(err){
         console.log(err);
@@ -209,7 +210,8 @@ var webbifyEntity = function(entity){
     
   });
 
-  router.post("/EAG/access/" + entity.name + "/create", function(req, res){
+  /*API endpoint to allow creation of new instances for an entity.*/
+  router.post("/EAG/access/" + entity.name, function(req, res){
     SavedGenericEntity.findOne({name: entity.name}, function(err, result){
       if(err){
         console.log(err);
@@ -245,6 +247,7 @@ var webbifyEntity = function(entity){
    });
   });
   
+  /*API endpoint to allow deletion of instances belonging to an entity by ID.*/
   router.delete("/EAG/access/" + entity.name, function(req, res) {
     var id = req.body.id;
     
@@ -265,6 +268,7 @@ var webbifyEntity = function(entity){
     GenericEntityInstance.findInstanceById(id, entity, foundCallback, notFoundCallback);
   });
 
+  /*API endpoint to allow deletion of instances belonging to an entity by property.*/
   router.delete("/EAG/access/" + entity.name + "/:propertyName/:propertyValue", function(req, res) {
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
@@ -289,7 +293,8 @@ var webbifyEntity = function(entity){
     GenericEntityInstance.findInstanceByProperty(entity, propertyName, propertyValue, foundCallback, notFoundCallback);
   });
   
-  router.get('/EAG/access/' + entity.name + '/findByProperty/:propertyName/:propertyValue', function(req, res){
+  /*API to allow finding of instances by property*/
+  router.get('/EAG/access/' + entity.name + '/:propertyName/:propertyValue', function(req, res){
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
 
@@ -332,6 +337,34 @@ var webbifyEntity = function(entity){
       GenericEntityInstance.findInstanceByProperty(entity, propertyName, propertyValue, foundCallback, notFoundCallback);
     });
   });
+  
+  router.put("/EAG/access/" + entity.name, function(req, res){
+    var instance = req.body.instance;
+    if(instance == undefined || instance._id == undefined) {
+      res.status(401).send({error: "MissingArgumentException", errorCode: 401});
+      return;
+    }
+    
+    // Validate if all required fields are present.
+    for(var i = 0; i < entity.properties.length; i++){
+      var property = entity.properties[i];
+      if(property.required == true && instance[property] == undefined) {
+        res.status(401).send({error: property.name + " is a required property.", errorCode: 401});
+        return;
+      }
+    }
+    
+    var successCallback = function(updatedInstance) {
+      res.send(updatedInstance);
+      return;
+    }
+    
+    var errorCallback = function(){
+      res.status(500).send({error: "InstanceUpdateFailedError", errorCode: 500});
+    }
+    
+    GenericEntityInstance.update(instance, entity, successCallback, errorCallback);
+  })
 };
 
 var reloadEntities = function() {
