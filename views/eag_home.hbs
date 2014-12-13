@@ -200,13 +200,6 @@
                         <div class="well" ng-show="showDeleteInstancePanel == true">
                           <form>
                             <div class="form">
-  <!--
-                              <div class="form-group" ng-repeat="property in entity.properties">
-                                <div class="input-group">
-                                  <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control" placeholder="\{{property.type}} value"/>
-                                </div>
-                              </div>
-  -->                         
                               <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showDeleteErrorPanel != undefined">
                                 <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteErrorPanel = undefined">Close</span></button>
                                   <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteErrorPanel}}
