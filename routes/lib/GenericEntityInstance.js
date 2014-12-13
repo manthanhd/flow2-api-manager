@@ -41,13 +41,15 @@ GenericEntityInstance.getInstanceModelFromCache = function(entity) {
 /**
 * findInstanceById: Find an instance by using it's ID.
 */
-GenericEntityInstance.findInstanceById = function(id, entityName, foundCallback, notFoundCallback) {
-  var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entityName);
+GenericEntityInstance.findInstanceById = function(id, entity, foundCallback, notFoundCallback) {
+  console.log("Fetching instance model...");
+  var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
   if(InstanceModel == undefined){
+    console.log("Couldn't find it. :(");
     notFoundCallback();
     return;
   }
-
+  console.log("Found it!");
   InstanceModel.findOne({_id: id}, function(err, instance) {
     if(err){
       console.log("An error occurred while fetching instance. Provided ID was " + id);
@@ -107,7 +109,7 @@ GenericEntityInstance.listAll = function(entity, foundCallback, notFoundCallback
 /**
 * create: Allows creation of a new instance belonging to an Entity.
 */
-GenericEntityInstance.create = function(entity, instance, success, error) {
+GenericEntityInstance.create = function(entity, instance) {
   console.log("Creating... Getting instance model.");
   var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
   console.log("Got the model. Checking...");

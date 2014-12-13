@@ -38,8 +38,6 @@ modelCollection.add("GenericEntityModel", SavedGenericEntity);
 var express = require('express');
 var router = express.Router();
 
-
-
 /* GET home page. */
 router.get('/', function(req, res) {
   res.render('index', { title: 'Express', layout: 'layouts/layout' });
@@ -245,9 +243,27 @@ var webbifyEntity = function(entity){
         res.send(savedInstance);
       }
    });
-    
-    
   });
+  
+  router.delete("/EAG/access/" + entity.name, function(req, res) {
+    var id = req.body.id;
+    
+    if(id == undefined || id == ""){
+      res.status(401).send({error: "MissingArgumentException", errorCode: 401});
+      return;
+    }
+    
+    var foundCallback = function(instance) {
+      instance.remove();
+      res.send({status: "OK"});
+    }
+
+    var notFoundCallback = function() {
+      res.status(404).send({error: "InstanceNotFoundError", errorCode: 404, originalArgs: {id: id}});
+    }
+    
+    GenericEntityInstance.findInstanceById(id, entity, foundCallback, notFoundCallback);
+  })
 
   router.get('/EAG/access/' + entity.name + '/findByProperty/:propertyName/:propertyValue', function(req, res){
     var propertyName = req.params.propertyName;
