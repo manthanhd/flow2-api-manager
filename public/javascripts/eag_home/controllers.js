@@ -223,16 +223,19 @@ app.controller("EntityDetailController", function($scope, $http){
     });
   }
   
-  $scope.$on("DisplayDetail", function(event, entity){
-    $scope.entity = entity;
-    
-    var listPath = "http://localhost:3000/EAG/access/" + entity.name;
-  
+  $scope.getInstancesForEntity = function(entityName){
+    var listPath = "http://localhost:3000/EAG/access/" + entityName;
+
     $http.get(listPath).success(function(data, status){
       if(status == 200){
         $scope.instanceList = JSON.stringify(data, null, 4);
       }
     });
+  }
+  
+  $scope.$on("DisplayDetail", function(event, entity){
+    $scope.entity = entity;
+    $scope.getInstancesForEntity(entity.name);
   });
   
   $scope.createInstance = function(){
@@ -301,6 +304,7 @@ app.controller("EntityDetailController", function($scope, $http){
     $scope.editInstanceObject = undefined;
     $scope.showEditErrorPanel = undefined;
     $scope.showEditSuccessPanel = undefined;
+    
     $scope.showEditInstancePanel = undefined;
   }
   
