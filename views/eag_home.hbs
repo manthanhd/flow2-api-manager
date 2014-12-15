@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-4 text-right" ng-controller="GlobalMenuController">
                 <br/>
-                <button class="btn btn-success" ng-click="showCreateEntityPanelClick()">Create Entity</button>
+              <button class="btn btn-success" ng-click="showCreateEntityPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create Entity</button>
             </div>
         </div>
         <div class="row">
@@ -245,7 +245,7 @@
                                 </div>
                               </div>
                             </div>
-                            <button class="btn btn-default" ng-click="showEditInstancePanel = undefined">Close</button>
+                            <button class="btn btn-default" ng-click="closeEditInstancePanel()"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
                             <button class="btn btn-default" ng-click="editInstanceObject = undefined" ng-show="editInstanceObject"><span class="glyphicon glyphicon-chevron-left"></span> Back</button>
                             <button type="submit" ng-click="getInstanceForEdit(editIDString)" class="btn btn-success" ng-show="!editInstanceObject"><span class="glyphicon glyphicon-chevron-right"></span> Next</button>
                             <button type="submit" ng-click="editCurrentInstance(editIDString)" class="btn btn-success" ng-show="editInstanceObject"><span class="glyphicon glyphicon-ok-sign"></span> Edit</button>
@@ -259,7 +259,8 @@
                             <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
                           </div>
                           <br/>
-                          <button class="btn btn-default" ng-click="showListInstancePanel = undefined">Close</button>
+                          <button class="btn btn-default" ng-click="showListInstancePanel = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button> 
+                          <button class="btn btn-default" ng-click="getInstancesForEntity(entity.name)"><span class="glyphicon glyphicon-refresh"></span> Reload</button>
                         </div>
                       </div>
                       <div class="row">
@@ -272,7 +273,7 @@
                       </div>
                     </div>
                     <div class="panel-footer">
-                      <button class="btn btn-default" ng-click="entity = undefined">Close</button>
+                      <button class="btn btn-default" ng-click="entity = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
                     </div>
                   </div>
                 </div>
