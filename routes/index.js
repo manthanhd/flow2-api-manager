@@ -417,6 +417,7 @@ var webbifyEntity = function (entity) {
     });
   });
 
+  /*API Endpoint to allow editing of an instance.*/
   router.put("/EAG/access/" + entity.name, function (req, res) {
     var instance = req.body;
     console.log(instance);

@@ -297,6 +297,14 @@ app.controller("EntityDetailController", function($scope, $http){
         }
         $scope.editInstanceObject = data.result[0];
       }
+    }).error(function(data, status) {
+      $scope.showEditSuccessPanel = undefined;
+      $scope.showEditErrorPanel = undefined;
+      if (status == 404) {
+        $scope.showEditErrorPanel = "Instance was not found. Please verify its ID and try again.";
+      } else if (status == 401) {
+        $scope.showEditErrorPanel = "Query argument is invalid. Please verify and try again.";
+      }
     });
   }
   
@@ -321,6 +329,20 @@ app.controller("EntityDetailController", function($scope, $http){
         $scope.showEditSuccessPanel = undefined;
         $scope.showEditErrorPanel = "Error occurred.";
         console.log(response);
+      }
+    }).error(function(data, status){
+      $scope.showEditSuccessPanel = undefined;
+      $scope.showEditErrorPanel = undefined;
+      if(status == 401) {
+        if(data.error == "MissingArgumentException") {
+          $scope.showEditErrorPanel = "Client error. Please reload the page and try again. If error persists, contact administrator or support."
+        } else {
+          $scope.showEditErrorPanel = "A required property missing. " + data.error;
+        }
+      } else if (status == 404) {
+        $scope.showEditErrorPanel = "Couldn't connect to server. Try again.";
+      } else {
+        $scope.showEditErrorPanel = "Server error. This may be due to a conflict.";
       }
     });
   }
