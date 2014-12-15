@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-4 text-right" ng-controller="GlobalMenuController">
                 <br/>
-                <button class="btn btn-success" ng-click="showCreateEntityPanelClick()">Create Entity</button>
+              <button class="btn btn-success" ng-click="showCreateEntityPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create Entity</button>
             </div>
         </div>
         <div class="row">
@@ -149,6 +149,8 @@
                                 <li class="divider"></li>
                                 <li><a href="" ng-click="createInstancePanelClick()">Create Instance</a></li>
                                 <li><a href="" ng-click="listInstancePanelClick()">View Instances</a></li>
+                                <li><a href="" ng-click="editInstancePanelClick()">Edit Instance</a></li>
+                                <li><a href="" ng-click="deleteInstancePanelClick()">Delete Instance</a></li>
                                 <li class="divider"></li>
                                 <li class="divider"></li>
                                 <li class="text-center"><strong>Entity actions</strong></li>
@@ -196,12 +198,69 @@
                           </div>
                           <button class="btn btn-default" ng-click="showCreateInstancePanel = undefined">Cancel</button> <button ng-click="createInstance()" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
                         </div>
+                        <div class="well" ng-show="showDeleteInstancePanel == true">
+                          <form>
+                            <div class="form">
+                              <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showDeleteErrorPanel != undefined">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteErrorPanel = undefined">Close</span></button>
+                                  <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteErrorPanel}}
+                              </div>
+                              <div class="alert alert-success alert-dismissible" role="alert" ng-show="showDeleteSuccessPanel != undefined">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteSuccessPanel = undefined">Close</span></button>
+                                  <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteSuccessPanel}}
+                              </div>
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <label for="idText">ID:</label>
+                                  <input id="idText" name="idText" type="text" ng-model="deleteIDString" placeholder="ID of the instance to be deleted" class="form-control" required/>
+                                </div>
+                              </div>
+                            </div>
+                            <button class="btn btn-default" ng-click="showDeleteInstancePanel = undefined">Cancel</button> <button type="submit" ng-click="deleteInstance()" class="btn btn-danger"><span class="glyphicon glyphicon-ok-sign"></span> Delete</button>
+                          </form>
+                        </div>
+                        
+                        
+                        
+                        <div class="well" ng-show="showEditInstancePanel == true">
+                          <form>
+                            <div class="form">
+                              <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEditErrorPanel != undefined">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showEditErrorPanel = undefined">Close</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showEditErrorPanel}}
+                              </div>
+                              <div class="alert alert-success alert-dismissible" role="alert" ng-show="showEditSuccessPanel != undefined">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showEditSuccessPanel = undefined">Close</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showEditSuccessPanel}}
+                              </div>
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <label for="idText">ID:</label>
+                                  <input id="editIDText" name="editIDText" type="text" ng-model="editIDString" placeholder="ID of the instance to be edited" class="form-control" required ng-disabled="editInstanceObject"/>
+                                </div>
+                                
+                                <div class="input-group" ng-repeat="property in entity.properties" ng-show="editInstanceObject">
+                                  <label for="idText">\{{property.name}}:</label>
+                                  <input type="text" ng-model="editInstanceObject[property.name]" placeholder="Value for \{{property.name}}" class="form-control" ng-required="property.required"/>
+                                </div>
+                              </div>
+                            </div>
+                            <button class="btn btn-default" ng-click="closeEditInstancePanel()"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
+                            <button class="btn btn-default" ng-click="editInstanceObject = undefined" ng-show="editInstanceObject"><span class="glyphicon glyphicon-chevron-left"></span> Back</button>
+                            <button type="submit" ng-click="getInstanceForEdit(editIDString)" class="btn btn-success" ng-show="!editInstanceObject"><span class="glyphicon glyphicon-chevron-right"></span> Next</button>
+                            <button type="submit" ng-click="editCurrentInstance(editIDString)" class="btn btn-success" ng-show="editInstanceObject"><span class="glyphicon glyphicon-ok-sign"></span> Edit</button>
+                          </form>
+                        </div>
+                        
+                        
+                        
                         <div class="well text-center consoleText" ng-show="showListInstancePanel == true">
                           <div class="text-center consoleText">
                             <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
                           </div>
                           <br/>
-                          <button class="btn btn-default" ng-click="showListInstancePanel = undefined">Close</button>
+                          <button class="btn btn-default" ng-click="showListInstancePanel = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button> 
+                          <button class="btn btn-default" ng-click="getInstancesForEntity(entity.name)"><span class="glyphicon glyphicon-refresh"></span> Reload</button>
                         </div>
                       </div>
                       <div class="row">
@@ -214,7 +273,7 @@
                       </div>
                     </div>
                     <div class="panel-footer">
-                      <button class="btn btn-default" ng-click="entity = undefined">Close</button>
+                      <button class="btn btn-default" ng-click="entity = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
                     </div>
                   </div>
                 </div>

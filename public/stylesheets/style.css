@@ -14,3 +14,5 @@ a {
 .inline-block {
   display: inline-block;
 }
+
+textarea { resize:vertical; }
