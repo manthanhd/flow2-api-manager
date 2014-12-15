@@ -2,29 +2,29 @@ var mongoose = require("mongoose");
 var GenericEntityProperty = require("./GenericEntityProperty");
 
 function GenericEntityInstance() {
-  
+
 };
 
 GenericEntityInstance.instanceModelCache = {};
 
 /**
-* getInstanceModelFromCache: Method to get model of an instance by it's Entity name from cache.
-*/
-GenericEntityInstance.getInstanceModelFromCache = function(entity) {
+ * getInstanceModelFromCache: Method to get model of an instance by it's Entity name from cache.
+ */
+GenericEntityInstance.getInstanceModelFromCache = function (entity) {
   var entityName = entity.name || entity;
   console.log("Finding instance model for " + entityName);
   var instanceModel = GenericEntityInstance.instanceModelCache[entity.name];
-  if(instanceModel != undefined){
+  if (instanceModel != undefined) {
     console.log("Found it!");
     return instanceModel;
   }
-  
-  if(!entity.name) {
+
+  if (!entity.name) {
     return;
   }
   console.log("Couldn't find it. Defining it.");
   var mongooseSchemaObject = {};
-  for(var i = 0; i < entity.properties.length; i++){
+  for (var i = 0; i < entity.properties.length; i++) {
     mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
   }
 
@@ -39,19 +39,21 @@ GenericEntityInstance.getInstanceModelFromCache = function(entity) {
 };
 
 /**
-* findInstanceById: Find an instance by using it's ID.
-*/
-GenericEntityInstance.findInstanceById = function(id, entity, foundCallback, notFoundCallback) {
+ * findInstanceById: Find an instance by using it's ID.
+ */
+GenericEntityInstance.findInstanceById = function (id, entity, foundCallback, notFoundCallback) {
   console.log("Fetching instance model...");
   var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
-  if(InstanceModel == undefined){
+  if (InstanceModel == undefined) {
     console.log("Couldn't find it. :(");
     notFoundCallback();
     return;
   }
   console.log("Found it!");
-  InstanceModel.findOne({_id: id}, function(err, instance) {
-    if(err){
+  InstanceModel.findOne({
+    _id: id
+  }, function (err, instance) {
+    if (err) {
       console.log("An error occurred while fetching instance. Provided ID was " + id);
       notFoundCallback();
       return;
@@ -62,41 +64,41 @@ GenericEntityInstance.findInstanceById = function(id, entity, foundCallback, not
 };
 
 /**
-* findInstanceByProperty: Find an instance by querying it's property and value.
-*/
-GenericEntityInstance.findInstanceByProperty = function(entity, propertyName, propertyValue, foundCallback, notFoundCallback) {
+ * findInstanceByProperty: Find an instance by querying it's property and value.
+ */
+GenericEntityInstance.findInstanceByProperty = function (entity, propertyName, propertyValue, foundCallback, notFoundCallback) {
   var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
   console.log("Finding instance model.");
-  if(InstanceModel == undefined){
+  if (InstanceModel == undefined) {
     notFoundCallback();
     return;
   }
-  
+
   var queryObject = {};
   queryObject[propertyName] = propertyValue;
-  InstanceModel.find(queryObject, function(err, instances) {
-    if(err){
+  InstanceModel.find(queryObject, function (err, instances) {
+    if (err) {
       console.log("An error occurred while fetching instance. Provided property pair was " + propertyName + "=" + propertyValue);
       notFoundCallback();
       return;
     }
-    
+
     foundCallback(instances);
   });
 };
 
 /**
-* listAll: Lists all instances belonging to a specified Entity.
-*/
-GenericEntityInstance.listAll = function(entity, foundCallback, notFoundCallback) {
+ * listAll: Lists all instances belonging to a specified Entity.
+ */
+GenericEntityInstance.listAll = function (entity, foundCallback, notFoundCallback) {
   var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
-  if(InstanceModel == undefined){
+  if (InstanceModel == undefined) {
     notFoundCallback();
     return;
   }
 
-  InstanceModel.find({}, function(err, instances) {
-    if(err){
+  InstanceModel.find({}, function (err, instances) {
+    if (err) {
       console.log("An error occurred while fetching instances.");
       notFoundCallback();
       return;
@@ -107,20 +109,20 @@ GenericEntityInstance.listAll = function(entity, foundCallback, notFoundCallback
 };
 
 /**
-* create: Allows creation of a new instance belonging to an Entity.
-*/
-GenericEntityInstance.create = function(entity, instance) {
+ * create: Allows creation of a new instance belonging to an Entity.
+ */
+GenericEntityInstance.create = function (entity, instance) {
   console.log("Creating... Getting instance model.");
   var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
   console.log("Got the model. Checking...");
-  if(InstanceModel == undefined){
+  if (InstanceModel == undefined) {
     return undefined;
   }
   console.log("Model validated. Proceeding...");
-  
+
   var newInstance = new InstanceModel();
-  
-  for(var i = 0; i < entity.properties.length; i++){
+
+  for (var i = 0; i < entity.properties.length; i++) {
     newInstance[entity.properties[i].name] = instance[entity.properties[i].name];
   }
   console.log("Saving...");
@@ -129,41 +131,41 @@ GenericEntityInstance.create = function(entity, instance) {
 };
 
 /**
-* registerInstanceModelFromCache: Allows registering of an instance model in cache.
-*/
-GenericEntityInstance.registerInstanceModelFromCache = function(entityName, instanceModel){
-  if(GenericEntityInstance.getInstanceModelFromCache(entityName) == undefined) {
+ * registerInstanceModelFromCache: Allows registering of an instance model in cache.
+ */
+GenericEntityInstance.registerInstanceModelFromCache = function (entityName, instanceModel) {
+  if (GenericEntityInstance.getInstanceModelFromCache(entityName) == undefined) {
     GenericEntityInstance.instanceModelCache.push(instanceModel);
   }
 };
 
 /**
-* removeInstanceModelFromCache: Allows removing of an instance model from cache by it's entity name.
-*/
-GenericEntityInstance.removeInstanceModelFromCache = function(entityName){
-  if(GenericEntityInstance.getInstanceModelFromCache(entityName) != undefined) {
+ * removeInstanceModelFromCache: Allows removing of an instance model from cache by it's entity name.
+ */
+GenericEntityInstance.removeInstanceModelFromCache = function (entityName) {
+  if (GenericEntityInstance.getInstanceModelFromCache(entityName) != undefined) {
     delete GenericEntityInstance.instanceModelCache[entityName];
   }
 };
 
 /**
-* 
-*/
-GenericEntityInstance.update = function(instance, entity, successCallback, errorCallback){
-  var foundCallback = function(existingInstance) {
+ *
+ */
+GenericEntityInstance.update = function (instance, entity, successCallback, errorCallback) {
+  var foundCallback = function (existingInstance) {
     // Assuming all required fields have been validated...
-    for(var i = 0; i < entity.properties.length; i++){
+    for (var i = 0; i < entity.properties.length; i++) {
       var property = entity.properties[i];
-      existingInstance[property.name] = instance[property.name];  // Make properties same.
+      existingInstance[property.name] = instance[property.name]; // Make properties same.
     }
     existingInstance.save();
     successCallback(existingInstance);
   }
-  
-  var notFoundCallback = function() {
+
+  var notFoundCallback = function () {
     errorCallback();
   }
-  
+
   GenericEntityInstance.findInstanceById(instance._id, entity, foundCallback, notFoundCallback);
 }
 
