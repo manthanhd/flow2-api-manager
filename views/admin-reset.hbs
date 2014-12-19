@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-<!--    Import CSS-->
+    <!--    Import CSS-->
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>
     <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
@@ -10,7 +10,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12 text-center">
-          <h1>Admin Access Gateway</h1>
+          <h1>Password reset for {{ username }}</h1>
         </div>
       </div>
       <div class="row">
@@ -22,24 +22,16 @@
             {{errorMessage}}
           </div>
           {{/if}}
-          
-          {{#if message}}
-          <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            {{message}}
-          </div>
-          {{/if}}
         </div>
       </div>
       <div class="row">
         <div class="col-md-4 col-md-offset-4 text-center">
           <form role="form" class="form" method="post">
-            
-            <input type="text" class="form-control" id="usernameText" name="usernameText" placeholder="Username"/>
-            <input type="password" class="form-control" id="passwordText" name="passwordText" placeholder="Password"/>
+            <input type="password" class="form-control" id="passwordText1" name="passwordText1" placeholder="Password"/>
+            <input type="password" class="form-control" id="passwordText2" name="passwordText2" placeholder="Confirm password"/>
             <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
             <div class="pull-right">
-              <input class="btn btn-success" type="submit" value="Login"/>
+              <input class="btn btn-success" type="submit" value="Submit"/>
             </div>
           </form>
         </div>

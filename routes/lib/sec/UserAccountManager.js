@@ -40,12 +40,37 @@ UserAccountManager.createDefaultAdminAccount = function() {
 
 UserAccountManager.validate = function(username, password, foundCallback, notFoundCallback) {
   UserAccountModel.findOne({username: username}, function(err, account) {
-    if(err != undefined || account == undefined || account.length == 0){
+    if(err != undefined || account == undefined){
       notFoundCallback();
       return;
     }
+    account.comparePassword(password, function(err, isMatch) {
+      if(isMatch && isMatch == true) {
+        foundCallback(account);
+      } else {
+        notFoundCallback();
+      }
+    });
+  });
+}
+
+UserAccountManager.resetPassword = function(username, newPassword, successCallback, failureCallback) {
+  UserAccountModel.findOne({username: username}, function(err, account) {
+    if(err != undefined || account == undefined || account.length == 0){
+      failureCallback();
+      return;
+    }
     
-    foundCallback(account);
+    account.password = newPassword;
+    account.hasBeenReset = false;
+    account.save(function(err, updatedAccount){
+      if(err || updatedAccount == undefined){
+        failureCallback();
+        return;
+      }
+      
+      successCallback(updatedAccount);
+    });
   })
 }
 
