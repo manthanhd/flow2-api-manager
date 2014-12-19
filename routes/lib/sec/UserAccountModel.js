@@ -3,8 +3,8 @@ var bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10;
 
 var userSchema = mongoose.Schema({
-  username: String,
-  password: String,
+  username: { type: String, required: true, index: { unique: true } },
+  password: { type: String, required: true },
   hasBeenReset: Boolean,
   isAdmin: Boolean,
   lastLoginDate: Date,
@@ -45,4 +45,4 @@ userSchema.methods.comparePassword = function(candidatePassword, callback) {
 var userDBName = "FLOW2_Users";
 var UserAccountModel = mongoose.model(userDBName, userSchema, userDBName);
 
-module.exports = AdminAccount;
+module.exports = UserAccountModel;
