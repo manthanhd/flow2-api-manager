@@ -4,9 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var csrf = require('csurf');
+var uuid = require('node-uuid');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var adminRoute = require('./routes/admin-login');
 
 var app = express();
 
@@ -17,13 +21,26 @@ app.set('view engine', 'hbs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
+app.use(session(
+  {secret: uuid.v4(), resave: false, saveUninitialized: true}
+));  // Generate random secret.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(csrf());
+// csurf error handler: https://github.com/expressjs/csurf
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+
+  // handle CSRF token errors here
+  res.status(403)
+  res.send('Session has expired or form tampered with')
+});
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/admin', adminRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
