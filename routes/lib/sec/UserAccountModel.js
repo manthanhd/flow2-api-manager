@@ -1,4 +1,7 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt'),
+    SALT_WORK_FACTOR = 10;
+
 var userSchema = mongoose.Schema({
   username: String,
   password: String,
@@ -32,10 +35,10 @@ userSchema.pre('save', function(next) {
   });
 });
 
-userSchema.methods.comparePassword = function(candidatePassword, cb) {
+userSchema.methods.comparePassword = function(candidatePassword, callback) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-    if (err) return cb(err);
-    cb(null, isMatch);
+    if (err) return callback(err);
+    callback(undefined, isMatch);
   });
 };
 
