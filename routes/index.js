@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var express = require('express');
 
 var ErrorObject = require('./lib/ErrorObject');
 var modelCollection = require('./lib/ModelCollection');
@@ -6,6 +7,11 @@ var GenericEntity = require('./lib/GenericEntity');
 var GenericEntityProperty = require('./lib/GenericEntityProperty');
 var SavedGenericEntity = require('./lib/GenericEntityModel');
 var GenericEntityInstance = require("./lib/GenericEntityInstance");
+var UserAccountModel = require('./lib/sec/UserAccountModel');
+var UserAccountManager = require('./lib/sec/UserAccountManager');
+
+// Initialize user accounts.
+UserAccountManager.init();
 
 var properties = require("properties");
 properties.parse("db.properties", {
@@ -37,7 +43,6 @@ properties.parse("db.properties", {
 
 modelCollection.add("GenericEntityModel", SavedGenericEntity);
 
-var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
