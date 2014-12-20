@@ -89,5 +89,6 @@ router.get("/home", function(req, res) {
   }
   
   res.render("admin-home", { account: account })
-})
+});
+
 module.exports = router;
