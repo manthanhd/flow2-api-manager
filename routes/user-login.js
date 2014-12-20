@@ -18,6 +18,13 @@ router.post('/login', function(req, res) {
       return;
     }
     
+    var fwd = req.session.fwd;
+    if(fwd && fwd != ""){
+      req.session.fwd = undefined;
+      res.redirect(fwd);
+      return;
+    }
+    
     res.redirect("/user/home");
   }
   

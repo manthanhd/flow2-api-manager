@@ -61,6 +61,12 @@ router.get('/resetDB', function (req, res) {
 });
 
 router.get('/EAG', function (req, res) {
+  var user = req.session.account;
+  if(user == undefined){  // Require them to login
+    req.session.fwd = "/EAG";
+    res.redirect("/user/login?message=Please login to continue.");
+    return;
+  }
 
   res.render("eag_home");
 });
