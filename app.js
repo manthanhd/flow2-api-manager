@@ -10,7 +10,7 @@ var uuid = require('node-uuid');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var adminRoute = require('./routes/admin-login');
+var userRoute = require('./routes/user-login');
 
 var app = express();
 
@@ -40,7 +40,7 @@ app.use(function (err, req, res, next) {
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/admin', adminRoute);
+app.use('/user', userRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
