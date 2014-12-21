@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 var mongoose = require("mongoose");
 var UserAccountManager = require("./lib/sec/UserAccountManager");
+var UserAccountModel = require('./lib/sec/UserAccountModel');
 
 router.get('/login', function(req, res) {
   
@@ -97,6 +98,105 @@ router.get("/home", function(req, res) {
   }
   
   res.render("user-home", { account: account })
+});
+
+// APIs
+//==========================================================================================================
+router.get('/', function(req, res) {
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  UserAccountModel.find({}, function(err, users) {
+    if(err || !users){
+      console.log("Error occured while listing users.");
+      res.status(500).send({error: "UserListError", errorCode: 500});
+      return;
+    }
+    
+    // Strip out password.
+    for(var i = 0; i < users.length; i++) {
+      users[i].password = undefined;
+    }
+    
+    res.send({userList: users});
+  });
+});
+
+router.post('/', function(req, res) {
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  if(!req.body.username) {
+    res.status(401).send({error: "Username is a required field."});
+    return;
+  }
+
+  if(account.isAdmin != true && req.body.isAdmin == true) {
+    res.status(401).send({error: "Non-admins cannot create admins."});
+    return;
+  }
+
+  // For now, only admins can assign roles.
+  if( (!req.body.isAdmin || req.body.isAdmin == false) && req.body.roles && req.body.roles.length > 0) {
+    res.status(401).send({error: "Non-admins cannot assign roles."});
+    return;
+  }
+
+  // Do a role check if user is allowed to assign roles or not.
+
+  var newUser = new UserAccountModel();
+  newUser.username = req.body.username;
+  newUser.hasBeenReset = true;
+  newUser.isAdmin = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.isAdmin : false;
+  newUSer.isEnabled = true; // All new users are enabled rightaway.
+  newUSer.createdBy = account.username;
+
+  // Do a check here to see if user is allowed to assign roles.
+  newUser.roles = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.roles : [];
+
+  newUser.save(function(err, savedUser) {
+    if(err){
+      console.log("Failed to save new user.");
+      console.log(err);
+      res.status(500).send({error: "UserSaveError", errorCode: 500});
+      return;
+    }
+
+    res.send(newUser);
+  })
+});
+
+router.delete('/:id', function(req, res) {
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  if(!account.isAdmin || account.isAdmin == false) {
+    res.status(403).send({error: "OperationNotPermitted", errorCode: 403});
+    return;
+  }
+
+  var userId = req.params.id;
+  UserAccountModel.findOne({_id: userId}, function(err, user) {
+    if(err){
+      console.log("Failed to list user with ID " + userId);
+      console.log(err);
+      res.status(500).send({error: "UserListError", errorCode: 500});
+      return;
+    }
+
+    user.remove();
+    res.send({status: "OK"});
+  });
+
 });
 
 module.exports = router;
