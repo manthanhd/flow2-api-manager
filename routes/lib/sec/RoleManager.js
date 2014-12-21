@@ -277,5 +277,5 @@ RoleManager.init = function() {
         console.log("Default role created: " + savedRole.name);
       });
     }
-  })
+  });
 }

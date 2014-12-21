@@ -11,6 +11,7 @@ var uuid = require('node-uuid');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var userRoute = require('./routes/user-login');
+var securityManager = require('./routes/security-home');
 
 var app = express();
 
@@ -41,6 +42,7 @@ app.use(function (err, req, res, next) {
 app.use('/', routes);
 app.use('/users', users);
 app.use('/user', userRoute);
+app.use('/security-manager', securityManager);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
