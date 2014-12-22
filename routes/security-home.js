@@ -13,7 +13,7 @@ router.get('/', function(req, res) {
     res.redirect("/user/login?message=Please login to continue");
     return;
   }
-  
+  res.cookie("XSRF-TOKEN", req.session.csrfToken);
   res.render('security-home');
 });
 
