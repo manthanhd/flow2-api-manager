@@ -6,85 +6,60 @@ app.controller("GlobalMenuController", function($scope) {
   };
 });
 
-app.controller("CreateEntityController", function($scope, $http){
-  $scope.showCreateEntityPanel = undefined;
+app.controller("CreateUserController", function($scope, $http){
+  $scope.showCreateUserPanel = undefined;
 
   $scope.hideAllPanels = function(){
     $scope.showTypeErrorPanel = undefined;
-    $scope.showEntityExistsErrorPanel = undefined;
+    $scope.showUserExistsErrorPanel = undefined;
   };
 
   $scope.closePanel = function() {
-    $scope.showCreateEntityPanel = undefined;
+    $scope.showCreateUserPanel = undefined;
   }
 
-  $scope.showCreateEntityPanelClick = function(){
-    $scope.showCreateEntityPanel = true;
+  $scope.showCreateUserPanelClick = function(){
+    $scope.showCreateUserPanel = true;
   }
 
   $scope.$on("showCreateEntityPanel", function(event){
-    $scope.showCreateEntityPanel = true;
+    $scope.showCreateUserPanel = true;
   });
 
-  $scope.addNewProperty = function(){
-    $scope.newEntity.properties.push({name: "", type: ""});
-  };
-
-  $scope.removeProperty = function(index){
-    if($scope.newEntity.properties.length > 1){
-      $scope.newEntity.properties.splice(index, 1);
-    }
-  };
-
-  $scope.resetNewEntity = function(){
-    $scope.newEntity = {
-      entityName: "",
-      properties: [{
-        name: "",
-        type: "",
-        required: true
-      }]
+  $scope.resetNewUser = function(){
+    $scope.newUser = {
+      
+      }
     };
-  };
 
-  $scope.submitCreateEntityForm = function(){
-    var entityCreationPath = "http://localhost:3000/createEntity";
-    $http.post(entityCreationPath, $scope.newEntity).success(function(data, statusCode) {
+  $scope.submitCreateUserForm = function(){
+    var entityCreationPath = "http://localhost:3000/user";
+    $http.post(entityCreationPath, $scope.newUser).success(function(data, statusCode) {
       if(statusCode == 200){
-        $scope.$parent.$broadcast("EntityCreateSuccessful");
-        $scope.resetNewEntity();
+        $scope.$parent.$broadcast("UserCreateSuccessful");
+        $scope.resetNewUser();
         $scope.hideAllPanels();
-        $scope.$parent.$broadcast("ReloadEntityListEvent");
+        $scope.$parent.$broadcast("ReloadUserListEvent");
       };
     }).error(function(data, status){
-      if(status == 422){
-        $scope.showTypeError(data.name, data.type);
-      } else if(status == 409){
-        $scope.showEntityExistsError();
+      if(status == 409){
+        $scope.showUserExistsError();
       }
     });
   };
 
-  $scope.showEntityExistsError = function(){
-    $scope.showCreateEntityPanel == false;
-    $scope.showEntityExistsErrorPanel = {};
+  $scope.showUserExistsError = function(){
+    $scope.showCreateUserPanel == false;
+    $scope.showUserExistsErrorPanel = {};
   }
 
-  $scope.showTypeError = function(name, type){
-    $scope.hideAllPanels();
-    $scope.showTypeErrorPanel = {
-      name: name,
-      type: type
-    };
-  }
-
-  $scope.cancelCreateEntity = function(){
+  $scope.cancelCreateUser = function(){
     $scope.resetNewEntity();
     $scope.hideAllPanels();
     $scope.closePanel();
   };
 
-  $scope.resetNewEntity();
+  $scope.resetNewUser();
 });
 
 app.controller("AlertsController", function($scope, $http){
@@ -115,84 +90,43 @@ app.controller("AlertsController", function($scope, $http){
 });
 
 app.controller("NavigationController", function($scope, $http){
-  $scope.entities = [];
+  $scope.users = [];
 
-  $scope.$on("ReloadEntityListEvent", function(event){
-    $scope.listEntities();
+  $scope.$on("ReloadUserListEvent", function(event){
+    $scope.listUsers();
   });
 
-  $scope.listEntities = function(){
-    $http.get("/listEntities").success(function(data, status){
+  $scope.listUsers = function(){
+    $http.get("/user").success(function(data, status){
       if(status == 200){
-        $scope.entities = data.entityList;
+        $scope.users = data.userList;
       }
     });
   }
 
   $scope.displayDetail = function(id){
-    if($scope.entities == undefined || $scope.entities == []){
+    if($scope.users == undefined || $scope.users == []){
       return;
     }
-
-    for(var i = 0; i < $scope.entities.length; i++){
-      var entity = $scope.entities[i];
-      if(entity._id == id){
-        $scope.$parent.$broadcast('DisplayDetail', entity);
+    
+    for(var i = 0; i < $scope.users.length; i++){
+      var user = $scope.users[i];
+      if(user._id == id){
+        $scope.$parent.$broadcast('DisplayDetail', user);
         break;
       }
     }
   };
 
-  $scope.listEntities();
+  $scope.listUsers();
     
 });
 
-app.controller("EntityDetailController", function($scope, $http){
+app.controller("UserDetailController", function($scope, $http){
   $scope.newObject = {props: {}};
-  $scope.instanceList = [];
-  $scope.showCreateInstancePanel = false;
-  $scope.showListInstancePanel = false;
-  $scope.showDeleteInstancePanel = false;
-  $scope.showEditInstancePanel = false;
   $scope.success = {};
   $scope.warning = {};
   $scope.fail = {};
-  
-  $scope.hideAllPanels = function(){
-    $scope.showCreateInstancePanel = false;
-    $scope.showListInstancePanel = false;
-    $scope.showDeleteInstancePanel = false;
-    $scope.showEditInstancePanel = false;
-  };
-  
-  $scope.createInstancePanelClick = function(){
-    $scope.hideAllPanels();
-    $scope.showCreateInstancePanel = true;
-  }
-  
-  $scope.listInstancePanelClick = function(){
-    $scope.hideAllPanels();
-    $scope.showListInstancePanel = true;
-  }
-  
-  $scope.deleteInstancePanelClick = function(){
-    $scope.hideAllPanels();
-    $scope.showDeleteInstancePanel = true;
-  }
-  
-  $scope.editInstancePanelClick = function(){
-    $scope.editInstanceObject = undefined;
-    $scope.hideAllPanels();
-    $scope.showEditInstancePanel = true;
-  }
-  
-  $scope.countInstances = function(){
-    var instances = angular.fromJson($scope.instanceList);
-    if(instances == undefined || instances.instanceList == undefined){
-      return 0;
-    }
-    return instances.instanceList.length;
-  }
   
   $scope.resetAlerts = function(){
     $scope.success = {};
@@ -203,147 +137,27 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.clearDetail = function(){
     $scope.hideAllPanels();
     $scope.resetAlerts();
-    $scope.entity = undefined;
+    $scope.user = undefined;
   }
   
-  $scope.deleteEntityConfirmClick = function(entityId){
-    console.log("Just confirmed to delete " + entityId + " entity");
-    var entityDeletePath = "http://localhost:3000/deleteEntity/" + entityId;
+  $scope.deleteUserConfirmClick = function(entityId) {
+    console.log("Just confirmed to delete " + user.username + ".");
+    var userDeletePath = "http://localhost:3000/user/" + user._id;
     
-    $http.get(entityDeletePath).success(function(data, statusCode) {
+    $http.delete(userDeletePath).success(function(data, statusCode) {
       if(statusCode == 200 && data.status == 'OK'){
-        $scope.$parent.$broadcast("EntityDeleteSuccessfulEvent");
+        $scope.$parent.$broadcast("UserDeleteSuccessfulEvent");
         $scope.clearDetail();
-        $scope.$parent.$broadcast("ReloadEntityListEvent");
+        $scope.$parent.$broadcast("ReloadUserListEvent");
       } else {
-        $scope.$parent.$broadcast("EntityDeleteFailEvent");
+        $scope.$parent.$broadcast("UserDeleteFailEvent");
       }
     }).error(function(){
-      $scope.$parent.$broadcast("EntityDeleteFailEvent");
+      $scope.$parent.$broadcast("UserDeleteFailEvent");
     });
   }
   
-  $scope.getInstancesForEntity = function(entityName){
-    var listPath = "http://localhost:3000/EAG/access/" + entityName;
-
-    $http.get(listPath).success(function(data, status){
-      if(status == 200){
-        $scope.instanceList = JSON.stringify(data, null, 4);
-      }
-    });
-  }
-  
-  $scope.$on("DisplayDetail", function(event, entity){
-    $scope.entity = entity;
-    $scope.getInstancesForEntity(entity.name);
+  $scope.$on("DisplayDetail", function(event, user){
+    $scope.user = user;
   });
-  
-  $scope.createInstance = function(){
-    var instance = $scope.newObject.props;
-    var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name;
-    
-    $http.post(creationPath, instance).success(function(instance, status){
-      if(status == 200 && instance != undefined && instance._id != undefined){
-        $scope.$parent.$broadcast("DisplayDetail", $scope.entity);
-        $scope.newObject.props = {};
-      } else {
-        console.log("Failed to create instance.");
-        console.log(instance);
-        console.log(status);
-      }
-    });
-  };
-  
-  $scope.deleteInstance = function(){
-    $scope.showDeleteSuccessPanel = undefined;
-    $scope.showDeleteErrorPanel = undefined;
-    var id = $scope.deleteIDString;
-    var deleteEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/" + id;
-    
-    $http.delete(deleteEndpoint).success(function(data, status){
-      $scope.showDeleteSuccessPanel = undefined;
-      $scope.showDeleteErrorPanel = undefined;
-
-      if(status == 200) {
-        $scope.showDeleteSuccessPanel = "Instance with ID " + id + " was successfully deleted.";
-        $scope.$parent.$broadcast("DisplayDetail", $scope.entity);
-        $scope.deleteIDString = undefined;    // Because it's initial state is undefined.
-      } else if(status == 401) {
-        $scope.showDeleteErrorPanel = "Failed to delete instance. Invalid or missing ID."
-      } else if (status == 404) {
-        $scope.showDeleteErrorPanel = "Instance with ID " + id + " does not exist.";
-      }
-    }).error(function(error, status) {
-      $scope.showDeleteSuccessPanel = undefined;
-      $scope.showDeleteErrorPanel = undefined;
-
-      if(status == 401) {
-        $scope.showDeleteErrorPanel = "Failed to delete instance. Invalid or missing ID."
-      } else if (status == 404) {
-        $scope.showDeleteErrorPanel = "Instance with ID " + id + " does not exist.";
-      }
-    });
-  }
-  
-  $scope.getInstanceForEdit = function(id) {
-    var fetchEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/_id/" + id;
-    $http.get(fetchEndpoint).success(function(data, response) {
-      if(response == 200){
-        console.log(data);
-        if(data.result.length > 1) {
-          $scope.showEditErrorPanel = "Too many instances matched the query. Exactly one result was expected."
-        } else if (data.result.length == 0) {
-          $scope.showEditErrorPanel = "Instance not found.";
-        }
-        $scope.editInstanceObject = data.result[0];
-      }
-    }).error(function(data, status) {
-      $scope.showEditSuccessPanel = undefined;
-      $scope.showEditErrorPanel = undefined;
-      if (status == 404) {
-        $scope.showEditErrorPanel = "Instance was not found. Please verify its ID and try again.";
-      } else if (status == 401) {
-        $scope.showEditErrorPanel = "Query argument is invalid. Please verify and try again.";
-      }
-    });
-  }
-  
-  $scope.closeEditInstancePanel = function(){
-    $scope.editInstanceObject = undefined;
-    $scope.showEditErrorPanel = undefined;
-    $scope.showEditSuccessPanel = undefined;
-    
-    $scope.showEditInstancePanel = undefined;
-  }
-  
-  $scope.editCurrentInstance = function(instanceId) {
-    var editEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name;
-    $http.put(editEndpoint, $scope.editInstanceObject).success(function(response, status) {
-      if(status == 200){
-        $scope.showEditSuccessPanel = "Edit was successful!";
-        $scope.showEditErrorPanel = undefined;
-        $scope.editInstanceObject = undefined;
-        $scope.editIDString = "";
-        console.log(response);
-      } else {
-        $scope.showEditSuccessPanel = undefined;
-        $scope.showEditErrorPanel = "Error occurred.";
-        console.log(response);
-      }
-    }).error(function(data, status){
-      $scope.showEditSuccessPanel = undefined;
-      $scope.showEditErrorPanel = undefined;
-      if(status == 401) {
-        if(data.error == "MissingArgumentException") {
-          $scope.showEditErrorPanel = "Client error. Please reload the page and try again. If error persists, contact administrator or support."
-        } else {
-          $scope.showEditErrorPanel = "A required property missing. " + data.error;
-        }
-      } else if (status == 404) {
-        $scope.showEditErrorPanel = "Couldn't connect to server. Try again.";
-      } else {
-        $scope.showEditErrorPanel = "Server error. This may be due to a conflict.";
-      }
-    });
-  }
 });
