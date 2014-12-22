@@ -16,12 +16,25 @@
   </head>
   <body class="container">
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-6">
         <h1>Security Home</h1>
       </div>
-      <div class="col-md-4 text-right" ng-controller="GlobalMenuController">
+      <div class="col-md-6 text-right" ng-controller="GlobalMenuController">
         <br/>
-        <button class="btn btn-success" ng-click="showCreateUserPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create User</button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            Actions <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li class="danger"><a href="" ng-click="showCreateUserPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create User</a></li>
+            <li><a href="" ng-click="showCreateRolePanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create Role</a></li>
+          </ul>
+        </div>
+
+        <form class="inline-block" action="/user/logout" method="post">
+          <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+          <button class="btn btn-default">Logout</button>
+        </form>
       </div>
     </div>
     <div class="row">

@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
     return;
   }
   res.cookie("XSRF-TOKEN", req.session.csrfToken);
-  res.render('security-home');
+  res.render('security-home', {csrfToken: req.session.csrfToken});
 });
 
 

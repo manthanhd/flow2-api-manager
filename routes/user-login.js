@@ -40,6 +40,12 @@ router.post('/login', function(req, res) {
   UserAccountManager.validate(req.body.usernameText, req.body.passwordText, foundCallback, notFoundCallback);
 });
 
+router.post('/logout', function(req, res) {
+  req.session.account = undefined;
+  req.session.fwd = undefined;
+  res.redirect('/user/login');
+});
+
 router.get("/reset", function(req, res) {
   var account = req.session.account;
   if(account == undefined) {
