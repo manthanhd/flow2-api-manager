@@ -3,6 +3,8 @@ var RoleModel = require('./RoleModel');
 
 var RoleManager = {};
 
+RoleManager.roleCache = [];
+
 RoleManager.init = function() {
   RoleModel.find({}, function(err, roles) {
     if(err){
@@ -304,6 +306,18 @@ RoleManager.getAllRoles = function(successCallback, failureCallback) {
     }
 
     successCallback(roles);
+  })
+}
+
+RoleManager.buildCache = function() {
+  RoleManager.getAllRoles(function(roles) {
+    if(!roles && roles.length > 0) {
+      RoleManager.roleCache = roles;
+    } else {
+      console.log("Failed to build role cache. No roles exist!");
+    }
+  }, function() {
+    console.log("Failed to build role cache.")
   })
 }
 

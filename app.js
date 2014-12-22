@@ -14,6 +14,12 @@ var userRoute = require('./routes/user-login');
 var securityManager = require('./routes/security-home');
 var roleRoute = require('./routes/role');
 
+var UserAccountModel = require('./routes/lib/sec/UserAccountModel');
+var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
+var RoleModel = require('./routes/lib/sec/RoleModel');
+var RoleManager = require('./routes/lib/sec/RoleManager');
+RoleManager.buildCache();
+
 var app = express();
 
 // view engine setup
@@ -38,6 +44,72 @@ app.use(function (err, req, res, next) {
   // handle CSRF token errors here
   res.status(403)
   res.send('Session has expired or form tampered with')
+});
+
+app.all('/EAG/access/*', function(req, res, next) { // Instance operations
+    var account = req.session.account;
+    if(!account) {
+        res.status(403).send({error: "LoginRequired", errorCode: 403});
+        return;
+    }
+
+    var userFoundCallback = function(user) {
+        req.session.account = user; // Update session.
+        var obj = {context: 'instance'};
+        if(req.method == 'GET') {
+            obj.allowsOperation = 'r';
+        } else if(req.method == 'POST') {
+            obj.allowsOperation = 'c';
+        } else if(req.method == 'PUT') {
+            obj.allowsOperation = 'u';
+        } else if(req.method == "DELETE") {
+            obj.allowsOperation = 'd';
+        }
+
+        RoleModel.findOne(obj, function(err, role) {
+            if(err || !role) {
+                res.status(500).send({error: "SecurityError", errorCode: 500});
+                return;
+            }
+            console.log("Found role object.");
+            var roleId = role._id;
+            var hasRole = undefined;
+            for(var i = 0; i < user.roles.length; i++) {
+                var currentRole = user.roles[i];
+                if(currentRole.roleId == roleId) {
+                    hasRole = user.roles[i];
+                    break;
+                }
+            }
+
+            if(hasRole) {
+                var regex = /\/EAG\/access\/([A-Za-z]+)\//i;
+                var regex2 = /\/EAG\/access\/([A-Za-z]+)/i;
+                var path = req.path;
+                var matches = regex.exec(path) || regex2.exec(path);
+                var entity = matches[1];
+                console.log("Trying to match " + hasRole.affects + " with " + entity);
+                if(RegExp(hasRole.affects).test(entity) == true) {
+                    console.log("matches!");
+                    next();
+                } else {
+                    console.log("cant match.");
+                    res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+                    return;
+                }
+            } else {
+                res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+                return;
+            }
+        })
+    }
+
+    var userNotFoundCallback = function() {
+        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+        return;
+    }
+
+    UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
 app.use('/', routes);
