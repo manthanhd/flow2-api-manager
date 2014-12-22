@@ -1,8 +1,8 @@
 var app = angular.module("Controllers", []);
 
 app.controller("GlobalMenuController", function($scope) {
-  $scope.showCreateEntityPanelClick = function(){
-    $scope.$parent.$broadcast("showCreateEntityPanel");
+  $scope.showCreateUserPanelClick = function(){
+    $scope.$parent.$broadcast("showCreateUserPanel");
   };
 });
 
@@ -22,7 +22,7 @@ app.controller("CreateUserController", function($scope, $http){
     $scope.showCreateUserPanel = true;
   }
 
-  $scope.$on("showCreateEntityPanel", function(event){
+  $scope.$on("showCreateUserPanel", function(event){
     $scope.showCreateUserPanel = true;
   });
 
@@ -54,7 +54,7 @@ app.controller("CreateUserController", function($scope, $http){
   }
 
   $scope.cancelCreateUser = function(){
-    $scope.resetNewEntity();
+    $scope.resetNewUser();
     $scope.hideAllPanels();
     $scope.closePanel();
   };
@@ -67,19 +67,19 @@ app.controller("AlertsController", function($scope, $http){
   $scope.warning = {};
   $scope.fail = {};
   
-  $scope.$on("EntityDeleteSuccessfulEvent", function(event){
+  $scope.$on("UserDeleteSuccessfulEvent", function(event){
     $scope.resetAlerts();
-    $scope.success.entityDelete = true;
+    $scope.success.userDelete = true;
   });
   
-  $scope.$on("EntityDeleteFailEvent", function(event){
+  $scope.$on("UserDeleteFailEvent", function(event){
     $scope.resetAlerts();
-    $scope.success.entityDelete = true;
+    $scope.success.userDelete = true;
   });
   
-  $scope.$on("EntityCreateSuccessful", function(event) {
+  $scope.$on("UserCreateSuccessful", function(event) {
     $scope.resetAlerts();
-    $scope.success.entityCreate = true;
+    $scope.success.userCreate = true;
   })
 
   $scope.resetAlerts = function(){
@@ -133,16 +133,14 @@ app.controller("UserDetailController", function($scope, $http){
     $scope.warning = {};
     $scope.fail = {};
   }
-  
+
   $scope.clearDetail = function(){
-    $scope.hideAllPanels();
     $scope.resetAlerts();
     $scope.user = undefined;
   }
   
-  $scope.deleteUserConfirmClick = function(entityId) {
-    console.log("Just confirmed to delete " + user.username + ".");
-    var userDeletePath = "http://localhost:3000/user/" + user._id;
+  $scope.deleteUserConfirmClick = function(userId) {
+    var userDeletePath = "http://localhost:3000/user/" + userId;
     
     $http.delete(userDeletePath).success(function(data, statusCode) {
       if(statusCode == 200 && data.status == 'OK'){
