@@ -19,6 +19,7 @@ RoleManager.init = function() {
       entityCreateRole.context = "entity";
       entityCreateRole.allowsOperation = ['c'];
       entityCreateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      entityCreateRole.isDefault = true;
       entityCreateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -35,6 +36,7 @@ RoleManager.init = function() {
       entityReadRole.context = "entity";
       entityReadRole.allowsOperation = ['r'];
       entityReadRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      entityReadRole.isDefault = true;
       entityReadRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -53,6 +55,7 @@ RoleManager.init = function() {
       entityDeleteRole.context = "entity";
       entityDeleteRole.allowsOperation = ['d'];
       entityDeleteRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      entityDeleteRole.isDefault = true;
       entityDeleteRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -71,6 +74,7 @@ RoleManager.init = function() {
       instanceCreateRole.context = "instance";
       instanceCreateRole.allowsOperation = ['c'];
       instanceCreateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      instanceCreateRole.isDefault = true;
       instanceCreateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -87,6 +91,7 @@ RoleManager.init = function() {
       instanceReadRole.context = "instance";
       instanceReadRole.allowsOperation = ['r'];
       instanceReadRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      instanceReadRole.isDefault = true;
       instanceReadRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -103,6 +108,7 @@ RoleManager.init = function() {
       instanceUpdateRole.context = "instance";
       instanceUpdateRole.allowsOperation = ['u'];
       instanceUpdateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      instanceUpdateRole.isDefault = true;
       instanceUpdateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -119,6 +125,7 @@ RoleManager.init = function() {
       instanceDeleteRole.context = "instance";
       instanceDeleteRole.allowsOperation = ['d'];
       instanceDeleteRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      instanceDeleteRole.isDefault = true;
       instanceDeleteRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -137,6 +144,7 @@ RoleManager.init = function() {
       userCreateRole.context = "user";
       userCreateRole.allowsOperation = ['c'];
       userCreateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      userCreateRole.isDefault = true;
       userCreateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -153,6 +161,7 @@ RoleManager.init = function() {
       userReadRole.context = "user";
       userReadRole.allowsOperation = ['r'];
       userReadRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      userReadRole.isDefault = true;
       userReadRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -169,6 +178,7 @@ RoleManager.init = function() {
       userUpdateRole.context = "user";
       userUpdateRole.allowsOperation = ['u'];
       userUpdateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      userUpdateRole.isDefault = true;
       userUpdateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -185,6 +195,7 @@ RoleManager.init = function() {
       userDeleteRole.context = "user";
       userDeleteRole.allowsOperation = ['d'];
       userDeleteRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      userDeleteRole.isDefault = true;
       userDeleteRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -203,6 +214,7 @@ RoleManager.init = function() {
       roleCreateRole.context = "role";
       roleCreateRole.allowsOperation = ['c'];
       roleCreateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      roleCreateRole.isDefault = true;
       roleCreateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -219,6 +231,7 @@ RoleManager.init = function() {
       roleReadRole.context = "role";
       roleReadRole.allowsOperation = ['r'];
       roleReadRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      roleReadRole.isDefault = true;
       roleReadRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -235,6 +248,7 @@ RoleManager.init = function() {
       roleUpdateRole.context = "role";
       roleUpdateRole.allowsOperation = ['u'];
       roleUpdateRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      roleUpdateRole.isDefault = true;
       roleUpdateRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -251,6 +265,7 @@ RoleManager.init = function() {
       roleDeleteRole.context = "role";
       roleDeleteRole.allowsOperation = ['d'];
       roleDeleteRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      roleDeleteRole.isDefault = true;
       roleDeleteRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -267,6 +282,7 @@ RoleManager.init = function() {
       roleAssignRole.context = "role";
       roleAssignRole.allowsOperation = ['a'];
       roleAssignRole.allowedAuthTypes = ['UsernameAndPassword', 'OAuth'];
+      roleAssignRole.isDefault = true;
       roleAssignRole.save(function(err, savedRole) {
         if(err){
           console.log("Failed to save role.");
@@ -279,3 +295,16 @@ RoleManager.init = function() {
     }
   });
 }
+
+RoleManager.getAllRoles = function(successCallback, failureCallback) {
+  RoleModel.find({}, function(err, roles) {
+    if(err || !roles){
+      failureCallback();
+      return;
+    }
+
+    successCallback(roles);
+  })
+}
+
+module.exports = RoleManager;

@@ -91,6 +91,19 @@ app.controller("AlertsController", function($scope, $http){
 
 app.controller("NavigationController", function($scope, $http){
   $scope.users = [];
+  $scope.roles = [];
+
+  $scope.$on("ReloadRoleListEvent", function(event) {
+    $scope.listRoles();
+  });
+
+  $scope.listRoles = function() {
+    $http.get("/role").success(function(data, status){
+      if(status == 200){
+        $scope.roles = data.roleList;
+      }
+    });
+  }
 
   $scope.$on("ReloadUserListEvent", function(event){
     $scope.listUsers();
@@ -118,8 +131,44 @@ app.controller("NavigationController", function($scope, $http){
     }
   };
 
+  $scope.displayRoleDetail = function(id){
+    if($scope.roles == undefined || $scope.roles == []){
+      return;
+    }
+
+    for(var i = 0; i < $scope.roles.length; i++){
+      var role = $scope.roles[i];
+      if(role._id == id){
+        $scope.$parent.$broadcast('DisplayRoleDetail', role);
+        break;
+      }
+    }
+  };
+
   $scope.listUsers();
-    
+  $scope.listRoles();
+});
+
+app.controller("RoleDetailController", function($scope, $http) {
+  $scope.role = undefined;
+  $scope.success = {};
+  $scope.warning = {};
+  $scope.fail = {};
+
+  $scope.resetAlerts = function(){
+    $scope.success = {};
+    $scope.warning = {};
+    $scope.fail = {};
+  }
+
+  $scope.clearDetail = function(){
+    $scope.resetAlerts();
+    $scope.role = undefined;
+  }
+
+  $scope.$on("DisplayRoleDetail", function(event, role) {
+    $scope.role = role;
+  })
 });
 
 app.controller("UserDetailController", function($scope, $http){
