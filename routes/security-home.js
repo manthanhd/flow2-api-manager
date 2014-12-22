@@ -17,5 +17,4 @@ router.get('/', function(req, res) {
   res.render('security-home', {csrfToken: req.session.csrfToken});
 });
 
-
 module.exports = router;

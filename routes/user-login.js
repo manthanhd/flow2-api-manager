@@ -137,6 +137,25 @@ router.get('/', function(req, res) {
   });
 });
 
+router.get('/:userId', function(req, res) {
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  var userId = req.params.userId;
+
+  UserAccountModel.findOne({_id: userId}, function(err, user) {
+    if(err || !user) {
+      res.status(500).send({error: "UserListError", errorCode: 500});
+      return;
+    }
+
+    res.send(user);
+  })
+})
+
 router.post('/', function(req, res) {
   var account = req.session.account;
   if (!account) {
@@ -211,8 +230,8 @@ router.delete('/:id', function(req, res) {
   }
 
   var userId = req.params.id;
-  UserAccountModel.findOne({_id: userId}, function(err, user) {
-    if(err){
+  UserAccountModel.findOne({_id: userId}, function (err, user) {
+    if (err || !user) {
       console.log("Failed to list user with ID " + userId);
       console.log(err);
       res.status(500).send({error: "UserListError", errorCode: 500});
@@ -278,6 +297,59 @@ router.post('/:userId', function(req, res) {
   }
 
   UserAccountManager.doesUserIdExist(userId, userExistsCallback, userNotFoundCallback);
+});
+
+router.delete('/:userId/:roleAssignmentId', function(req, res) {
+
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  if(!account.isAdmin || account.isAdmin == false) {
+    res.status(403).send({error: "OperationNotPermitted", errorCode: 403});
+    return;
+  }
+
+  // We've been asked to delete the role relationship
+  var roleAssignmentId = req.params.roleAssignmentId;
+  var userId = req.params.userId;
+  UserAccountModel.findOne({_id: userId}, function (err, user) {
+    if (err) {
+      console.log("Failed to list user with ID " + userId);
+      console.log(err);
+      res.status(500).send({error: "UserListError", errorCode: 500});
+      return;
+    }
+
+    var removeAt = undefined;
+    for(var i = 0; i < user.roles.length; i++) {
+      console.log("Comparing " + user.roles[i]._id + " with " + roleAssignmentId);
+      if(user.roles[i]._id == roleAssignmentId) {
+        console.log("FOUND IT!!");
+        user.roles.splice(i, 1);
+        break;
+      }
+    }
+    //console.log("Before:" + user.roles.length);
+    //console.log(user.roles);
+    //if(removeAt){
+    //
+    //  console.log("Spliced at " + removeAt);
+    //}
+    console.log("After:" + user.roles.length);
+    console.log(user.roles);
+
+    user.save(function(err, savedUser) {
+      if(err) {
+        res.status(500).send({error: "UserSaveError", errorCode: 500});
+        return;
+      }
+      savedUser.password = undefined; // Strip out the password as usual.
+      res.send(savedUser);
+    });
+  });
 })
 
 module.exports = router;

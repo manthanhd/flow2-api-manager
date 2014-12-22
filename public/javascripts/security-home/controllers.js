@@ -105,11 +105,12 @@ app.controller("NavigationController", function($scope, $http){
     });
   }
 
-  $scope.$on("ReloadUserListEvent", function(event){
-    $scope.listUsers();
+  $scope.$on("ReloadUserListEvent", function(event, user){
+    console.log("Received broadcast at nav controller. Processing.")
+    $scope.listUsers(user);
   });
 
-  $scope.listUsers = function(){
+  $scope.listUsers = function(showUser){
     $http.get("/user").success(function(data, status){
       if(status == 200){
         $scope.users = data.userList;
@@ -130,7 +131,9 @@ app.controller("NavigationController", function($scope, $http){
             }
           }
         }
-        console.log($scope.users);
+        if(showUser) {
+          $scope.displayDetail(showUser._id);
+        }
       }
     });
   }
@@ -222,7 +225,7 @@ app.controller("UserDetailController", function($scope, $http){
       if(statusCode == 200 && data.status == 'OK'){
         $scope.$parent.$broadcast("UserDeleteSuccessfulEvent");
         $scope.clearDetail();
-        $scope.$parent.$broadcast("ReloadUserListEvent");
+        $scope.$parent.$broadcast("ReloadUserListEvent", $scope.user);
       } else {
         $scope.$parent.$broadcast("UserDeleteFailEvent");
       }
@@ -232,6 +235,8 @@ app.controller("UserDetailController", function($scope, $http){
   }
   
   $scope.$on("DisplayDetail", function(event, user){
+    console.log("Displaying...");
+    console.log(user);
     $scope.user = user;
   });
 
@@ -243,6 +248,7 @@ app.controller("UserDetailController", function($scope, $http){
         $scope.selectedRole = $scope.availableRoles[0];
         $scope.selectedRoleAffects = undefined;
         $scope.showSuccessPanel = "Role was successfully assigned to the user.";
+        $scope.$parent.$broadcast("ReloadUserListEvent", $scope.user);
       }
     }).error(function(data, status) {
       $scope.showFailPanel = "Failed to assign role.";
@@ -254,6 +260,30 @@ app.controller("UserDetailController", function($scope, $http){
         $scope.showFailPanel += " Session has timed out. Login is required.";
       }
     });
+  }
+
+  $scope.unassign = function(userId, roleAssignmentId) {
+    $http.delete('/user/' + userId + '/' + roleAssignmentId).success(function(data, status) {
+      $scope.showSuccessPanel = undefined;
+      $scope.showFailPanel = undefined;
+      if(status == 200) {
+        $scope.$parent.$broadcast("ReloadUserListEvent");
+        $scope.showSuccessPanel = "Role was successfully unassigned from the user.";
+        $scope.$parent.$broadcast("ReloadUserListEvent", $scope.user);
+      } else if(status == 403 && data.error == "OperationNotPermitted") {
+        $scope.showFailPanel = "You do not have the necessary permission(s) to perform this operation."
+      } else if(status == 403 && data.error == "LoginRequired") {
+        $scope.showFailPanel = "You must be logged in to perform this operation.";
+      }
+    }).error(function(data, status) {
+      $scope.showSuccessPanel = undefined;
+      $scope.showFailPanel = undefined;
+      if(status == 403 && data.error == "OperationNotPermitted") {
+        $scope.showFailPanel = "You do not have the necessary permission(s) to perform this operation."
+      } else if(status == 403 && data.error == "LoginRequired") {
+        $scope.showFailPanel = "You must be logged in to perform this operation.";
+      }
+    })
   }
 
   $scope.fetchAvailableRoles();
