@@ -1,4 +1,4 @@
-<html ng-app="EAG_Home">
+<html ng-app="SecurityManagerApp">
   <head>
     <title>Security Home</title>
 
@@ -44,38 +44,34 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="col-md-12">
-              <h3><span class="glyphicon glyphicon-th"></span> Entities</h3>
+              <h3><span class="glyphicon glyphicon-user"></span> Users</h3>
               <br/>
               <div class="list-group">
-                <a href="" class="list-group-item" ng-click="displayDetail(entity._id)" ng-repeat="entity in entities">\{{entity.name}}</a>
-                <span class="text-center" ng-show="entities.length == 0"><em>No entities exist</em></span>
+                <a href="" class="list-group-item" ng-click="displayDetail(user._id)" ng-repeat="user in users">\{{user.username}}</a>
+                <span class="text-center" ng-show="users.length == 0"><em>No users exist</em></span>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-9">
-        <div class="row" ng-controller="CreateEntityController" ng-show="showCreateEntityPanel != undefined">
+        <div class="row" ng-controller="CreateUserController" ng-show="showCreateUserPanel != undefined">
+          
           <div class="col-md-12">
-            <form role="form" ng-submit="submitCreateEntityForm()">
+            <form role="form" ng-submit="submitCreateUserForm()">
               <div class="panel panel-default">
                 <div class="panel-body">
                   <div class="row">
                     <div class="col-md-12">
-                      <h2 class="inline-block">Create Entity</h2>
+                      <h2 class="inline-block">Create User</h2>
                       <hr/>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showTypeErrorPanel != undefined">
+                      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showUserExistsErrorPanel != undefined">
                         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <span class="glyphicon glyphicon-exclamation-sign"></span> Invalid type <strong>\{{showTypeErrorPanel.type}}</strong> for property <strong>\{{showTypeErrorPanel.name}}</strong>
-                      </div>
-
-                      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEntityExistsErrorPanel != undefined">
-                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <span class="glyphicon glyphicon-exclamation-sign"></span> Entity that you are trying to create already exists.
+                        <span class="glyphicon glyphicon-exclamation-sign"></span> User that you are trying to create already exists.
                       </div>
                     </div>
                   </div>
@@ -83,10 +79,28 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="input-group">
-                        <label for="entityNameText">Entity Name:</label>
-                        <input type="text" class="form-control" id="entityNameText" placeholder="Entity Name" ng-model="newEntity.entityName" required/>
+                        <label for="usernameText">Username:</label>
+                        <input type="text" class="form-control" id="usernameText" placeholder="Username" ng-model="newUser.username" required/>
                       </div>
+                      
+                      <div class="input-group">
+                        <label for="passwordText">Temporary Password:</label>
+                        <input type="text" class="form-control" id="passwordText" placeholder="Temporary Password" ng-model="newUser.password" required/>
+                      </div>
+                      
+                      <div class="input-group">
+                        <label for="usernameText">This user is an administrator: <input type="checkbox" id="isAdminCheckbox" ng-model="newUser.isAdmin"/> </label>
+                        <label> </label>
+                        
+                      </div>
+                      
+                      <div class="input-group">
+                        <label for="usernameText">Role(s):</label>
+                        <select>
+                          <option value="no_roles">Roles currently unavailable.</option>
+                        </select>
                       <br/>
+<!--
                       <div class="input-group">
                         <label for="propertiesList">Properties:</label>
                         <div ng-repeat="newProperty in newEntity.properties">
@@ -103,13 +117,7 @@
                               </button>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                      <div class="input-group">
-                        <br/>
-                        <button type="button" class="btn btn-default" ng-click="addNewProperty()">
-                          <span class="glyphicon glyphicon-plus-sign"></span> Add property
-                        </button>
+                        </div> -->
                       </div>
                     </div>
                   </div>
@@ -128,12 +136,12 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12" ng-controller="EntityDetailController">
-            <div class="panel panel-default" ng-show="entity != undefined">
+          <div class="col-md-12" ng-controller="UserDetailController">
+            <div class="panel panel-default" ng-show="user != undefined">
               <div class="panel-body">
                 <div class="row">
                   <div class="col-md-8">
-                    <h2 class="inline-block">\{{entity.name}}</h2>
+                    <h2 class="inline-block">\{{user.username}}</h2>
                   </div>
                   <div class="col-md-4">
                     <h2></h2>
@@ -143,25 +151,28 @@
                           Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
+<!--
                           <li class="divider"></li>
                           <li class="divider"></li>
+
                           <li class="text-center"><strong>Instance actions</strong></li>
                           <li class="divider"></li>
                           <li><a href="" ng-click="createInstancePanelClick()">Create Instance</a></li>
                           <li><a href="" ng-click="listInstancePanelClick()">View Instances</a></li>
                           <li><a href="" ng-click="editInstancePanelClick()">Edit Instance</a></li>
                           <li><a href="" ng-click="deleteInstancePanelClick()">Delete Instance</a></li>
+-->
                           <li class="divider"></li>
                           <li class="divider"></li>
-                          <li class="text-center"><strong>Entity actions</strong></li>
+                          <li class="text-center"><strong>User actions</strong></li>
                           <li class="divider"></li>
-                          <li class="danger"><a href="" data-toggle="modal" data-target="#entityDeleteConfirmationModal">Delete Entity</a></li>
+                          <li class="danger"><a href="" data-toggle="modal" data-target="#userDeleteConfirmationModal">Delete User</a></li>
                         </ul>
                       </div>
                     </div>
                   </div>
 
-                  <div class="modal fade" id="entityDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="entityDeleteConfirmationModalLabel" aria-hidden="true">
+                  <div class="modal fade" id="userDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="userDeleteConfirmationModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -170,15 +181,12 @@
                         </div>
                         <div class="modal-body">
                           <p>
-                            This action will delete <strong>\{{entity.name}}</strong> entity. All instances associated with this entity will be deleted. 
-                          </p>
-                          <p>
-                            Currently, there are <strong>\{{countInstances()}}</strong> instance(s) associated with this Entity.
+                            This action will delete <strong>\{{user.username}}</strong>.
                           </p>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteEntityConfirmClick(entity._id)"><span class="glyphicon glyphicon-ok-sign"></span> Confirm delete</button>
+                          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteUserConfirmClick(user._id)"><span class="glyphicon glyphicon-ok-sign"></span> Confirm delete</button>
                         </div>
                       </div>
                     </div>
@@ -188,84 +196,33 @@
                   <hr/>
                 </div>
                 <div class="row">
-                  <div class="well" ng-show="showCreateInstancePanel == true">
-                    <div class="form">
-                      <div class="form-group" ng-repeat="property in entity.properties">
-                        <div class="input-group">
-                          <label for="inputBox\{{$index}}">\{{property.name}}:</label> <input id="inputBox\{{$index}}" name="inputBox\{{$index}}" type="\{{property.type == 'string' ? 'text' : (property.type == 'number' ? 'number' : 'date')}}" ng-model="newObject.props[property.name]" class="form-control" placeholder="\{{property.type}} value"/>
-                        </div>
-                      </div>
-                    </div>
-                    <button class="btn btn-default" ng-click="showCreateInstancePanel = undefined">Cancel</button> <button ng-click="createInstance()" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
-                  </div>
-                  <div class="well" ng-show="showDeleteInstancePanel == true">
-                    <form>
-                      <div class="form">
-                        <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showDeleteErrorPanel != undefined">
-                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteErrorPanel = undefined">Close</span></button>
-                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteErrorPanel}}
-                        </div>
-                        <div class="alert alert-success alert-dismissible" role="alert" ng-show="showDeleteSuccessPanel != undefined">
-                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showDeleteSuccessPanel = undefined">Close</span></button>
-                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showDeleteSuccessPanel}}
-                        </div>
-                        <div class="form-group">
-                          <div class="input-group">
-                            <label for="idText">ID:</label>
-                            <input id="idText" name="idText" type="text" ng-model="deleteIDString" placeholder="ID of the instance to be deleted" class="form-control" required/>
-                          </div>
-                        </div>
-                      </div>
-                      <button class="btn btn-default" ng-click="showDeleteInstancePanel = undefined">Cancel</button> <button type="submit" ng-click="deleteInstance()" class="btn btn-danger"><span class="glyphicon glyphicon-ok-sign"></span> Delete</button>
-                    </form>
-                  </div>
-
-
-
-                  <div class="well" ng-show="showEditInstancePanel == true">
-                    <form>
-                      <div class="form">
-                        <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showEditErrorPanel != undefined">
-                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showEditErrorPanel = undefined">Close</span></button>
-                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showEditErrorPanel}}
-                        </div>
-                        <div class="alert alert-success alert-dismissible" role="alert" ng-show="showEditSuccessPanel != undefined">
-                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showEditSuccessPanel = undefined">Close</span></button>
-                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showEditSuccessPanel}}
-                        </div>
-                        <div class="form-group">
-                          <div class="input-group">
-                            <label for="idText">ID:</label>
-                            <input id="editIDText" name="editIDText" type="text" ng-model="editIDString" placeholder="ID of the instance to be edited" class="form-control" required ng-disabled="editInstanceObject"/>
-                          </div>
-
-                          <div class="input-group" ng-repeat="property in entity.properties" ng-show="editInstanceObject">
-                            <label for="idText">\{{property.name}}:</label>
-                            <input type="text" ng-model="editInstanceObject[property.name]" placeholder="Value for \{{property.name}}" class="form-control" ng-required="property.required"/>
-                          </div>
-                        </div>
-                      </div>
-                      <button class="btn btn-default" ng-click="closeEditInstancePanel()"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
-                      <button class="btn btn-default" ng-click="editInstanceObject = undefined" ng-show="editInstanceObject"><span class="glyphicon glyphicon-chevron-left"></span> Back</button>
-                      <button type="submit" ng-click="getInstanceForEdit(editIDString)" class="btn btn-success" ng-show="!editInstanceObject"><span class="glyphicon glyphicon-chevron-right"></span> Next</button>
-                      <button type="submit" ng-click="editCurrentInstance(editIDString)" class="btn btn-success" ng-show="editInstanceObject"><span class="glyphicon glyphicon-ok-sign"></span> Edit</button>
-                    </form>
-                  </div>
-
-
-
-                  <div class="well text-center consoleText" ng-show="showListInstancePanel == true">
-                    <div class="text-center consoleText">
-                      <textarea rows="20" cols="90" readonly>\{{instanceList}}</textarea>
-                    </div>
-                    <br/>
-                    <button class="btn btn-default" ng-click="showListInstancePanel = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button> 
-                    <button class="btn btn-default" ng-click="getInstancesForEntity(entity.name)"><span class="glyphicon glyphicon-refresh"></span> Reload</button>
-                  </div>
-                </div>
-                <div class="row">
                   <div class="col-md-12">
-                    <h3>Properties</h3>
+                    <h3>User Properties</h3>
+                    <table class="table table-hover">
+                      <tbody>
+                        <tr>
+                          <td>Username: </td>
+                          <td>\{{user.username}}</td>
+                        </tr>
+                        <tr>
+                          <td>Is Admin? </td>
+                          <td>\{{user.isAdmin}}</td>
+                        </tr>
+                        <tr>
+                          <td>Last login date: </td>
+                          <td>\{{user.lastLoginDate | date: 'medium'}}</td>
+                        </tr>
+                        <tr>
+                          <td>Is Enabled: </td>
+                          <td>\{{user.isEnabled}}</td>
+                        </tr>
+                        <tr>
+                          <td>Created By: </td>
+                          <td ng-show="user.createdBy != undefined">\{{user.createdBy}}</td>
+                          <td ng-show="user.createdBy == undefined">Omnipresent</td>
+                        </tr>
+                      </tbody>
+                    </table>
                     <ul ng-repeat="property in entity.properties">
                       <li>\{{property.name}} = \{{property.type}}</li>
                     </ul>
