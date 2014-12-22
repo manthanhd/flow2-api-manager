@@ -74,4 +74,20 @@ UserAccountManager.resetPassword = function(username, newPassword, successCallba
   })
 }
 
+UserAccountManager.doesUserExist = function(username, foundCallback, notFoundCallback) {
+  UserAccountModel.findOne({username: username}, function(err, user) {
+    if(err){
+      notFoundCallback();
+      return;
+    }
+
+    if(user == undefined){
+      notFoundCallback();
+      return;
+    }
+
+    foundCallback(user);
+  })
+}
+
 module.exports = UserAccountManager;
