@@ -1,4 +1,4 @@
-var app = angular.module("EAG_Home", ["Controllers"]);
+var app = angular.module("SecurityManagerApp", ["Controllers"]);
 
 app.directive('ngEnter', function () {
     return function (scope, element, attrs) {
