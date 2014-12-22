@@ -6,8 +6,8 @@ var UserAccountManager = require("./lib/sec/UserAccountManager");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
 
 router.get('/login', function(req, res) {
-  
-  res.render("user-login", { csrfToken: req.csrfToken(), errorMessage: req.query.errorMessage, message: req.query.message });
+  req.session.csrfToken = req.csrfToken();
+  res.render("user-login", { csrfToken: req.session.csrfToken, errorMessage: req.query.errorMessage, message: req.query.message });
 });
 
 router.post('/login', function(req, res) {
@@ -26,6 +26,10 @@ router.post('/login', function(req, res) {
       return;
     }
     
+    account.lastLoginDate = new Date();
+    account.save(function(err, newAccount) {
+      req.session.account = newAccount;
+    });
     res.redirect("/user/home");
   }
   
@@ -136,6 +140,11 @@ router.post('/', function(req, res) {
     res.status(401).send({error: "Username is a required field."});
     return;
   }
+  
+  if(!req.body.password) {
+    res.status(401).send({error: "Password is a required field."});
+    return;
+  }
 
   if(account.isAdmin != true && req.body.isAdmin == true) {
     res.status(401).send({error: "Non-admins cannot create admins."});
@@ -152,13 +161,14 @@ router.post('/', function(req, res) {
 
   var newUser = new UserAccountModel();
   newUser.username = req.body.username;
+  newUser.password = req.body.password;
   newUser.hasBeenReset = true;
   newUser.isAdmin = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.isAdmin : false;
-  newUSer.isEnabled = true; // All new users are enabled rightaway.
-  newUSer.createdBy = account.username;
+  newUser.isEnabled = true; // All new users are enabled rightaway.
+  newUser.createdBy = account.username;
 
   // Do a check here to see if user is allowed to assign roles.
-  newUser.roles = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.roles : [];
+  newUser.roles = (req.body.isAdmin && req.body.isAdmin == true && req.body.roles) ? req.body.roles : [];
 
   newUser.save(function(err, savedUser) {
     if(err){
