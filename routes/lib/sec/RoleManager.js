@@ -318,7 +318,7 @@ RoleManager.getRoleById = function(id, successCallback, failureCallback) {
   })
 }
 
-RoleManager.expandIdList = function(roleIdList, successCallback, failureCallback) {
+/*RoleManager.expandIdList = function(roleIdList, successCallback, failureCallback) {
   var ids = roleIdList.map(function(id) { return ObjectId(id); });
   RoleModel.find({_id: {$in: ids}}, function(err, roles) {
     if(err || !roles || roles.length != roleIdList.length){
@@ -328,5 +328,5 @@ RoleManager.expandIdList = function(roleIdList, successCallback, failureCallback
 
     successCallback(roles);
   })
-}
+}*/
 module.exports = RoleManager;

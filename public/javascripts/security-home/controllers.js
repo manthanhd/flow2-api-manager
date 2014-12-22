@@ -113,6 +113,24 @@ app.controller("NavigationController", function($scope, $http){
     $http.get("/user").success(function(data, status){
       if(status == 200){
         $scope.users = data.userList;
+        // Refine roles to display names rather than just IDs.
+        /*
+        The loop clusterfuck below basically maps roleId attribute
+        within each user object to it's actual object. This desperately needs
+        to be improved as it's efficiency is n3 which is horrible.'
+        */
+        for(var i = 0; i < $scope.users.length; i++) {
+          var user = $scope.users[i];
+          for(var j = 0; j < user.roles.length; j++) {
+            var role = user.roles[j];
+            for(var k = 0; k < $scope.roles.length; k++) {
+              if($scope.roles[k]._id == user.roles[j].roleId) {
+                role.roleObject = $scope.roles[k];
+              }
+            }
+          }
+        }
+        console.log($scope.users);
       }
     });
   }
@@ -145,8 +163,8 @@ app.controller("NavigationController", function($scope, $http){
     }
   };
 
+  $scope.listRoles(); // This order is important!
   $scope.listUsers();
-  $scope.listRoles();
 });
 
 app.controller("RoleDetailController", function($scope, $http) {
@@ -187,7 +205,16 @@ app.controller("UserDetailController", function($scope, $http){
     $scope.resetAlerts();
     $scope.user = undefined;
   }
-  
+
+  $scope.fetchAvailableRoles = function() {
+    $http.get("/role").success(function(data, status){
+      if(status == 200){
+        $scope.availableRoles = data.roleList;
+        $scope.selectedRole = $scope.availableRoles[0];
+      }
+    });
+  }
+
   $scope.deleteUserConfirmClick = function(userId) {
     var userDeletePath = "http://localhost:3000/user/" + userId;
     
@@ -207,4 +234,27 @@ app.controller("UserDetailController", function($scope, $http){
   $scope.$on("DisplayDetail", function(event, user){
     $scope.user = user;
   });
+
+  $scope.addRoleToUser = function(userId, roleId, affects) {
+    var url = "/user/" + userId;
+    $http.post(url, {roleId: roleId, affects: affects}).success(function(data, status) {
+      if(status == 200) {
+        $scope.user = data;
+        $scope.selectedRole = $scope.availableRoles[0];
+        $scope.selectedRoleAffects = undefined;
+        $scope.showSuccessPanel = "Role was successfully assigned to the user.";
+      }
+    }).error(function(data, status) {
+      $scope.showFailPanel = "Failed to assign role.";
+      if(status == 404) {
+        $scope.showFailPanel += " Role or User not found.";
+      } else if(status == 401) {
+        $scope.showFailPanel += " One or more required attributes are missing.";
+      } else if(status == 403) {
+        $scope.showFailPanel += " Session has timed out. Login is required.";
+      }
+    });
+  }
+
+  $scope.fetchAvailableRoles();
 });

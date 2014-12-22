@@ -21,16 +21,7 @@
       </div>
       <div class="col-md-6 text-right" ng-controller="GlobalMenuController">
         <br/>
-        <div class="btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            Actions <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li class="danger"><a href="" ng-click="showCreateUserPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create User</a></li>
-            <li><a href="" ng-click="showCreateRolePanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create Role</a></li>
-          </ul>
-        </div>
-
+        <button class="btn btn-success" ng-click="showCreateUserPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create User</button>
         <form class="inline-block" action="/user/logout" method="post">
           <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
           <button class="btn btn-default">Logout</button>
@@ -358,6 +349,7 @@
                       <tbody>
                         <tr ng-repeat="role in user.roles">
                           <td>\{{role.roleObject.name}}</td>
+                          <td>\{{role.affects}} in \{{role.roleObject.context}}</td>
                         </tr>
                       </tbody>
                     </table>
