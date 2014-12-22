@@ -307,4 +307,26 @@ RoleManager.getAllRoles = function(successCallback, failureCallback) {
   })
 }
 
+RoleManager.getRoleById = function(id, successCallback, failureCallback) {
+  RoleModel.findOne({_id: id}, function(err, role) {
+    if(err || !role){
+      failureCallback();
+      return;
+    }
+
+    successCallback(role);
+  })
+}
+
+RoleManager.expandIdList = function(roleIdList, successCallback, failureCallback) {
+  var ids = roleIdList.map(function(id) { return ObjectId(id); });
+  RoleModel.find({_id: {$in: ids}}, function(err, roles) {
+    if(err || !roles || roles.length != roleIdList.length){
+      failureCallback();
+      return;
+    }
+
+    successCallback(roles);
+  })
+}
 module.exports = RoleManager;

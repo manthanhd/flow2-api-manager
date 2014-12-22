@@ -90,4 +90,20 @@ UserAccountManager.doesUserExist = function(username, foundCallback, notFoundCal
   })
 }
 
+UserAccountManager.doesUserIdExist = function(id, foundCallback, notFoundCallback) {
+  UserAccountModel.findOne({_id: id}, function(err, user) {
+    if(err){
+      notFoundCallback();
+      return;
+    }
+
+    if(user == undefined){
+      notFoundCallback();
+      return;
+    }
+
+    foundCallback(user);
+  })
+}
+
 module.exports = UserAccountManager;

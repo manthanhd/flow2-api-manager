@@ -4,6 +4,8 @@ var router = express.Router();
 var mongoose = require("mongoose");
 var UserAccountManager = require("./lib/sec/UserAccountManager");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
+var RoleModel = require('./lib/sec/RoleModel');
+var RoleManager = require('./lib/sec/RoleManager');
 
 router.get('/login', function(req, res) {
   req.session.csrfToken = req.csrfToken();
@@ -222,5 +224,60 @@ router.delete('/:id', function(req, res) {
   });
 
 });
+
+router.post('/:userId', function(req, res) {
+  // Adds role to user
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  var userId = req.params.userId;
+  var roleId = req.body.roleId;
+  var affects = req.body.affects;
+
+  if(!userId) {
+    res.status(401).send({error: "userId is a required field.", errorCode: 401});
+    return;
+  }
+
+  if(!roleId) {
+    res.status(401).send({error: "roleId is a required field.", errorCode: 401});
+    return;
+  }
+
+  if(!affects) {
+    res.status(401).send({error: "affects is a required field.", errorCode: 401});
+    return;
+  }
+
+  var userExistsCallback = function(user) {
+    var roleFoundCallback = function(role) {
+      user.roles.push({roleId: roleId, affects: affects});
+      user.save(function(err, savedUser) {
+        if(err){
+          res.status(500).send({error: "UserSaveError", errorCode: 500});
+          return;
+        }
+        savedUser.password = undefined; // Strip out the password.
+        res.send(savedUser);
+      });
+    }
+
+    var roleNotFoundCallback = function() {
+      res.status(404).send({error: "RoleNotFoundError", errorCode: 404});
+    }
+
+    RoleManager.getRoleById(roleId, roleFoundCallback, roleNotFoundCallback);
+
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+  }
+
+  UserAccountManager.doesUserIdExist(userId, userExistsCallback, userNotFoundCallback);
+})
 
 module.exports = router;

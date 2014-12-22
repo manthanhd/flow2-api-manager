@@ -320,15 +320,48 @@
                       </tbody>
                     </table>
                     <hr/>
-                    <h3>Assigned Roles</h3>
+                    <div class="row">
+                      <div class="col-md-8">
+                        <h3>Assigned Roles</h3>
+                      </div>
+                      <div class="col-md-4">
+                        <button class="btn btn-default pull-right" ng-click="showUserRoleAssignPanel = true">Add Role</button>
+                      </div>
+                    </div>
+                    <div class="row" ng-show="showUserRoleAssignPanel">
+                      <div class="well">
+                        <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showFailPanel != undefined">
+                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showFailPanel = undefined">Close</span></button>
+                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showFailPanel}}
+                        </div>
+                        <div class="alert alert-success alert-dismissible" role="alert" ng-show="showSuccessPanel != undefined">
+                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showSuccessPanel = undefined">Close</span></button>
+                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showSuccessPanel}}
+                        </div>
+                        <h4>Select a role:</h4>
+                        <select ng-model="selectedRole" ng-options="role as role.name for role in availableRoles track by role._id" ng-change="changeSelection = selectedRole">
+                        </select>
+                        <div ng-show="selectedRole != undefined">
+                          <h4>Affecting \{{selectedRole.context}}:</h4>
+                          <input type="text" ng-model="selectedRoleAffects" class="form-control" required/>
+                          <br/>
+                          <div>
+                            <button class="btn btn-default pull-left" ng-click="cancelAddRoleToUser()">Cancel</button>
+                            <button class="btn btn-primary pull-right" ng-click="addRoleToUser(user._id, selectedRole._id, selectedRoleAffects)">Add</button>
+                          </div>
+                          <br/>
+                          <br/>
+                        </div>
+                      </div>
+                    </div>
                     <table class="table table-hover" ng-show="!user.isAdmin || user.isAdmin == false">
                       <tbody>
                         <tr ng-repeat="role in user.roles">
-                          <td>\{{role}}</td>
+                          <td>\{{role.roleObject.name}}</td>
                         </tr>
                       </tbody>
                     </table>
-                    <h4 ng-show="user.roles.length == 0">No roles have been assigned for this user</h4>
+                    <h4 ng-show="user.isAdmin == false && user.roles.length == 0">No roles have been assigned for this user</h4>
                     <h4 ng-show="user.isAdmin == true">This is an administrator account. Administrators assume all roles by default.</h4>
                   </div>
                 </div>
