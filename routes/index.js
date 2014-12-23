@@ -234,39 +234,92 @@ router.get("/readEntity/:entityId", function (req, res) {
 });
 
 router.get("/deleteEntity/:entityId", function (req, res) {
-  var entityId = req.params.entityId;
+  var account = req.session.account;
+  if(!account) {
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
 
-  SavedGenericEntity.findOne({
-    _id: new mongoose.Types.ObjectId(entityId)
-  }, function (err, entity) {
-    if (err) {
-      console.log(err);
-      res.send(ErrorObject.create("EntityDefinitionListError", 30));
-    }
-
-    if (entity == undefined) {
-      res.send({});
-      return;
-    }
-
-    var entityName = entity.name;
-    var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
-
-    //mongoose.connection.collections[entity.name].drop( function(err) {
-    mongoose.connection.db.dropCollection(entityName, function (err) {
-      if (err) {
-        console.log(err);
+  var userFoundCallback = function(user) {
+    RoleModel.findOne({context: 'entity', allowsOperation: 'd'}, function (err, role) {
+      if (err || !role) {
+        res.status(500).send({error: "SecurityError", errorCode: 500});
+        return;
       }
 
-      delete entityObjectModels[entityName]; // Removing from our cache of object schemas.
-      entity.remove();
-      console.log("Entity deleted.");
-      res.send({
-        status: "OK",
-        description: "Entity deleted."
-      });
+      var roleId = role._id;
+      var hasRole = undefined;
+      for (var i = 0; i < user.roles.length; i++) {
+        var currentRole = user.roles[i];
+        if (currentRole.roleId == roleId) {
+          hasRole = user.roles[i];
+          break;
+        }
+      }
+
+      if (hasRole) {
+
+        var entityId = req.params.entityId;
+
+        SavedGenericEntity.findOne({
+          _id: entityId
+        }, function (err, entity) {
+          if (err) {
+            console.log(err);
+            res.send(ErrorObject.create("EntityDefinitionListError", 30));
+          }
+
+          if (entity == undefined) {
+            res.send({});
+            return;
+          }
+
+          var entityName = entity.name;
+          if(RegExp(hasRole.affects).test(entity) == true) {
+            var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
+
+            //mongoose.connection.collections[entity.name].drop( function(err) {
+            console.log("Dropping... " + entityName);
+            try {
+              mongoose.connection.db.dropCollection(entityName, function (err) {
+                if (err) {
+                  console.log(err);
+                  //res.status(500).send({error: "EntityInstanceDeleteError", errorCode: 500});
+                  //return;
+                }
+              });
+            } catch (err){
+              console.log(err);
+            } finally {
+              //delete GenericEntityInstance.instanceModelCache[entityName]; // Removing from our cache of object schemas.
+              GenericEntityInstance.instanceModelCache[entityName] = undefined;
+
+              entity.remove();
+              console.log("Entity deleted.");
+              res.send({
+                status: "OK",
+                description: "Entity deleted."
+              });
+            }
+          } else {
+            console.log("cant match.");
+            res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+            return;
+          }
+        });
+      } else {
+        res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+        return;
+      }
     });
-  });
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    return;
+  }
+
+  UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
 var webbifyEntity = function (entity) {
