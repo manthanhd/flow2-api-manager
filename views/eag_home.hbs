@@ -22,6 +22,10 @@
             <div class="col-md-4 text-right" ng-controller="GlobalMenuController">
                 <br/>
               <button class="btn btn-success" ng-click="showCreateEntityPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create Entity</button>
+              <form class="inline-block" action="/user/logout" method="post">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+                <button class="btn btn-default">Logout</button>
+              </form>
             </div>
         </div>
         <div class="row">
