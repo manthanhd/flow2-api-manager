@@ -319,7 +319,7 @@ app.controller("EntityDetailController", function($scope, $http){
   $scope.editCurrentInstance = function(instanceId) {
     var editEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name;
     $http.put(editEndpoint, $scope.editInstanceObject).success(function(response, status) {
-      if(status == 200){
+      if(status == 200) {
         $scope.showEditSuccessPanel = "Edit was successful!";
         $scope.showEditErrorPanel = undefined;
         $scope.editInstanceObject = undefined;
@@ -330,18 +330,20 @@ app.controller("EntityDetailController", function($scope, $http){
         $scope.showEditErrorPanel = "Error occurred.";
         console.log(response);
       }
-    }).error(function(data, status){
+    }).error(function(data, status) {
       $scope.showEditSuccessPanel = undefined;
       $scope.showEditErrorPanel = undefined;
-      if(status == 401) {
-        if(data.error == "MissingArgumentException") {
+      if (status == 401) {
+        if (data.error == "MissingArgumentException") {
           $scope.showEditErrorPanel = "Client error. Please reload the page and try again. If error persists, contact administrator or support."
         } else {
           $scope.showEditErrorPanel = "A required property missing. " + data.error;
         }
       } else if (status == 404) {
         $scope.showEditErrorPanel = "Couldn't connect to server. Try again.";
-      } else {
+      } else if(status == 403) {
+        $scope.showEditErrorPanel = "Access denied. You do not seem to have sufficient privileges to perform this operation.";
+      }else {
         $scope.showEditErrorPanel = "Server error. This may be due to a conflict.";
       }
     });

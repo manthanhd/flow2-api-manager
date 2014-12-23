@@ -16,3 +16,12 @@ a {
 }
 
 textarea { resize:vertical; }
+
+.fixed-height-250 {
+  height: 250px;
+  overflow-y: auto;
+}
+
+.color-red {
+  color: red;
+}

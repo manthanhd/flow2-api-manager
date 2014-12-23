@@ -74,4 +74,36 @@ UserAccountManager.resetPassword = function(username, newPassword, successCallba
   })
 }
 
+UserAccountManager.doesUserExist = function(username, foundCallback, notFoundCallback) {
+  UserAccountModel.findOne({username: username}, function(err, user) {
+    if(err){
+      notFoundCallback();
+      return;
+    }
+
+    if(user == undefined){
+      notFoundCallback();
+      return;
+    }
+
+    foundCallback(user);
+  })
+}
+
+UserAccountManager.doesUserIdExist = function(id, foundCallback, notFoundCallback) {
+  UserAccountModel.findOne({_id: id}, function(err, user) {
+    if(err){
+      notFoundCallback();
+      return;
+    }
+
+    if(user == undefined){
+      notFoundCallback();
+      return;
+    }
+
+    foundCallback(user);
+  })
+}
+
 module.exports = UserAccountManager;

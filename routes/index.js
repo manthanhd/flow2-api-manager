@@ -9,6 +9,8 @@ var SavedGenericEntity = require('./lib/GenericEntityModel');
 var GenericEntityInstance = require("./lib/GenericEntityInstance");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
 var UserAccountManager = require('./lib/sec/UserAccountManager');
+var RoleModel = require('./lib/sec/RoleModel');
+var RoleManager = require('./lib/sec/RoleManager');
 
 // Initialize user accounts.
 UserAccountManager.init();
@@ -67,21 +69,57 @@ router.get('/EAG', function (req, res) {
     res.redirect("/user/login?message=Please login to continue.");
     return;
   }
-
+  res.cookie("XSRF-TOKEN", req.session.csrfToken);
   res.render("eag_home");
 });
 
 router.get('/listEntities', function (req, res) {
-  SavedGenericEntity.find({}, function (err, result) {
-    if (err) {
-      console.log("An error occurred while listing entity definitions.");
-      console.log(err);
-      res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
+  var account = req.session.account;
+  if(!account) {
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  var userFoundCallback = function(user) {
+    var hasRoleCallback = function(user, userRole, role) {
+       SavedGenericEntity.find({}, function (err, result) {
+          if (err) {
+            console.log("An error occurred while listing entity definitions.");
+            console.log(err);
+            res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
+          }
+
+          if (userRole) {
+            var entityList = [];
+            for (var i = 0; i < result.length; i++) {
+              if (RegExp(userRole.affects).test(result[i].name) == true) {
+                entityList.push(result[i]);
+              }
+            }
+            res.send({entityList: entityList});
+          } else if(user && user.isAdmin == true) {
+           res.send({entityList: result});
+          } else {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+          }
+        });
+
     }
-    res.send({
-      entityList: result
-    });
-  });
+    var doesNotHaveRoleCallback = function() {
+      res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+      return;
+    }
+
+    RoleManager.hasRole("entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    return;
+  }
+
+  UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
 router.get('/createEntity', function (req, res) {
@@ -107,7 +145,7 @@ var checkEntityNameExists = function (entityName, doesNotExist, exists) {
   });
 }
 
-router.post("/createEntity", function (req, res) {
+router.post("/createEntity", function (req, res) {  // Protected at app.js level
   var entityName = req.body.entityName;
   var entity = new GenericEntity(req.body.entityName);
 
@@ -131,9 +169,6 @@ router.post("/createEntity", function (req, res) {
         entity.addProperty(prop);
       }
     }
-
-    console.log(entity.name + "entity has been created.");
-    console.log(entity);
 
     var dbGenericEntity = new SavedGenericEntity();
     dbGenericEntity.name = entity.name;
@@ -169,51 +204,132 @@ var findEntityDefinitionById = function (entityId, found, notFound) {
 };
 
 router.get("/readEntity/:entityId", function (req, res) {
-  var entityId = req.params.entityId;
-  findEntityDefinitionById(entityId, function (entity) {
-    if (entity != undefined)
-      res.send(entity);
-    else
-      res.status(500).send("Internal Server Error");
-  }, function () {
-    res.status(401).send("EntityNotFoundException");
-  });
-});
+  var account = req.session.account;
+  if(!account) {
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
 
-router.get("/deleteEntity/:entityId", function (req, res) {
-  var entityId = req.params.entityId;
+  var userFoundCallback = function(user) {
 
-  SavedGenericEntity.findOne({
-    _id: new mongoose.Types.ObjectId(entityId)
-  }, function (err, entity) {
-    if (err) {
-      console.log(err);
-      res.send(ErrorObject.create("EntityDefinitionListError", 30));
+    var hasRoleCallback = function(user, userRole, role) {
+      var entityId = req.params.entityId;
+
+      var entityFoundCallback = function (entity) {
+        if (userRole) { // User is not an Admin.
+
+          if (entity != undefined) {
+            var entityName = entity.name;
+            if (RegExp(userRole.affects).test(entityName) == true || user.isAdmin == true) {
+              res.send(entity);
+            } else {
+              res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+              return;
+            }
+
+          } else {
+            res.status(500).send({error: "Internal Server Error", errorCode: 500});
+          }
+
+        } else if(user && user.isAdmin == true) {
+          res.send(entity);
+          return;
+        } else {
+          res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+          return;
+        }
+      }
+
+      var entityNotFoundCallback = function() {
+        res.status(404).send({error: "EntityNotFoundException", errorCode: 404});
+        return;
+      }
+
+      findEntityDefinitionById(entityId, entityFoundCallback, entityNotFoundCallback);
     }
-
-    if (entity == undefined) {
-      res.send({});
+    var doesNotHaveRoleCallback = function() {
+      res.status(403).send({error: "AccessDeniedError", errorCode: 403});
       return;
     }
 
-    var entityName = entity.name;
-    var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
+    RoleManager.hasRole("entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+  }
 
-    //mongoose.connection.collections[entity.name].drop( function(err) {
-    mongoose.connection.db.dropCollection(entityName, function (err) {
-      if (err) {
-        console.log(err);
-      }
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    return;
+  }
 
-      delete entityObjectModels[entityName]; // Removing from our cache of object schemas.
-      entity.remove();
-      console.log("Entity deleted.");
-      res.send({
-        status: "OK",
-        description: "Entity deleted."
-      });
-    });
-  });
+  UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
+});
+
+router.get("/deleteEntity/:entityId", function (req, res) {
+  var account = req.session.account;
+  if(!account) {
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  var userFoundCallback = function(user) {
+
+    var hasRoleCallback = function(user, userRole, role) {
+        var entityId = req.params.entityId;
+
+        SavedGenericEntity.findOne({ _id: entityId }, function (err, entity) {
+          if (err) {
+            console.log(err);
+            res.send(ErrorObject.create("EntityDefinitionListError", 30));
+          }
+
+          if (entity == undefined) {
+            res.send({});
+            return;
+          }
+          var entityName = entity.name;
+          if ((userRole && RegExp(userRole.affects).test(entity.name) == true) || user.isAdmin == true) {
+            var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
+
+            //mongoose.connection.collections[entity.name].drop( function(err) {
+            try {
+              mongoose.connection.db.dropCollection(entityName, function (err) {
+                if (err) {
+                  console.log(err);
+                }
+              });
+            } catch (err) {
+              console.log(err);
+            } finally {
+              GenericEntityInstance.instanceModelCache[entityName] = undefined;
+
+              entity.remove();
+              console.log("Entity deleted.");
+              res.send({
+                status: "OK",
+                description: "Entity deleted."
+              });
+            }
+          } else {
+            console.log("cant match.");
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+          }
+        });
+
+    }
+    var doesNotHaveRoleCallback = function() {
+      res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+      return;
+    }
+
+    RoleManager.hasRole("entity", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    return;
+  }
+
+  UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
 var webbifyEntity = function (entity) {

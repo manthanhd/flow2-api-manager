@@ -1,0 +1,378 @@
+<html ng-app="SecurityManagerApp">
+  <head>
+    <title>Security Home</title>
+
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+
+    <script type="text/javascript" src="/javascripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/angular.min.js"></script>
+
+    <script type="text/javascript" src="/javascripts/security-home/controllers.js"></script>
+    <script type="text/javascript" src="/javascripts/security-home/app.js"></script>
+
+  </head>
+  <body class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Security Home</h1>
+      </div>
+      <div class="col-md-6 text-right" ng-controller="GlobalMenuController">
+        <br/>
+        <button class="btn btn-success" ng-click="showCreateUserPanelClick()"><span class="glyphicon glyphicon-plus-sign"></span> Create User</button>
+        <form class="inline-block" action="/user/logout" method="post">
+          <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+          <button class="btn btn-default">Logout</button>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <hr/>
+      </div>
+    </div>
+    <div class="row" ng-controller="AlertsController">
+      <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.userDelete != undefined">
+        <button type="button" class="close" data-dismiss="alert" ng-click="success.userDelete = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> User has been deleted successfully.
+      </div>
+      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="fail.userDelete != undefined">
+        <button type="button" class="close" data-dismiss="alert" ng-click="fail.userDelete = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> Failed to delete user.
+      </div>
+      <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.userCreate != undefined">
+        <button type="button" class="close" data-dismiss="alert" ng-click="success.userCreate= undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> User has been created successfully.
+      </div>
+      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="fail.userCreate != undefined">
+        <button type="button" class="close" data-dismiss="alert" ng-click="fail.userCreate = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> Failed to create user.
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3" ng-controller="NavigationController">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel panel-body">
+                <div class="col-md-12">
+                  <h3><span class="glyphicon glyphicon-unchecked"></span> Roles</h3>
+                  <br/>
+                  <div class="list-group fixed-height-250">
+                    <a href="" class="list-group-item" ng-click="displayRoleDetail(role._id)" ng-repeat="role in roles">\{{role.name}}</a>
+                    <span class="text-center" ng-show="roles.length == 0"><em>No roles exist</em></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="col-md-12">
+                  <h3><span class="glyphicon glyphicon-user"></span> Users</h3>
+                  <br/>
+                  <div class="list-group">
+                    <a href="" class="list-group-item" ng-click="displayDetail(user._id)" ng-repeat="user in users">\{{user.username}}</a>
+                    <span class="text-center" ng-show="users.length == 0"><em>No users exist</em></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="row" ng-controller="CreateUserController" ng-show="showCreateUserPanel != undefined">
+          
+          <div class="col-md-12">
+            <form role="form" ng-submit="submitCreateUserForm()">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h2 class="inline-block">Create User</h2>
+                      <hr/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showUserExistsErrorPanel != undefined">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <span class="glyphicon glyphicon-exclamation-sign"></span> User that you are trying to create already exists.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="input-group">
+                        <label for="usernameText">Username:</label>
+                        <input type="text" class="form-control" id="usernameText" placeholder="Username" ng-model="newUser.username" required/>
+                      </div>
+                      
+                      <div class="input-group">
+                        <label for="passwordText">Temporary Password:</label>
+                        <input type="password" class="form-control" id="passwordText" placeholder="Temporary Password" ng-model="newUser.password" required/>
+                      </div>
+                      
+                      <div class="input-group">
+                        <label for="usernameText">This user is an administrator: <input type="checkbox" id="isAdminCheckbox" ng-model="newUser.isAdmin"/> </label>
+                        <label> </label>
+                        
+                      </div>
+                      
+                      <div class="input-group">
+                        <label for="usernameText">Role(s):</label>
+                        <select>
+                          <option value="no_roles">Roles currently unavailable.</option>
+                        </select>
+                      <br/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-footer">
+                  <div class="pull-left">
+                    <button class="btn btn-default" ng-click="cancelCreateUser()">Cancel</button>
+                  </div>
+                  <div class="pull-right">
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+                  </div>
+                  <br/><br/>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" ng-controller="RoleDetailController">
+            <div class="panel panel-default" ng-show="role != undefined">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-8">
+                    <h2 class="inline-block">Role - \{{role.name}}</h2>
+                  </div>
+                  <div class="col-md-4">
+                    <h2></h2>
+                    <div class="pull-right">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                          Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li class="danger"><a href=""><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                          <li class="danger"><a href="" data-toggle="modal" data-target="#roleDeleteConfirmationModal"><span class="glyphicon glyphicon-minus"></span> Delete</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal fade" id="roleDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="roleDeleteConfirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                          <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+                        </div>
+                        <div class="modal-body" ng-show="role.isDefault == undefined || role.isDefault == false">
+                          <p>
+                            This action will delete <strong>\{{role.name}}</strong> role.
+                          </p>
+                        </div>
+                        <div class="modal-body" ng-show="role.isDefault == true">
+                          <p>
+                            A default role cannot be deleted.
+                          </p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteUserConfirmClick(user._id)" ng-disabled="role.isDefault != undefined || role.isDefault == true"><span class="glyphicon glyphicon-ok-sign"></span> Confirm delete</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <hr/>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h3>Role Properties</h3>
+                    <table class="table table-hover">
+                      <tbody>
+                      <tr>
+                        <td>Role name: </td>
+                        <td>\{{role.name}}</td>
+                      </tr>
+                      <tr>
+                        <td>Description: </td>
+                        <td>\{{role.description}}</td>
+                      </tr>
+                      <tr>
+                        <td>Role context: </td>
+                        <td>\{{role.context}}</td>
+                      </tr>
+                      <tr>
+                        <td>Allows operations: </td>
+                        <td><span ng-repeat="operation in role.allowsOperation">\{{operation}} </span></td>
+                      </tr>
+                      <tr>
+                        <td>Allowed authentication method(s): </td>
+                        <td><span ng-repeat="authType in role.allowedAuthTypes">\{{authType}} <span ng-show="!$last"> &amp; </span></span></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <button class="btn btn-default" ng-click="role = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" ng-controller="UserDetailController">
+            <div class="panel panel-default" ng-show="user != undefined">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-8">
+                    <h2 class="inline-block">User - \{{user.username}}</h2>
+                  </div>
+                  <div class="col-md-4">
+                    <h2></h2>
+                    <div class="pull-right">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                          Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li class="divider"></li>
+                          <li class="divider"></li>
+                          <li class="text-center"><strong>User actions</strong></li>
+                          <li class="divider"></li>
+                          <li class="danger"><a href="" data-toggle="modal" data-target="#userDeleteConfirmationModal">Delete User</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal fade" id="userDeleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="userDeleteConfirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                          <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+                        </div>
+                        <div class="modal-body" ng-show="user.createdBy != undefined">
+                          <p>
+                            This action will delete <strong>\{{user.username}}</strong>.
+                          </p>
+                        </div>
+                        <div class="modal-body" ng-show="user.createdBy == undefined">
+                          <p>
+                            Master account cannot be deleted.
+                          </p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteUserConfirmClick(user._id)" ng-disabled="user.createdBy == undefined"><span class="glyphicon glyphicon-ok-sign"></span> Confirm delete</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <hr/>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h3>User Properties</h3>
+                    <table class="table table-hover">
+                      <tbody>
+                        <tr>
+                          <td>Username: </td>
+                          <td>\{{user.username}}</td>
+                        </tr>
+                        <tr>
+                          <td>Is Admin? </td>
+                          <td>\{{user.isAdmin}}</td>
+                        </tr>
+                        <tr>
+                          <td>Last login date: </td>
+                          <td>\{{user.lastLoginDate | date: 'medium'}}</td>
+                        </tr>
+                        <tr>
+                          <td>Is Enabled: </td>
+                          <td>\{{user.isEnabled}}</td>
+                        </tr>
+                        <tr>
+                          <td>Created By: </td>
+                          <td ng-show="user.createdBy != undefined">\{{user.createdBy}}</td>
+                          <td ng-show="user.createdBy == undefined">Omnipresent</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr/>
+                    <div class="row">
+                      <div class="col-md-8">
+                        <h3>Assigned Roles</h3>
+                      </div>
+                      <div class="col-md-4">
+                        <button class="btn btn-default pull-right" ng-click="showUserRoleAssignPanel = true">Add Role</button>
+                      </div>
+                    </div>
+                    <div class="row" ng-show="showUserRoleAssignPanel">
+                      <div class="well">
+                        <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showFailPanel != undefined">
+                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showFailPanel = undefined">Close</span></button>
+                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showFailPanel}}
+                        </div>
+                        <div class="alert alert-success alert-dismissible" role="alert" ng-show="showSuccessPanel != undefined">
+                          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only" ng-click="showSuccessPanel = undefined">Close</span></button>
+                          <span class="glyphicon glyphicon-exclamation-sign"></span> \{{showSuccessPanel}}
+                        </div>
+                        <h4>Select a role:</h4>
+                        <select ng-model="selectedRole" ng-options="role as role.name for role in availableRoles track by role._id" ng-change="changeSelection = selectedRole">
+                        </select>
+                        <div ng-show="selectedRole != undefined && selectedRole.context != 'role'">
+                          <h4>Affecting \{{selectedRole.context}}:</h4>
+                          <input type="text" ng-model="selectedRoleAffects" class="form-control" required/>
+                          <br/>
+                          <div>
+                            <button class="btn btn-default pull-left" ng-click="cancelAddRoleToUser()">Cancel</button>
+                            <button class="btn btn-primary pull-right" ng-click="addRoleToUser(user._id, selectedRole._id, selectedRoleAffects)">Add</button>
+                          </div>
+                          <br/>
+                          <br/>
+                        </div>
+                      </div>
+                    </div>
+                    <table class="table table-hover" ng-show="!user.isAdmin || user.isAdmin == false">
+                      <tbody>
+                        <tr ng-repeat="role in user.roles">
+                          <td>\{{role.roleObject.name}}</td>
+                          <td>\{{role.affects}} in \{{role.roleObject.context}}</td>
+                          <td><a href="" class="color-red" ng-click="unassign(user._id, role._id)"><span class="glyphicon glyphicon-minus-sign"></span></a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <h4 ng-show="user.isAdmin == false && user.roles.length == 0">No roles have been assigned for this user</h4>
+                    <h4 ng-show="user.isAdmin == true">This is an administrator account. Administrators assume all roles by default.</h4>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <button class="btn btn-default" ng-click="user = undefined"><span class="glyphicon glyphicon-remove-sign"></span> Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div></body>
+</html>
