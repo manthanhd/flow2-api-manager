@@ -70,7 +70,7 @@ router.get('/EAG', function (req, res) {
     return;
   }
   res.cookie("XSRF-TOKEN", req.session.csrfToken);
-  res.render("eag_home");
+  res.render("eag_home", {csrfToken: req.session.csrfToken});
 });
 
 router.get('/listEntities', function (req, res) {
