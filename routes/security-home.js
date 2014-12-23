@@ -10,6 +10,7 @@ var UserAccountManager = require("./lib/sec/UserAccountManager");
 router.get('/', function(req, res) {
   var account = req.session.account;
   if(!account){
+    req.session.fwd = "/security-manager";
     res.redirect("/user/login?message=Please login to continue");
     return;
   }
