@@ -21,7 +21,7 @@ var RoleManager = require('./routes/lib/sec/RoleManager');
 //var SavedGenericEntity = require('./lib/GenericEntityModel');
 RoleManager.init();
 
-RoleManager.buildCache();
+RoleManager.buildCache();   // For future role optimizations
 
 var app = express();
 
@@ -58,53 +58,42 @@ app.all('/EAG/access/*', function(req, res, next) { // Instance operations
 
     var userFoundCallback = function(user) {
         req.session.account = user; // Update session.
-        var obj = {context: 'instance'};
+        console.log(req.method);
+        var allowsOperation = '';
         if(req.method == 'GET') {
-            obj.allowsOperation = 'r';
+            allowsOperation = 'r';
         } else if(req.method == 'POST') {
-            obj.allowsOperation = 'c';
+            allowsOperation = 'c';
         } else if(req.method == 'PUT') {
-            obj.allowsOperation = 'u';
+            allowsOperation = 'u';
         } else if(req.method == "DELETE") {
-            obj.allowsOperation = 'd';
+            allowsOperation = 'd';
+        } else {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+        }
+        console.log(allowsOperation);
+        var hasRoleCallback = function(user, userRole, role) {
+            var regex = /\/EAG\/access\/([A-Za-z_0-9]+)\//i;
+            var regex2 = /\/EAG\/access\/([A-Za-z_0-9]+)/i;
+            var path = req.path;
+            var matches = regex.exec(path) || regex2.exec(path);
+            var entity = matches[1];
+            //console.log("Trying to match " + userRole.affects + " with " + entity);
+            if((userRole && RegExp(userRole.affects).test(entity) == true) || user.isAdmin == true) {
+                next();
+            } else {
+                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                return;
+            }
         }
 
-        RoleModel.findOne(obj, function(err, role) {
-            if(err || !role) {
-                res.status(500).send({error: "SecurityError", errorCode: 500});
-                return;
-            }
-            console.log("Found role object.");
-            var roleId = role._id;
-            var hasRole = undefined;
-            for(var i = 0; i < user.roles.length; i++) {
-                var currentRole = user.roles[i];
-                if(currentRole.roleId == roleId) {
-                    hasRole = user.roles[i];
-                    break;
-                }
-            }
+        var doesNotHaveRoleCallback = function() {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+        }
 
-            if(hasRole) {
-                var regex = /\/EAG\/access\/([A-Za-z]+)\//i;
-                var regex2 = /\/EAG\/access\/([A-Za-z]+)/i;
-                var path = req.path;
-                var matches = regex.exec(path) || regex2.exec(path);
-                var entity = matches[1];
-                console.log("Trying to match " + hasRole.affects + " with " + entity);
-                if(RegExp(hasRole.affects).test(entity) == true) {
-                    console.log("matches!");
-                    next();
-                } else {
-                    console.log("cant match.");
-                    res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
-                    return;
-                }
-            } else {
-                res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
-                return;
-            }
-        })
+        RoleManager.hasRole("instance", allowsOperation, account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function() {
@@ -123,40 +112,30 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
     }
 
     var userFoundCallback = function(user) {
-        req.session.account = user; // Update session.
-        var obj = {context: 'entity', allowsOperation: 'c'};
 
-        RoleModel.findOne(obj, function(err, role) {
-            if(err || !role) {
-                res.status(500).send({error: "SecurityError", errorCode: 500});
-                return;
-            }
-            console.log("Found role object.");
-            var roleId = role._id;
-            var hasRole = undefined;
-            for(var i = 0; i < user.roles.length; i++) {
-                var currentRole = user.roles[i];
-                if(currentRole.roleId == roleId) {
-                    hasRole = user.roles[i];
-                    break;
-                }
-            }
-
-            if(hasRole) {
+        var hasRoleCallback = function(user, userRole, role) {
+            if (userRole) {
                 var entityName = req.body.entityName;
-                if(RegExp(hasRole.affects).test(entityName) == true) {
-                    console.log("matches!");
+                if (RegExp(userRole.affects).test(entityName) == true || user.isAdmin == true) {
                     next();
                 } else {
-                    console.log("cant match.");
-                    res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
                     return;
                 }
+            } else if(user && user.isAdmin == true) {
+                next();
             } else {
-                res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
                 return;
             }
-        })
+        }
+
+        var doesNotHaveRoleCallback = function() {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+        }
+
+        RoleManager.hasRole("entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function() {
