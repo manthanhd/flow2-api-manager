@@ -340,7 +340,7 @@
                         <h4>Select a role:</h4>
                         <select ng-model="selectedRole" ng-options="role as role.name for role in availableRoles track by role._id" ng-change="changeSelection = selectedRole">
                         </select>
-                        <div ng-show="selectedRole != undefined">
+                        <div ng-show="selectedRole != undefined && selectedRole.context != 'role'">
                           <h4>Affecting \{{selectedRole.context}}:</h4>
                           <input type="text" ng-model="selectedRoleAffects" class="form-control" required/>
                           <br/>

@@ -261,6 +261,8 @@ app.controller("UserDetailController", function($scope, $http){
         $scope.showFailPanel += " Role or User not found.";
       } else if(status == 401) {
         $scope.showFailPanel += " One or more required attributes are missing.";
+      } else if(status == 403 && data.error == "AccessDeniedError") {
+        $scope.showFailPanel += " Only administrators can assign roles to users.";
       } else if(status == 403) {
         $scope.showFailPanel += " Session has timed out. Login is required.";
       }
@@ -283,12 +285,20 @@ app.controller("UserDetailController", function($scope, $http){
     }).error(function(data, status) {
       $scope.showSuccessPanel = undefined;
       $scope.showFailPanel = undefined;
-      if(status == 403 && data.error == "OperationNotPermitted") {
+      if (status == 403 && data.error == "OperationNotPermitted") {
         $scope.showFailPanel = "You do not have the necessary permission(s) to perform this operation."
-      } else if(status == 403 && data.error == "LoginRequired") {
+      } else if(status == 403 && data.error == "AccessDeniedError") {
+        $scope.showFailPanel = "You must be an administrator to perform this operation.";
+      }else if(status == 403 && data.error == "LoginRequired") {
         $scope.showFailPanel = "You must be logged in to perform this operation.";
       }
     })
+  }
+
+  $scope.cancelAddRoleToUser = function() {
+    $scope.showFailPanel = undefined;
+    $scope.showSuccessPanel = undefined;
+    $scope.showUserRoleAssignPanel = undefined;
   }
 
   $scope.fetchAvailableRoles();
