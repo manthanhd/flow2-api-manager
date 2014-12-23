@@ -131,7 +131,7 @@ router.get('/', function(req, res) {
       }
 
       var userList = [];
-      if(!user.username) {
+      if(userRole) {
 
         for (var i = 0; i < users.length; i++) {
           if (RegExp(userRole.affects).test(users[i].username) == true) {
@@ -256,7 +256,7 @@ router.post('/', function(req, res) {
         res.send(savedUser);
       });
     };
-    if(RegExp(userRole.affects).test(req.body.username) == true) {
+    if(user.isAdmin == true || RegExp(userRole.affects).test(req.body.username) == true) {
       UserAccountManager.doesUserExist(req.body.username, foundCallback, notFoundCallback);
     } else {
       res.status(403).send({error: "AccessDeniedError", errorCode: 403});
@@ -316,6 +316,11 @@ router.post('/:userId', function(req, res) {
     return;
   }
 
+  if(!account.isAdmin || account.isAdmin == false) {
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+    return;
+  }
+
   var userId = req.params.userId;
   var roleId = req.body.roleId;
   var affects = req.body.affects;
@@ -364,7 +369,7 @@ router.post('/:userId', function(req, res) {
 });
 
 router.delete('/:userId/:roleAssignmentId', function(req, res) {
-
+  // Unassign role from user.
   var account = req.session.account;
   if(!account){
     res.status(403).send({error: "LoginRequired", errorCode: 403});
@@ -372,7 +377,7 @@ router.delete('/:userId/:roleAssignmentId', function(req, res) {
   }
 
   if(!account.isAdmin || account.isAdmin == false) {
-    res.status(403).send({error: "OperationNotPermitted", errorCode: 403});
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
     return;
   }
 
