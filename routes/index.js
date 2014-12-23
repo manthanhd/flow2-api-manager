@@ -103,14 +103,17 @@ router.get('/listEntities', function (req, res) {
             console.log(err);
             res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
           }
-
+        if(user.isAdmin == false) {
           var entityList = [];
-          for(var i = 0; i < result.length; i++) {
-            if(RegExp(hasRole.affects).test(result[i].name) == true) {
+          for (var i = 0; i < result.length; i++) {
+            if (RegExp(hasRole.affects).test(result[i].name) == true) {
               entityList.push(result[i]);
             }
           }
-          res.send(entityList);
+          res.send({entityList: entityList});
+        } else {
+          res.send({entityList: result});
+        }
         });
       } else {
         res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
@@ -244,7 +247,7 @@ router.get("/readEntity/:entityId", function (req, res) {
           if (entity != undefined) {
             var entityName = entity.name;
             console.log("Trying to match " + hasRole.affects + " with " + entityName);
-            if (RegExp(hasRole.affects).test(entityName) == true) {
+            if (RegExp(hasRole.affects).test(entityName) == true || user.isAdmin == true) {
               console.log("matches!");
               res.send(entity);
             } else {
@@ -317,7 +320,7 @@ router.get("/deleteEntity/:entityId", function (req, res) {
           }
 
           var entityName = entity.name;
-          if(RegExp(hasRole.affects).test(entity) == true) {
+          if(RegExp(hasRole.affects).test(entity) == true || user.isAdmin == true) {
             var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
 
             //mongoose.connection.collections[entity.name].drop( function(err) {
