@@ -33,7 +33,7 @@ app.controller("CreateUserController", function($scope, $http){
     };
 
   $scope.submitCreateUserForm = function(){
-    var entityCreationPath = "http://localhost:3000/user";
+    var entityCreationPath = "/user";
     $http.post(entityCreationPath, $scope.newUser).success(function(data, statusCode) {
       if(statusCode == 200){
         $scope.$parent.$broadcast("UserCreateSuccessful");
@@ -224,7 +224,7 @@ app.controller("UserDetailController", function($scope, $http){
   }
 
   $scope.deleteUserConfirmClick = function(userId) {
-    var userDeletePath = "http://localhost:3000/user/" + userId;
+    var userDeletePath = "/user/" + userId;
     
     $http.delete(userDeletePath).success(function(data, statusCode) {
       if(statusCode == 200 && data.status == 'OK'){

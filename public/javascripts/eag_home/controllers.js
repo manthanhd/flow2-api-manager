@@ -48,7 +48,7 @@ app.controller("CreateEntityController", function($scope, $http){
   };
 
   $scope.submitCreateEntityForm = function(){
-    var entityCreationPath = "http://localhost:3000/createEntity";
+    var entityCreationPath = "/createEntity";
     $http.post(entityCreationPath, $scope.newEntity).success(function(data, statusCode) {
       if(statusCode == 200){
         $scope.$parent.$broadcast("EntityCreateSuccessful");
@@ -208,7 +208,7 @@ app.controller("EntityDetailController", function($scope, $http){
   
   $scope.deleteEntityConfirmClick = function(entityId){
     console.log("Just confirmed to delete " + entityId + " entity");
-    var entityDeletePath = "http://localhost:3000/deleteEntity/" + entityId;
+    var entityDeletePath = "/deleteEntity/" + entityId;
     
     $http.get(entityDeletePath).success(function(data, statusCode) {
       if(statusCode == 200 && data.status == 'OK'){
@@ -224,7 +224,7 @@ app.controller("EntityDetailController", function($scope, $http){
   }
   
   $scope.getInstancesForEntity = function(entityName){
-    var listPath = "http://localhost:3000/EAG/access/" + entityName;
+    var listPath = "/EAG/access/" + entityName;
 
     $http.get(listPath).success(function(data, status){
       if(status == 200){
@@ -240,7 +240,7 @@ app.controller("EntityDetailController", function($scope, $http){
   
   $scope.createInstance = function(){
     var instance = $scope.newObject.props;
-    var creationPath = "http://localhost:3000/EAG/access/" + $scope.entity.name;
+    var creationPath = "/EAG/access/" + $scope.entity.name;
     
     $http.post(creationPath, instance).success(function(instance, status){
       if(status == 200 && instance != undefined && instance._id != undefined){
@@ -258,7 +258,7 @@ app.controller("EntityDetailController", function($scope, $http){
     $scope.showDeleteSuccessPanel = undefined;
     $scope.showDeleteErrorPanel = undefined;
     var id = $scope.deleteIDString;
-    var deleteEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/" + id;
+    var deleteEndpoint = "/EAG/access/" + $scope.entity.name + "/" + id;
     
     $http.delete(deleteEndpoint).success(function(data, status){
       $scope.showDeleteSuccessPanel = undefined;
@@ -286,7 +286,7 @@ app.controller("EntityDetailController", function($scope, $http){
   }
   
   $scope.getInstanceForEdit = function(id) {
-    var fetchEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name + "/_id/" + id;
+    var fetchEndpoint = "/EAG/access/" + $scope.entity.name + "/_id/" + id;
     $http.get(fetchEndpoint).success(function(data, response) {
       if(response == 200){
         console.log(data);
@@ -317,7 +317,7 @@ app.controller("EntityDetailController", function($scope, $http){
   }
   
   $scope.editCurrentInstance = function(instanceId) {
-    var editEndpoint = "http://localhost:3000/EAG/access/" + $scope.entity.name;
+    var editEndpoint = "/EAG/access/" + $scope.entity.name;
     $http.put(editEndpoint, $scope.editInstanceObject).success(function(response, status) {
       if(status == 200) {
         $scope.showEditSuccessPanel = "Edit was successful!";
