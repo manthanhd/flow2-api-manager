@@ -108,7 +108,7 @@ var checkEntityNameExists = function (entityName, doesNotExist, exists) {
   });
 }
 
-router.post("/createEntity", function (req, res) {
+router.post("/createEntity", function (req, res) {  // Protected at app.js level
   var entityName = req.body.entityName;
   var entity = new GenericEntity(req.body.entityName);
 
@@ -284,14 +284,11 @@ router.get("/deleteEntity/:entityId", function (req, res) {
               mongoose.connection.db.dropCollection(entityName, function (err) {
                 if (err) {
                   console.log(err);
-                  //res.status(500).send({error: "EntityInstanceDeleteError", errorCode: 500});
-                  //return;
                 }
               });
             } catch (err){
               console.log(err);
             } finally {
-              //delete GenericEntityInstance.instanceModelCache[entityName]; // Removing from our cache of object schemas.
               GenericEntityInstance.instanceModelCache[entityName] = undefined;
 
               entity.remove();
