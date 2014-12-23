@@ -311,8 +311,9 @@ RoleManager.getAllRoles = function(successCallback, failureCallback) {
 
 RoleManager.buildCache = function() {
   RoleManager.getAllRoles(function(roles) {
-    if(!roles && roles.length > 0) {
+    if(roles && roles.length > 0) {
       RoleManager.roleCache = roles;
+      console.log("Role cache is now available.");
     } else {
       console.log("Failed to build role cache. No roles exist!");
     }

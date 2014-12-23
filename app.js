@@ -19,6 +19,7 @@ var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
 var RoleModel = require('./routes/lib/sec/RoleModel');
 var RoleManager = require('./routes/lib/sec/RoleManager');
 //var SavedGenericEntity = require('./lib/GenericEntityModel');
+RoleManager.init();
 
 RoleManager.buildCache();
 
