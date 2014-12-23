@@ -1,5 +1,6 @@
-var mongoose = require('mongoose');
+// var mongoose = require('mongoose');
 var RoleModel = require('./RoleModel');
+var UserAccountManager = require('./UserAccountManager');
 
 var RoleManager = {};
 
@@ -344,4 +345,51 @@ RoleManager.getRoleById = function(id, successCallback, failureCallback) {
     successCallback(roles);
   })
 }*/
+
+RoleManager.findRoleByContextAndOperation = function(context, operation, foundCallback, notFoundCallback) {
+  RoleModel.findOne({context: context, allowsOperation: operation}, function(err, role) {
+    if(err || !role) {
+      notFoundCallback();
+      return;
+    }
+
+    foundCallback(role);
+  })
+}
+
+RoleManager.hasRole = function(context, allowedOperation, userId, allowCallback, rejectCallback) {
+  var foundCallback = function(user) {
+    // User exists...
+    if(user.isAdmin && user.isAdmin == true) {
+      allowCallback(user);
+      return;
+    }
+
+    var roleFoundCallback = function(role) {
+      var roleId = role._id;
+      for(var i = 0; i < user.roles.length; i++) {
+        var userRole = user.roles[i];
+        if(userRole.roleId == roleId) {
+          // User has role!
+          allowCallback(user, userRole, role);  // Can be added to an array if multiple roles on different instances are assigned.
+          return;
+        }
+      }
+      rejectCallback();
+    }
+
+    var roleNotFoundCallback = function() {
+      rejectCallback();
+      return;
+    }
+    RoleManager.findRoleByContextAndOperation(context, allowedOperation, roleFoundCallback, roleNotFoundCallback);
+  }
+
+  var notFoundCallback = function() {
+    rejectCallback();
+  }
+
+  UserAccountManager.doesUserIdExist(userId, foundCallback, notFoundCallback);
+}
+
 module.exports = RoleManager;

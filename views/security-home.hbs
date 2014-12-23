@@ -35,12 +35,20 @@
     </div>
     <div class="row" ng-controller="AlertsController">
       <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.userDelete != undefined">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <span class="glyphicon glyphicon-info-sign"></span> User deleted successfully
+        <button type="button" class="close" data-dismiss="alert" ng-click="success.userDelete = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> User has been deleted successfully.
+      </div>
+      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="fail.userDelete != undefined">
+        <button type="button" class="close" data-dismiss="alert" ng-click="fail.userDelete = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> Failed to delete user.
       </div>
       <div class="alert alert-success alert-dismissible" role="alert" ng-show="success.userCreate != undefined">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <span class="glyphicon glyphicon-info-sign"></span> User created successfully
+        <button type="button" class="close" data-dismiss="alert" ng-click="success.userCreate= undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> User has been created successfully.
+      </div>
+      <div class="alert alert-danger alert-dismissible" role="alert" ng-show="fail.userCreate != undefined">
+        <button type="button" class="close" data-dismiss="alert" ng-click="fail.userCreate = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> Failed to create user.
       </div>
     </div>
     <div class="row">

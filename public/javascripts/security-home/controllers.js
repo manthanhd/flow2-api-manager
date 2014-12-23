@@ -74,13 +74,18 @@ app.controller("AlertsController", function($scope, $http){
   
   $scope.$on("UserDeleteFailEvent", function(event){
     $scope.resetAlerts();
-    $scope.success.userDelete = true;
+    $scope.fail.userDelete = true;
   });
   
   $scope.$on("UserCreateSuccessful", function(event) {
     $scope.resetAlerts();
     $scope.success.userCreate = true;
-  })
+  });
+
+  $scope.$on("UserCreateFail", function(event) {
+    $scope.resetAlerts();
+    $scope.fail.userCreate = true;
+  });
 
   $scope.resetAlerts = function(){
     $scope.success = {};

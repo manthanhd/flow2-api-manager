@@ -121,20 +121,48 @@ router.get('/', function(req, res) {
     return;
   }
 
-  UserAccountModel.find({}, function(err, users) {
-    if(err || !users){
-      console.log("Error occured while listing users.");
-      res.status(500).send({error: "UserListError", errorCode: 500});
-      return;
-    }
-    
-    // Strip out password.
-    for(var i = 0; i < users.length; i++) {
-      users[i].password = undefined;
-    }
-    
-    res.send({userList: users});
-  });
+  var hasRoleCallback = function(user, userRole, role) {
+
+    UserAccountModel.find({}, function (err, users) {
+      if (err || !users) {
+        console.log("Error occured while listing users.");
+        res.status(500).send({error: "UserListError", errorCode: 500});
+        return;
+      }
+
+      var userList = [];
+      if(!user.username) {
+
+        for (var i = 0; i < users.length; i++) {
+          if (RegExp(userRole.affects).test(users[i].username) == true) {
+            userList.push(users[i]);
+          }
+        }
+
+        // Strip out password.
+        for (var i = 0; i < userList.length; i++) {
+          userList[i].password = undefined;
+        }
+      } else {
+        // We've been allowed because it's an admin account.
+
+        userList = users;
+        // Strip out password.
+        for (var i = 0; i < userList.length; i++) {
+          userList[i].password = undefined;
+        }
+      }
+
+      res.send({userList: userList});
+    });
+  }
+
+  var doesNotHaveRoleCallback = function() {
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+    return;
+  }
+
+  RoleManager.hasRole("user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
 router.get('/:userId', function(req, res) {
@@ -143,17 +171,31 @@ router.get('/:userId', function(req, res) {
     res.status(403).send({error: "LoginRequired", errorCode: 403});
     return;
   }
+  var hasRoleCallback = function(user, userRole, role) {
+    var userId = req.params.userId;
 
-  var userId = req.params.userId;
+    UserAccountModel.findOne({_id: userId}, function (err, user) {
+      if (err || !user) {
+        res.status(500).send({error: "UserListError", errorCode: 500});
+        return;
+      }
 
-  UserAccountModel.findOne({_id: userId}, function(err, user) {
-    if(err || !user) {
-      res.status(500).send({error: "UserListError", errorCode: 500});
-      return;
-    }
+      if(RegExp(userRole.affects).test(user.username) == true) {
+        res.send(user);
+        return;
+      } else {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+      }
+    });
+  }
 
-    res.send(user);
-  })
+  var doesNotHaveRoleCallback = function() {
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+    return;
+  }
+
+  RoleManager.hasRole("user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 })
 
 router.post('/', function(req, res) {
@@ -163,58 +205,71 @@ router.post('/', function(req, res) {
     return;
   }
 
-  if (!req.body.username) {
-    res.status(401).send({error: "Username is a required field."});
-    return;
-  }
-
-  if (!req.body.password) {
-    res.status(401).send({error: "Password is a required field."});
-    return;
-  }
-  var foundCallback = function (user) {
-    res.status(409).send({error: "UserExistsError", errorCode: 409});
-    return;
-  }
-
-  var notFoundCallback = function() {
-    if (account.isAdmin != true && req.body.isAdmin == true) {
-      res.status(401).send({error: "Non-admins cannot create admins."});
+  var hasRoleCallback = function(user, userRole, role) {
+    if (!req.body.username) {
+      res.status(401).send({error: "Username is a required field."});
       return;
     }
 
-    // For now, only admins can assign roles.
-    if ((!req.body.isAdmin || req.body.isAdmin == false) && req.body.roles && req.body.roles.length > 0) {
-      res.status(401).send({error: "Non-admins cannot assign roles."});
+    if (!req.body.password) {
+      res.status(401).send({error: "Password is a required field."});
+      return;
+    }
+    var foundCallback = function (user) {
+      res.status(409).send({error: "UserExistsError", errorCode: 409});
       return;
     }
 
-    // Do a role check if user is allowed to assign roles or not.
-
-    var newUser = new UserAccountModel();
-    newUser.username = req.body.username;
-    newUser.password = req.body.password;
-    newUser.hasBeenReset = true;
-    newUser.isAdmin = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.isAdmin : false;
-    newUser.isEnabled = true; // All new users are enabled rightaway.
-    newUser.createdBy = account.username;
-
-    // Do a check here to see if user is allowed to assign roles.
-    newUser.roles = (req.body.isAdmin && req.body.isAdmin == true && req.body.roles) ? req.body.roles : [];
-
-    newUser.save(function (err, savedUser) {
-      if (err) {
-        console.log("Failed to save new user.");
-        console.log(err);
-        res.status(500).send({error: "UserSaveError", errorCode: 500});
+    var notFoundCallback = function () {
+      if (user.isAdmin != true && req.body.isAdmin == true) {
+        res.status(401).send({error: "Non-admins cannot create admins."});
         return;
       }
 
-      res.send(newUser);
-    });
-  };
+      // For now, only admins can assign roles.
+      if ((!req.body.isAdmin || req.body.isAdmin == false) && req.body.roles && req.body.roles.length > 0) {
+        res.status(401).send({error: "Non-admins cannot assign roles."});
+        return;
+      }
 
-  UserAccountManager.doesUserExist(req.body.username, foundCallback, notFoundCallback);
+      // Do a role check if user is allowed to assign roles or not.
+
+      var newUser = new UserAccountModel();
+      newUser.username = req.body.username;
+      newUser.password = req.body.password;
+      newUser.hasBeenReset = true;
+      newUser.isAdmin = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.isAdmin : false;
+      newUser.isEnabled = true; // All new users are enabled rightaway.
+      newUser.createdBy = user.username;
+
+      // Do a check here to see if user is allowed to assign roles.
+      newUser.roles = (req.body.isAdmin && req.body.isAdmin == true && req.body.roles) ? req.body.roles : [];
+
+      newUser.save(function (err, savedUser) {
+        if (err) {
+          console.log("Failed to save new user.");
+          console.log(err);
+          res.status(500).send({error: "UserSaveError", errorCode: 500});
+          return;
+        }
+
+        res.send(savedUser);
+      });
+    };
+    if(RegExp(userRole.affects).test(req.body.username) == true) {
+      UserAccountManager.doesUserExist(req.body.username, foundCallback, notFoundCallback);
+    } else {
+      res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+      return;
+    }
+  }
+
+  var doesNotHaveRoleCallback = function() {
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+    return;
+  }
+
+  RoleManager.hasRole("user", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
 router.delete('/:id', function(req, res) {
@@ -224,24 +279,33 @@ router.delete('/:id', function(req, res) {
     return;
   }
 
-  if(!account.isAdmin || account.isAdmin == false) {
-    res.status(403).send({error: "OperationNotPermitted", errorCode: 403});
+  var hasRoleCallback = function(loggedUser, userRole, role) {
+    var userId = req.params.id;
+    UserAccountModel.findOne({_id: userId}, function (err, user) {
+      if (err || !user) {
+        console.log("Failed to list user with ID " + userId);
+        console.log(err);
+        res.status(500).send({error: "UserListError", errorCode: 500});
+        return;
+      }
+
+      if(loggedUser.isAdmin == true || (RegExp(userRole.affects).test(user.username) == true)) {
+        user.remove();
+        res.send({status: "OK"});
+        return;
+      } else {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+      }
+    });
+  }
+
+  var doesNotHaveRoleCallback = function() {
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
     return;
   }
 
-  var userId = req.params.id;
-  UserAccountModel.findOne({_id: userId}, function (err, user) {
-    if (err || !user) {
-      console.log("Failed to list user with ID " + userId);
-      console.log(err);
-      res.status(500).send({error: "UserListError", errorCode: 500});
-      return;
-    }
-
-    user.remove();
-    res.send({status: "OK"});
-  });
-
+  RoleManager.hasRole("user", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
 router.post('/:userId', function(req, res) {
