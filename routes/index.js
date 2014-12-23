@@ -73,16 +73,58 @@ router.get('/EAG', function (req, res) {
 });
 
 router.get('/listEntities', function (req, res) {
-  SavedGenericEntity.find({}, function (err, result) {
-    if (err) {
-      console.log("An error occurred while listing entity definitions.");
-      console.log(err);
-      res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
-    }
-    res.send({
-      entityList: result
+  var account = req.session.account;
+  if(!account) {
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  var userFoundCallback = function(user) {
+    RoleModel.findOne({context: 'entity', allowsOperation: 'r'}, function (err, role) {
+      if (err || !role) {
+        res.status(500).send({error: "SecurityError", errorCode: 500});
+        return;
+      }
+
+      var roleId = role._id;
+      var hasRole = undefined;
+      for (var i = 0; i < user.roles.length; i++) {
+        var currentRole = user.roles[i];
+        if (currentRole.roleId == roleId) {
+          hasRole = user.roles[i];
+          break;
+        }
+      }
+
+      if (hasRole) {
+        SavedGenericEntity.find({}, function (err, result) {
+          if (err) {
+            console.log("An error occurred while listing entity definitions.");
+            console.log(err);
+            res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
+          }
+
+          var entityList = [];
+          for(var i = 0; i < result.length; i++) {
+            if(RegExp(hasRole.affects).test(result[i].name) == true) {
+              entityList.push(result[i]);
+            }
+          }
+          res.send(entityList);
+        });
+      } else {
+        res.status(401).send({error: "PermissionRequiredError", errorCode: 401});
+        return;
+      }
     });
-  });
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    return;
+  }
+
+  UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
 router.get('/createEntity', function (req, res) {
