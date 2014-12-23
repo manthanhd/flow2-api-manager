@@ -114,24 +114,15 @@
                         <label for="usernameText">Username:</label>
                         <input type="text" class="form-control" id="usernameText" placeholder="Username" ng-model="newUser.username" required/>
                       </div>
-                      
+                      <br/>
                       <div class="input-group">
                         <label for="passwordText">Temporary Password:</label>
                         <input type="password" class="form-control" id="passwordText" placeholder="Temporary Password" ng-model="newUser.password" required/>
                       </div>
-                      
-                      <div class="input-group">
-                        <label for="usernameText">This user is an administrator: <input type="checkbox" id="isAdminCheckbox" ng-model="newUser.isAdmin"/> </label>
-                        <label> </label>
-                        
-                      </div>
-                      
-                      <div class="input-group">
-                        <label for="usernameText">Role(s):</label>
-                        <select>
-                          <option value="no_roles">Roles currently unavailable.</option>
-                        </select>
                       <br/>
+                      <div class="input-group">
+                        <label for="isAdminCheckbox">Admin? <input type="checkbox" name="isAdminCheckbox" id="isAdminCheckbox" ng-model="newUser.isAdmin"/> </label>
+                        <label> </label>
                       </div>
                     </div>
                   </div>
@@ -160,15 +151,6 @@
                   <div class="col-md-4">
                     <h2></h2>
                     <div class="pull-right">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                          Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                          <li class="danger"><a href=""><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
-                          <li class="danger"><a href="" data-toggle="modal" data-target="#roleDeleteConfirmationModal"><span class="glyphicon glyphicon-minus"></span> Delete</a></li>
-                        </ul>
-                      </div>
                     </div>
                   </div>
 
