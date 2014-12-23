@@ -7,7 +7,6 @@ var express = require("express");
 var router = express.Router();
 var RoleManager = require("./lib/sec/RoleManager");
 
-RoleManager.init();
 router.get('/', function(req, res) {
     var account = req.session.account;
     if(!account){
