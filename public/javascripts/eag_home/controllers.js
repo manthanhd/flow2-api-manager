@@ -48,7 +48,7 @@ app.controller("CreateEntityController", function($scope, $http){
   };
 
   $scope.submitCreateEntityForm = function(){
-    var entityCreationPath = "/createEntity";
+    var entityCreationPath = "/entity";
     $http.post(entityCreationPath, $scope.newEntity).success(function(data, statusCode) {
       if(statusCode == 200){
         $scope.$parent.$broadcast("EntityCreateSuccessful");
@@ -122,7 +122,7 @@ app.controller("NavigationController", function($scope, $http){
   });
 
   $scope.listEntities = function(){
-    $http.get("/listEntities").success(function(data, status){
+    $http.get("/entity").success(function(data, status){
       if(status == 200){
         $scope.entities = data.entityList;
       }
@@ -208,9 +208,9 @@ app.controller("EntityDetailController", function($scope, $http){
   
   $scope.deleteEntityConfirmClick = function(entityId){
     console.log("Just confirmed to delete " + entityId + " entity");
-    var entityDeletePath = "/deleteEntity/" + entityId;
+    var entityDeletePath = "/entity/" + entityId;
     
-    $http.get(entityDeletePath).success(function(data, statusCode) {
+    $http.delete(entityDeletePath).success(function(data, statusCode) {
       if(statusCode == 200 && data.status == 'OK'){
         $scope.$parent.$broadcast("EntityDeleteSuccessfulEvent");
         $scope.clearDetail();
