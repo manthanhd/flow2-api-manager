@@ -73,7 +73,7 @@ router.get('/EAG', function (req, res) {
   res.render("eag_home", {csrfToken: req.session.csrfToken});
 });
 
-router.get('/listEntities', function (req, res) {
+router.get('/entity', function (req, res) { // Renamed from listEntities
   var account = req.session.account;
   if(!account) {
     res.status(403).send({error: "LoginRequired", errorCode: 403});
@@ -122,12 +122,13 @@ router.get('/listEntities', function (req, res) {
   UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
-router.get('/createEntity', function (req, res) {
-  res.render('create_entity', {
-    title: 'Express',
-    layout: 'layouts/layout'
-  });
-});
+// Not required.
+// router.get('/createEntity', function (req, res) {
+//   res.render('create_entity', {
+//     title: 'Express',
+//     layout: 'layouts/layout'
+//   });
+// });
 
 var checkEntityNameExists = function (entityName, doesNotExist, exists) {
   SavedGenericEntity.findOne({
@@ -145,7 +146,7 @@ var checkEntityNameExists = function (entityName, doesNotExist, exists) {
   });
 }
 
-router.post("/createEntity", function (req, res) {  // Protected at app.js level
+router.post("/entity", function (req, res) {  // Protected at app.js level. Renamed from createEntity
   var entityName = req.body.entityName;
   var entity = new GenericEntity(req.body.entityName);
 
@@ -203,7 +204,7 @@ var findEntityDefinitionById = function (entityId, found, notFound) {
   });
 };
 
-router.get("/readEntity/:entityId", function (req, res) {
+router.get("/entity/:entityId", function (req, res) { // renamed from readEntity/:entityId
   var account = req.session.account;
   if(!account) {
     res.status(403).send({error: "LoginRequired", errorCode: 403});
@@ -263,7 +264,7 @@ router.get("/readEntity/:entityId", function (req, res) {
   UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
 });
 
-router.get("/deleteEntity/:entityId", function (req, res) {
+router.delete("/entity/:entityId", function (req, res) {  // renamed from deleteEntity/:entityId
   var account = req.session.account;
   if(!account) {
     res.status(403).send({error: "LoginRequired", errorCode: 403});
