@@ -1,4 +1,4 @@
-var app = angular.module("EAG_Home", ["Controllers"]);
+var app = angular.module("EAG_Home", ["Controllers", "angular-loading-bar"]);
 
 app.directive('ngEnter', function () {
     return function (scope, element, attrs) {
