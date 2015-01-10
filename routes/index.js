@@ -73,6 +73,38 @@ router.get('/EAG', function (req, res) {
   res.render("eag_home", {csrfToken: req.session.csrfToken});
 });
 
+router.get('/entity/metadata/types', function(req, res) {
+  var account = req.session.account;
+  if(!account) {
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  var userFoundCallback = function(user) {
+    var hasRoleCallback = function(user, userRole, role) {
+      if(userRole || (user && user.isAdmin == true)) {
+        res.send({typeList: GenericEntityProperty.supportedTypes});
+      } else {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+      }
+    }
+    var doesNotHaveRoleCallback = function() {
+      res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+      return;
+    }
+
+    RoleManager.hasRole("entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    return;
+  }
+
+  UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
+});
+
 router.get('/entity', function (req, res) { // Renamed from listEntities
   var account = req.session.account;
   if(!account) {
