@@ -14,6 +14,8 @@ GenericEntityProperty.TYPE_DATE = "date";
 
 var supportedTypes = [GenericEntityProperty.TYPE_STRING, GenericEntityProperty.TYPE_DATE, GenericEntityProperty.TYPE_NUMBER];
 
+GenericEntityProperty.supportedTypes = supportedTypes;
+
 GenericEntityProperty.getMongooseType = function(localType){
     if(localType == GenericEntityProperty.TYPE_STRING){
         return String;
