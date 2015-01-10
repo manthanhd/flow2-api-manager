@@ -27,7 +27,7 @@ app.controller("CreateEntityController", function($scope, $http){
   });
 
   $scope.addNewProperty = function(){
-    $scope.newEntity.properties.push({name: "", type: "", required: true});
+    $scope.newEntity.properties.push({name: "", type: 'string', required: true});
   };
 
   $scope.removeProperty = function(index){
@@ -39,11 +39,13 @@ app.controller("CreateEntityController", function($scope, $http){
   $scope.resetNewEntity = function(){
     $scope.newEntity = {
       entityName: "",
-      properties: [{
-        name: "",
-        type: "",
-        required: true
-      }]
+      properties: [
+        {
+          name: "",
+          type: 'string',
+          required: true
+        }
+      ]
     };
   };
 
@@ -84,7 +86,18 @@ app.controller("CreateEntityController", function($scope, $http){
     $scope.closePanel();
   };
 
-  $scope.resetNewEntity();
+  $scope.getTypes = function() {
+    $http.get('/entity/metadata/types').success(function(data, statusCode) {
+      if(statusCode == 200) {
+        $scope.supportedTypes = data.typeList;
+      }
+      console.log($scope.supportedTypes);
+
+      $scope.resetNewEntity();
+    });
+  }
+
+  $scope.getTypes();
 });
 
 app.controller("AlertsController", function($scope, $http){
