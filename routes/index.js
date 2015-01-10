@@ -151,9 +151,9 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
   var entity = new GenericEntity(req.body.entityName);
 
   checkEntityNameExists(entityName, function () {
-    if (req.property1_name != undefined) { // Probably a form post
+    if (req.property1_name != undefined) { // Probably a generic  form post
       for (var i = 1; i < Object.keys(req.body).length / 2; i++) {
-        var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type']);
+        var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type'], req.body['property' + i + '_required']);
         entity.addProperty(prop);
       }
     } else { // It must be an AJAX post
@@ -166,7 +166,7 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
           });
           return;
         }
-        var prop = new GenericEntityProperty(property.name, "", property.type);
+        var prop = new GenericEntityProperty(property.name, "", property.type, property.required);
         entity.addProperty(prop);
       }
     }
