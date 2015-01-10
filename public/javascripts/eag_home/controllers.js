@@ -27,7 +27,7 @@ app.controller("CreateEntityController", function($scope, $http){
   });
 
   $scope.addNewProperty = function(){
-    $scope.newEntity.properties.push({name: "", type: ""});
+    $scope.newEntity.properties.push({name: "", type: "", required: true});
   };
 
   $scope.removeProperty = function(index){

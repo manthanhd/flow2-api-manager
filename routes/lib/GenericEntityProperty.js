@@ -2,11 +2,11 @@
     This depends on Mongoose.
 */
 
-function GenericEntityProperty(propName, propValue, propType){
+function GenericEntityProperty(propName, propValue, propType, required){
     this.name = propName;
     this.value = propValue;
     this.type = propType;
-    this.required = true;
+    this.required = required;
 }
 GenericEntityProperty.TYPE_STRING = "string";
 GenericEntityProperty.TYPE_NUMBER = "number";
