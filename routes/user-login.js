@@ -371,18 +371,20 @@ router.post('/:userId', function(req, res) {
 router.put('/:userId', function(req, res) {
   // Adds role to user
   var account = req.session.account;
+  var userId = req.params.userId;
+
   if(!account){
     res.status(403).send({error: "LoginRequired", errorCode: 403});
     return;
   }
 
-  if(!account.isAdmin || account.isAdmin == false) {
+  if(account._id != userId && ( !account.isAdmin || account.isAdmin == false )) {
     res.status(403).send({error: "AccessDeniedError", errorCode: 403});
     return;
   }
 
-  var userId = req.params.userId;
-  var hasBeenReset = req.params.hasBeenReset;
+
+  var hasBeenReset = req.body.hasBeenReset;
 
   if(!userId) {
     res.status(401).send({error: "userId is a required field.", errorCode: 401});
