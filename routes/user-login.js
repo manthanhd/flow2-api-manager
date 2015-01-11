@@ -368,6 +368,51 @@ router.post('/:userId', function(req, res) {
   UserAccountManager.doesUserIdExist(userId, userExistsCallback, userNotFoundCallback);
 });
 
+router.put('/:userId', function(req, res) {
+  // Adds role to user
+  var account = req.session.account;
+  if(!account){
+    res.status(403).send({error: "LoginRequired", errorCode: 403});
+    return;
+  }
+
+  if(!account.isAdmin || account.isAdmin == false) {
+    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+    return;
+  }
+
+  var userId = req.params.userId;
+  var hasBeenReset = req.params.hasBeenReset;
+
+  if(!userId) {
+    res.status(401).send({error: "userId is a required field.", errorCode: 401});
+    return;
+  }
+
+  if(!hasBeenReset) {
+    res.status(401).send({error: "hasBeenReset is a required field.", errorCode: 401});
+    return;
+  }
+
+  var userExistsCallback = function(user) {
+    user.hasBeenReset = hasBeenReset;
+    user.save(function(err, savedUser) {
+      if(err){
+        res.status(500).send({error: "UserSaveError", errorCode: 500});
+        return;
+      }
+      savedUser.password = undefined; // Strip out the password.
+      res.send(savedUser);
+    });
+  }
+
+  var userNotFoundCallback = function() {
+    res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+  }
+
+  UserAccountManager.doesUserIdExist(userId, userExistsCallback, userNotFoundCallback);
+});
+
 router.delete('/:userId/:roleAssignmentId', function(req, res) {
   // Unassign role from user.
   var account = req.session.account;
