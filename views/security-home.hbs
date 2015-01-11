@@ -52,6 +52,14 @@
         <button type="button" class="close" data-dismiss="alert" ng-click="fail.userCreate = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <span class="glyphicon glyphicon-info-sign"></span> Failed to create user.
       </div>
+      <div class="alert alert-success alert-dismissible" role="alert" ng-if="alertObject != undefined && alertObject.type == 'success'">
+        <button type="button" class="close" data-dismiss="alert" ng-click="alertObject = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> \{{ alertObject.description }}
+      </div>
+      <div class="alert alert-danger alert-dismissible" role="alert" ng-if="alertObject != undefined && alertObject.type == 'failure'">
+        <button type="button" class="close" data-dismiss="alert" ng-click="alertObject = undefined"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-info-sign"></span> \{{ alertObject.description }}
+      </div>
     </div>
     <div class="row">
       <div class="col-md-3" ng-controller="NavigationController">
@@ -240,6 +248,7 @@
                           <li class="divider"></li>
                           <li class="text-center"><strong>User actions</strong></li>
                           <li class="divider"></li>
+                          <li><a href="" ng-click="resetPassword()">Reset password</a></li>
                           <li class="danger"><a href="" data-toggle="modal" data-target="#userDeleteConfirmationModal">Delete User</a></li>
                         </ul>
                       </div>

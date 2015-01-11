@@ -87,10 +87,16 @@ app.controller("AlertsController", function($scope, $http){
     $scope.fail.userCreate = true;
   });
 
+  $scope.$on("DisplayAlertEvent", function(event, alertObject) {
+    $scope.resetAlerts();
+    $scope.alertObject = alertObject;
+  })
+
   $scope.resetAlerts = function(){
     $scope.success = {};
     $scope.warning = {};
     $scope.fail = {};
+    $scope.alertObject = undefined;
   };
 });
 
@@ -293,6 +299,18 @@ app.controller("UserDetailController", function($scope, $http){
         $scope.showFailPanel = "You must be logged in to perform this operation.";
       }
     })
+  }
+
+  $scope.resetPassword = function() {
+    var url = '/user/' + $scope.user._id;
+    $http.put(url, { hasBeenReset: true }).success(function(data, statusCode) {
+      if(statusCode == 200) {
+        $scope.user = data;
+        $scope.$parent.$broadcast("DisplayAlertEvent", { type: 'success', description: 'Password reset for ' + $scope.user.username + ' was successful.' });
+      }
+    }).error(function(data, statusCode) {
+      $scope.$parent.$broadcast("DisplayAlertEvent", { type: 'failure', description: "Password reset failed for " + $scope.user.username });
+    });
   }
 
   $scope.cancelAddRoleToUser = function() {
