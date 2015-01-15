@@ -47,6 +47,10 @@ modelCollection.add("GenericEntityModel", SavedGenericEntity);
 
 var router = express.Router();
 
+router.get('/material', function(req, res) {
+  res.render('material-app');
+})
+
 /* GET home page. */
 router.get('/', function (req, res) {
   res.render('index', {

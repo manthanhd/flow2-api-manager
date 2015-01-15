@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>API Factory</title>
+      <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
+      <script src="/javascripts/jquery-1.11.1.min.js"></script>
+      <script src="/javascripts/materialize.min.js"></script>
+
+      <script>
+        $(document).ready(function() {
+          // Initialize collapse button
+          $(".side-nav-toggle").sideNav({edge: 'left'});
+          // Initialize collapsible
+          $('.collapsible').collapsible();
+        });
+      </script>
+
+      <style>
+        .side-nav-toggle {
+          padding-left: 10px;
+        }
+
+        .nav-part {
+          padding: 0px !important;
+        }
+
+        .large-btn {
+          font-size: 18pt !important;
+        }
+
+        .lines-3 {
+          height: 13em !important;
+        }
+
+        .instance-header {
+          padding-top: 0.75em; !important;
+          margin-bottom: 0; !important;
+        }
+
+        .instance-tagline {
+          margin-top: -10px; !important;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          font-weight: 300;
+        }
+      </style>
+    </head>
+
+    <body>
+    <div class="row"
+        <!-- START LEFT NAVIGATION DRAWER-->
+        <ul id="slide-out" class="side-nav full">
+          <li><a href="#!">First Sidebar Link</a></li>
+          <li><a href="#!">Second Sidebar Link</a></li>
+          <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+              <li>
+                <div class="collapsible-header">Dropdown<i class="mdi-navigation-arrow-drop-down"></i></div>
+                <div class="collapsible-body">
+                  <ul>
+                    <li><a href="#!">First Dropdown Link</a></li>
+                    <li><a href="#!">Second Dropdown Link</a></li>
+                    <li><a href="#!">Third Dropdown Link</a></li>
+                    <li><a href="#!">Fourth Dropdown Link</a></li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!--END LEFT NAVIGATION DRAWER-->
+
+        <div class="col s8 nav-part">
+          <nav>
+            <div class="nav-wrapper red lines-3">
+
+                <span>
+                  <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
+                </span>
+              <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
+              <ul id="nav-mobile" class="right side-nav">
+                  <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
+                  <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+                  <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
+                  <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
+                  <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+                  <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
+                  <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
+              </ul>
+              <br/>
+              <div class="row">
+                <div class="col offset-s1 s11">
+                  <h3>Entities</h3>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+    <div class="col s4 nav-part">
+      <nav>
+        <div class="nav-wrapper red accent-4 lines-3">
+          <ul id="nav-mobile" class="right side-nav">
+            <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
+            <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+            <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
+            <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
+            <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+            <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
+            <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
+          </ul>
+
+          <div class="row">
+            <div class="col offset-s1 s11">
+              <h5 class="instance-header">Cars</h5>
+              <span class="instance-tagline">Edited on January 01, 2015 21:33</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    </div>
+    </body>
+</html>
