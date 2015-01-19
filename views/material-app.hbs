@@ -1,125 +1,349 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <title>API Factory</title>
-      <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
-      <script src="/javascripts/jquery-1.11.1.min.js"></script>
-      <script src="/javascripts/materialize.min.js"></script>
+<head>
+  <title>API Factory</title>
+  <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
+  <script src="/javascripts/jquery-1.11.1.min.js"></script>
+  <script src="/javascripts/materialize.min.js"></script>
 
-      <script>
-        $(document).ready(function() {
-          // Initialize collapse button
-          $(".side-nav-toggle").sideNav({edge: 'left'});
-          // Initialize collapsible
-          $('.collapsible').collapsible();
-        });
-      </script>
+  <script>
+    $(document).ready(function () {
+      // Initialize collapse button
+      $(".side-nav-toggle").sideNav({edge: 'left'});
+      // Initialize collapsible
+      $('.collapsible').collapsible();
 
-      <style>
-        .side-nav-toggle {
-          padding-left: 10px;
+      $('.dropdown-button').dropdown({
+          constrain_width: false, // Does not change width of dropdown to that of the activator
+          hover: false // Activate on click
         }
+      );
+    });
+  </script>
 
-        .nav-part {
-          padding: 0px !important;
-        }
+  <style>
+    .side-nav-toggle {
+      padding-left: 10px;
+    }
 
-        .large-btn {
-          font-size: 18pt !important;
-        }
+    .nav-part {
+      padding: 0px !important;
+    }
 
-        .lines-3 {
-          height: 13em !important;
-        }
+    .large-btn {
+      font-size: 18pt !important;
+    }
 
-        .instance-header {
-          padding-top: 0.75em; !important;
-          margin-bottom: 0; !important;
-        }
+    .lines-3 {
+      height: 13em !important;
+    }
 
-        .instance-tagline {
-          margin-top: -10px; !important;
-        }
+    .instance-header {
+      padding-top: 0.75em;
+    !important;
+      margin-bottom: 0;
+    !important;
+    }
 
-        h1, h2, h3, h4, h5, h6 {
-          font-weight: 300;
-        }
-      </style>
-    </head>
+    .instance-tagline {
+      margin-top: -10px;
+    !important;
+    }
 
-    <body>
-    <div class="row"
-        <!-- START LEFT NAVIGATION DRAWER-->
-        <ul id="slide-out" class="side-nav full">
-          <li><a href="#!">First Sidebar Link</a></li>
-          <li><a href="#!">Second Sidebar Link</a></li>
-          <li class="no-padding">
-            <ul class="collapsible collapsible-accordion">
-              <li>
-                <div class="collapsible-header">Dropdown<i class="mdi-navigation-arrow-drop-down"></i></div>
-                <div class="collapsible-body">
-                  <ul>
-                    <li><a href="#!">First Dropdown Link</a></li>
-                    <li><a href="#!">Second Dropdown Link</a></li>
-                    <li><a href="#!">Third Dropdown Link</a></li>
-                    <li><a href="#!">Fourth Dropdown Link</a></li>
-                  </ul>
-                </div>
-              </li>
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 300;
+    }
+
+    .padding-left-10px {
+      padding-left: 10px !important;
+    }
+
+    .main-container {
+      padding-top: 104px;
+    }
+
+    .medium-text {
+      font-size: 18pt;
+    }
+
+    /*.text-center td a, td span {*/
+      /*display:inline-block;*/
+      /*vertical-align: middle;*/
+      /*text-align: center !important;*/
+    /*}*/
+
+    .large-text {
+      font-size: 24pt;
+    }
+
+    .property-panel {
+      height: 470px;
+      overflow: auto;
+    }
+    
+    .instance-list-panel {
+      height: 229px;
+    }
+
+    .full-height {
+      height: 100%;
+    }
+
+    .no-border-bottom {
+      border-bottom: none;
+    }
+
+    .instance-list-button {
+      bottom: 265px;
+      position: absolute;
+      right: 62px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="row">
+  <!-- START LEFT NAVIGATION DRAWER-->
+  <ul id="slide-out" class="side-nav full">
+    <li><a href="#!">First Sidebar Link</a></li>
+    <li><a href="#!">Second Sidebar Link</a></li>
+    <li class="no-padding">
+      <ul class="collapsible collapsible-accordion">
+        <li>
+          <div class="collapsible-header">Dropdown<i class="mdi-navigation-arrow-drop-down"></i></div>
+          <div class="collapsible-body">
+            <ul>
+              <li><a href="#!">First Dropdown Link</a></li>
+              <li><a href="#!">Second Dropdown Link</a></li>
+              <li><a href="#!">Third Dropdown Link</a></li>
+              <li><a href="#!">Fourth Dropdown Link</a></li>
             </ul>
-          </li>
-        </ul>
-        <!--END LEFT NAVIGATION DRAWER-->
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <!--END LEFT NAVIGATION DRAWER-->
 
-        <div class="col s8 nav-part">
-          <nav>
-            <div class="nav-wrapper red lines-3">
+  <div class="col s8 nav-part">
+    <nav>
+      <div class="nav-wrapper red darken-3 lines-3">
 
                 <span>
-                  <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
+                  <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i>
+                    <span class="brand-logo padding-left-10px">API Factory</span></a>
                 </span>
-              <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
-              <ul id="nav-mobile" class="right side-nav">
-                  <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
-                  <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
-                  <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
-                  <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
-                  <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
-                  <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
-                  <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
-              </ul>
-              <br/>
-              <div class="row">
-                <div class="col offset-s1 s11">
-                  <h3>Entities</h3>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </div>
+        <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
+        <ul id="nav-mobile" class="right side-nav">
+          <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
+        </ul>
+        <br/>
 
-    <div class="col s4 nav-part">
-      <nav>
-        <div class="nav-wrapper red accent-4 lines-3">
-          <ul id="nav-mobile" class="right side-nav">
-            <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
-          </ul>
-
-          <div class="row">
-            <div class="col offset-s1 s11">
-              <h5 class="instance-header">Cars</h5>
-              <span class="instance-tagline">Edited on January 01, 2015 21:33</span>
-            </div>
+        <div class="row">
+          <div class="col offset-s1 s11">
+            <h3>Entities</h3>
           </div>
         </div>
-      </nav>
+      </div>
+    </nav>
+  </div>
+
+  <div class="col s4 nav-part">
+    <nav>
+      <div class="nav-wrapper red accent-4 lines-3">
+        <ul id="nav-mobile" class="right side-nav">
+          <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
+          <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
+        </ul>
+
+        <div class="row">
+          <div class="col offset-s1 s11">
+            <h5 class="instance-header">Cars</h5>
+            <span class="instance-tagline">Edited on January 01, 2015 21:33</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<div class="main-container">
+  <div class="row">
+    <div class="col s8">
+      <table class="table hoverable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Created on</th>
+            <th>Created by</th>
+            <th>Active?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mdi-action-assignment large-text"></span></td>
+            <td>Car</td>
+            <td>September 21, 2014</td>
+            <td>Manthan "The Duke" Dave</td>
+            <td class="text-center">
+              <div>
+                <span class="mdi-action-done medium-text green-text"></span>
+              </div>
+            </td>
+            <td>
+              <a class='dropdown-button text-center' href='#' data-activates='dropdown1'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul id='dropdown1' class='dropdown-content'>
+                <li><a href="#!">Deactivate</a></li>
+                <li class="divider"></li>
+                <li><a href="#!">View</a></li>
+                <li><a href="#!">Edit properties</a></li>
+                <li><a href="#!">Delete Entity</a></li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td><span class="mdi-action-assignment large-text"></span></td>
+            <td>Person</td>
+            <td>October 22, 2014</td>
+            <td>Rob "Rum 'n' coke" Swift</td>
+            <td class="text-center">
+              <div>
+                <span class="mdi-action-done medium-text green-text"></span>
+              </div>
+            </td>
+            <td>
+              <a class='dropdown-button text-center' href='#' data-activates='dropdown2'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul id='dropdown2' class='dropdown-content'>
+                <li><a href="#!">Deactivate</a></li>
+                <li class="divider"></li>
+                <li><a href="#!">View</a></li>
+                <li><a href="#!">Edit properties</a></li>
+                <li><a href="#!">Delete Entity</a></li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td><span class="mdi-action-assignment large-text"></span></td>
+            <td>Animal</td>
+            <td>November 04, 2014</td>
+            <td>Nathan "Teeside" Hunston</td>
+            <td class="text-center">
+              <div>
+                <span class="mdi-action-done medium-text green-text"></span>
+              </div>
+            </td>
+            <td>
+              <a class='dropdown-button text-center' href='#' data-activates='dropdown3'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul id='dropdown3' class='dropdown-content'>
+                <li><a href="#!">Deactivate</a></li>
+                <li class="divider"></li>
+                <li><a href="#!">View</a></li>
+                <li><a href="#!">Edit properties</a></li>
+                <li><a href="#!">Delete Entity</a></li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td><span class="mdi-action-assignment large-text"></span></td>
+            <td>Transaction</td>
+            <td>October 01, 2014</td>
+            <td>Manuel "Mad dog" Vincente Vivo</td>
+            <td class="text-center">
+              <div>
+                <span class="mdi-content-clear medium-text red-text"></span>
+              </div>
+            </td>
+            <td>
+              <a class='dropdown-button text-center' href='#' data-activates='dropdown4'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul id='dropdown4' class='dropdown-content'>
+                <li><a href="#!">Activate</a></li>
+                <li class="divider"></li>
+                <li><a href="#!">View</a></li>
+                <li><a href="#!">Edit properties</a></li>
+                <li><a href="#!">Delete Entity</a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+
+    <div class="col s4">
+      <div class="property-panel">
+        <table class="table hoverable">
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>wheelCount</td>
+              <td>number</td>
+              <td>
+                <a class='dropdown-button text-center' href='#' data-activates='dropdown5'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                <ul id='dropdown5' class='dropdown-content'>
+                  <li><a href="#!">Remove</a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>manufacturer</td>
+              <td>string</td>
+              <td>
+                <a class='dropdown-button text-center' href='#' data-activates='dropdown6'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                <ul id='dropdown6' class='dropdown-content'>
+                  <li><a href="#!">Remove</a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>modelName</td>
+              <td>string</td>
+              <td>
+                <a class='dropdown-button text-center' href='#' data-activates='dropdown7'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                <ul id='dropdown7' class='dropdown-content'>
+                  <li><a href="#!">Remove</a></li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td>manufactureDate</td>
+              <td>date</td>
+              <td>
+                <a class='dropdown-button text-center' href='#' data-activates='dropdown8'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                <ul id='dropdown8' class='dropdown-content'>
+                  <li><a href="#!">Remove</a></li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="instance-list-panel">
+        <a href="#" class="btn-floating btn-large waves-effect waves-light red instance-list-button"><i class="mdi-content-add"></i></a>
+        <hr/>
+        <textarea class="materialize-textarea full-height no-border-bottom" disabled></textarea>
+      </div>
     </div>
-    </body>
+  </div>
+</div>
+
+</body>
 </html>
