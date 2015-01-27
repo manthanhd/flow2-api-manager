@@ -1,0 +1,97 @@
+/*Index CSS*/
+
+.side-nav-toggle {
+    padding-left: 10px;
+}
+
+.nav-part {
+    padding: 0px !important;
+}
+
+.large-btn {
+    font-size: 18pt !important;
+}
+
+.lines-3 {
+    height: 13em !important;
+}
+
+.instance-header {
+    padding-top: 0.75em;
+!important;
+    margin-bottom: 0;
+!important;
+}
+
+.instance-tagline {
+    margin-top: -10px;
+!important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+
+.padding-left-10px {
+    padding-left: 10px !important;
+}
+
+.main-container {
+    padding-top: 104px;
+}
+
+.medium-text {
+    font-size: 18pt;
+}
+
+.large-text {
+    font-size: 24pt;
+}
+
+.property-panel {
+    height: 470px;
+    overflow: auto;
+}
+
+.instance-list-panel {
+    height: 150px;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.no-border-bottom {
+    border-bottom: none;
+}
+
+.instance-list-button {
+    bottom: 35px;
+    position: relative;
+    right: 50px;
+}
+
+.pull-right {
+    float: right;
+}
+
+.btn-floating-small {
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.no-line-height {
+    line-height: 0px !important;
+}
+
+.action-card {
+    float: right !important;
+    position: absolute;
+    top: 513px !important;
+    right: 45px;
+    padding: 12px 0px 0px 17px;
+}
+
+.cancel-action-card-button {
+    padding-left: 45px;
+}
