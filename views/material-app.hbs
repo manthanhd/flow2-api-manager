@@ -3,6 +3,7 @@
 <head>
   <title>API Factory</title>
   <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
+  <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
   <script src="/javascripts/jquery-1.11.1.min.js"></script>
   <script src="/javascripts/materialize.min.js"></script>
 
@@ -18,91 +19,10 @@
           hover: false // Activate on click
         }
       );
+
+      $('.modal-trigger').leanModal();
     });
   </script>
-
-  <style>
-    .side-nav-toggle {
-      padding-left: 10px;
-    }
-
-    .nav-part {
-      padding: 0px !important;
-    }
-
-    .large-btn {
-      font-size: 18pt !important;
-    }
-
-    .lines-3 {
-      height: 13em !important;
-    }
-
-    .instance-header {
-      padding-top: 0.75em;
-    !important;
-      margin-bottom: 0;
-    !important;
-    }
-
-    .instance-tagline {
-      margin-top: -10px;
-    !important;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: 300;
-    }
-
-    .padding-left-10px {
-      padding-left: 10px !important;
-    }
-
-    .main-container {
-      padding-top: 104px;
-    }
-
-    .medium-text {
-      font-size: 18pt;
-    }
-
-    /*.text-center td a, td span {*/
-      /*display:inline-block;*/
-      /*vertical-align: middle;*/
-      /*text-align: center !important;*/
-    /*}*/
-
-    .large-text {
-      font-size: 24pt;
-    }
-
-    .property-panel {
-      height: 470px;
-      overflow: auto;
-    }
-    
-    .instance-list-panel {
-      height: 229px;
-    }
-
-    .full-height {
-      height: 100%;
-    }
-
-    .no-border-bottom {
-      border-bottom: none;
-    }
-
-    .instance-list-button {
-      bottom: 35px;
-      position: relative;
-      right: 50px;
-    }
-
-    .pull-right {
-      float: right;
-    }
-  </style>
 </head>
 
 <body>
@@ -342,7 +262,18 @@
       </div>
       <div class="instance-list-panel">
         <hr/>
-        <a href="#" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right"><i class="mdi-content-add"></i></a>
+        <div class="card action-card dropdown-content" id="modal1">
+          <div class="valign-wrapper">
+            Find instance &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-action-search no-line-height"></i></a>
+          </div>
+          <div class="valign-wrapper">
+            New instance &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-content-add no-line-height"></i></a>
+          </div>
+          <div class="valign-wrapper cancel-action-card-button">
+            Close &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red"><i class="mdi-content-clear modal-close"></i></a>
+          </div>
+        </div>
+        <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right modal-trigger"><i class="mdi-content-add"></i></a>
         <textarea class="materialize-textarea full-height no-border-bottom" disabled></textarea>
       </div>
     </div>
