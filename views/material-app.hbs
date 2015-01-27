@@ -1,11 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="APIFactoryWeb">
 <head>
   <title>API Factory</title>
   <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
   <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
   <script src="/javascripts/jquery-1.11.1.min.js"></script>
   <script src="/javascripts/materialize.min.js"></script>
+  <script src="/javascripts/angular.min.js"></script>
+  <script src="/javascripts/angular-route.min.js"></script>
+
+  <script src="/javascripts/angular-app/main/Main.js"></script>
+  <script src="/javascripts/angular-app/main/MainController.js"></script>
+
+  <!--Imports for Entities section-->
+  <script src="/javascripts/angular-app/entity-manager/Entities.js"></script>
+  <script src="/javascripts/angular-app/entity-manager/list-entity/EntityListController.js"></script>
+
+  <script src="/javascripts/angular-app/app.js"></script>
 
   <script>
     $(document).ready(function () {
@@ -25,43 +36,36 @@
   </script>
 </head>
 
-<body>
-<div class="row">
-  <!-- START LEFT NAVIGATION DRAWER-->
-  <ul id="slide-out" class="side-nav full">
-    <li><a href="#!"><i class="mdi-action-view-module"></i> Entities</a></li>
-    <li><a href="#!"><i class="mdi-action-lock"></i> Security</a></li>
-    <li class="grey lighten-1"><a><i class="mdi-device-storage"></i> Data Source Manager</a></li>
-    <li class="grey lighten-1"><a><i class="mdi-editor-insert-chart"></i> Analytics</a></li>
-    <li><a href="#!"><i class="mdi-action-account-box"></i> My Account</a></li>
-    <li><a href="#!"><i class="mdi-action-exit-to-app"></i> Log Out</a></li>
-  </ul>
-  <!--END LEFT NAVIGATION DRAWER-->
+<body ng-controller="MainController">
+<!-- START LEFT NAVIGATION DRAWER-->
+<ul id="slide-out" class="side-nav full">
+  <li><a ng-class="{'blue-text': currentSection == 'entities'}" href="#"><i class="mdi-action-view-module"></i> Entities</a></li>
+  <li><a ng-class="{'blue-text': currentSection == 'security'}" href="#"><i class="mdi-action-lock"></i> Security</a></li>
+  <li class="grey lighten-1"><a><i class="mdi-device-storage"></i> Data Source Manager</a></li>
+  <li class="grey lighten-1"><a><i class="mdi-editor-insert-chart"></i> Analytics</a></li>
+  <li><a ng-class="{'blue-text': currentSection == 'account'}" href="#"><i class="mdi-action-account-box"></i> My Account</a></li>
+  <li><a href="#"><i class="mdi-action-exit-to-app"></i> Log Out</a></li>
+</ul>
+<!--END LEFT NAVIGATION DRAWER-->
 
+<div class="row">
   <div class="col s8 nav-part">
     <nav>
       <div class="nav-wrapper red darken-3 lines-3">
 
-                <span>
-                  <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i>
-                    <span class="brand-logo padding-left-10px">API Factory</span></a>
-                </span>
+        <span>
+          <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i>
+            <span class="brand-logo padding-left-10px"></span></a>
+        </span>
         <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
-        <ul id="nav-mobile" class="right side-nav">
-          <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
-        </ul>
+        <span ng-include src="'/partials/' + currentSection + '/major-banner-actions.partial.html'">
+
+        </span>
         <br/>
 
-        <div class="row">
-          <div class="col offset-s1 s11">
-            <h3>Entities</h3>
-          </div>
+        <!--Major banner import-->
+        <div class="row" ng-include src="'/partials/' + currentSection + '/major-banner-heading.partial.html'">
+
         </div>
       </div>
     </nav>
@@ -70,21 +74,10 @@
   <div class="col s4 nav-part">
     <nav>
       <div class="nav-wrapper red accent-4 lines-3">
-        <ul id="nav-mobile" class="right side-nav">
-          <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
-          <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
-        </ul>
+        <span ng-include src="'/partials/' + currentSection + '/minor-banner-actions.partial.html'">
+        </span>
 
-        <div class="row">
-          <div class="col offset-s1 s11">
-            <h5 class="instance-header">Cars</h5>
-            <span class="instance-tagline">Edited on January 01, 2015 21:33</span>
-          </div>
+        <div class="row" ng-include src="'/partials/' + currentSection + '/minor-banner-heading.partial.html'">
         </div>
       </div>
     </nav>
