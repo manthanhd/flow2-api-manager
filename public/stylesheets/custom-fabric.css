@@ -87,11 +87,20 @@ h1, h2, h3, h4, h5, h6 {
 .action-card {
     float: right !important;
     position: absolute;
-    top: 513px !important;
-    right: 45px;
+    top: 393px !important;
+    right: 46px;
     padding: 12px 0px 0px 17px;
 }
 
 .cancel-action-card-button {
     padding-left: 45px;
+}
+.action-label {
+    padding-bottom: 10px;
+    width: 120px;
+}
+
+.action-dismiss-label {
+    padding-bottom: 10px;
+    width: 77px;
 }
