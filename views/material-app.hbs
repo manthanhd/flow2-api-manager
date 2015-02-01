@@ -23,7 +23,23 @@
 
   <script src="/javascripts/angular-app/app.js"></script>
 </head>
+<script>
+    $(document).ready(function () {
+        // Default inits.
+        // Initialize collapse button
+        $(".side-nav-toggle").sideNav({edge: 'left'});
+        // Initialize collapsible
+//        $('.collapsible').collapsible();
 
+//        $('.dropdown-button').dropdown({
+//            constrain_width: false, // Does not change width of dropdown to that of the activator
+//            hover: false // Activate on click
+//            }
+//        );
+
+        $('.modal-trigger').leanModal();
+    });
+</script>
 <body ng-controller="MainController">
   <!-- START LEFT NAVIGATION DRAWER-->
   <ul id="slide-out" class="side-nav full">
