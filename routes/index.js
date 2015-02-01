@@ -53,10 +53,7 @@ router.get('/material', function(req, res) {
 
 /* GET home page. */
 router.get('/', function (req, res) {
-  res.render('index', {
-    title: 'Express',
-    layout: 'layouts/layout'
-  });
+  res.render('material-app');
 });
 
 router.get('/resetDB', function (req, res) {
