@@ -12,261 +12,32 @@
   <script src="/javascripts/angular-app/main/Main.js"></script>
   <script src="/javascripts/angular-app/main/MainController.js"></script>
 
+  <!--Imports for Shared classes-->
+  <script src="/javascripts/angular-app/shared/Shared.js"></script>
+  <script src="/javascripts/angular-app/shared/services/RequestService.js"></script>
+
   <!--Imports for Entities section-->
   <script src="/javascripts/angular-app/entity-manager/Entities.js"></script>
+  <script src="/javascripts/angular-app/entity-manager/EntityController.js"></script>
   <script src="/javascripts/angular-app/entity-manager/list-entity/EntityListController.js"></script>
 
   <script src="/javascripts/angular-app/app.js"></script>
-
-  <script>
-    $(document).ready(function () {
-      // Initialize collapse button
-      $(".side-nav-toggle").sideNav({edge: 'left'});
-      // Initialize collapsible
-      $('.collapsible').collapsible();
-
-      $('.dropdown-button').dropdown({
-          constrain_width: false, // Does not change width of dropdown to that of the activator
-          hover: false // Activate on click
-        }
-      );
-
-      $('.modal-trigger').leanModal();
-    });
-  </script>
 </head>
 
 <body ng-controller="MainController">
-<!-- START LEFT NAVIGATION DRAWER-->
-<ul id="slide-out" class="side-nav full">
-  <li><a ng-class="{'blue-text': currentSection == 'entities'}" href="#"><i class="mdi-action-view-module"></i> Entities</a></li>
-  <li><a ng-class="{'blue-text': currentSection == 'security'}" href="#"><i class="mdi-action-lock"></i> Security</a></li>
-  <li class="grey lighten-1"><a><i class="mdi-device-storage"></i> Data Source Manager</a></li>
-  <li class="grey lighten-1"><a><i class="mdi-editor-insert-chart"></i> Analytics</a></li>
-  <li><a ng-class="{'blue-text': currentSection == 'account'}" href="#"><i class="mdi-action-account-box"></i> My Account</a></li>
-  <li><a href="#"><i class="mdi-action-exit-to-app"></i> Log Out</a></li>
-</ul>
-<!--END LEFT NAVIGATION DRAWER-->
+  <!-- START LEFT NAVIGATION DRAWER-->
+  <ul id="slide-out" class="side-nav full">
+    <li><a href="#/entities"><i class="mdi-action-view-module"></i> Entities</a></li>
+    <li><a href="#/security"><i class="mdi-action-lock"></i> Security</a></li>
+    <li class="grey lighten-1"><a><i class="mdi-device-storage"></i> Data Source Manager</a></li>
+    <li class="grey lighten-1"><a><i class="mdi-editor-insert-chart"></i> Analytics</a></li>
+    <li><a href="#/account"><i class="mdi-action-account-box"></i> My Account</a></li>
+    <li><a href="#/logout"><i class="mdi-action-exit-to-app"></i> Log Out</a></li>
+  </ul>
+  <!--END LEFT NAVIGATION DRAWER-->
 
-<div class="row">
-  <div class="col s8 nav-part">
-    <nav>
-      <div class="nav-wrapper red darken-3 lines-3">
-
-        <span>
-          <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i>
-            <span class="brand-logo padding-left-10px"></span></a>
-        </span>
-        <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
-        <span ng-include src="'/partials/' + currentSection + '/major-banner-actions.partial.html'">
-
-        </span>
-        <br/>
-
-        <!--Major banner import-->
-        <div class="row" ng-include src="'/partials/' + currentSection + '/major-banner-heading.partial.html'">
-
-        </div>
-      </div>
-    </nav>
+  <div ng-view>
   </div>
-
-  <div class="col s4 nav-part">
-    <nav>
-      <div class="nav-wrapper red accent-4 lines-3">
-        <span ng-include src="'/partials/' + currentSection + '/minor-banner-actions.partial.html'">
-        </span>
-
-        <div class="row" ng-include src="'/partials/' + currentSection + '/minor-banner-heading.partial.html'">
-        </div>
-      </div>
-    </nav>
-  </div>
-</div>
-
-<div class="main-container">
-  <div class="row">
-    <div class="col s8">
-      <table class="table hoverable">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Created on</th>
-            <th>Created by</th>
-            <th>Active?</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="mdi-action-assignment large-text"></span></td>
-            <td>Car</td>
-            <td>September 21, 2014</td>
-            <td>Manthan "The Duke" Dave</td>
-            <td class="text-center">
-              <div>
-                <span class="mdi-action-done medium-text green-text"></span>
-              </div>
-            </td>
-            <td>
-              <a class='dropdown-button text-center' href='#' data-activates='dropdown1'><span class="mdi-navigation-more-vert medium-text"></span></a>
-              <ul id='dropdown1' class='dropdown-content'>
-                <li><a href="#!">Deactivate</a></li>
-                <li class="divider"></li>
-                <li><a href="#!">View</a></li>
-                <li><a href="#!">Edit properties</a></li>
-                <li><a href="#!">Delete Entity</a></li>
-              </ul>
-            </td>
-          </tr>
-
-          <tr>
-            <td><span class="mdi-action-assignment large-text"></span></td>
-            <td>Person</td>
-            <td>October 22, 2014</td>
-            <td>Rob "Rum 'n' coke" Swift</td>
-            <td class="text-center">
-              <div>
-                <span class="mdi-action-done medium-text green-text"></span>
-              </div>
-            </td>
-            <td>
-              <a class='dropdown-button text-center' href='#' data-activates='dropdown2'><span class="mdi-navigation-more-vert medium-text"></span></a>
-              <ul id='dropdown2' class='dropdown-content'>
-                <li><a href="#!">Deactivate</a></li>
-                <li class="divider"></li>
-                <li><a href="#!">View</a></li>
-                <li><a href="#!">Edit properties</a></li>
-                <li><a href="#!">Delete Entity</a></li>
-              </ul>
-            </td>
-          </tr>
-
-          <tr>
-            <td><span class="mdi-action-assignment large-text"></span></td>
-            <td>Animal</td>
-            <td>November 04, 2014</td>
-            <td>Nathan "Teeside" Hunston</td>
-            <td class="text-center">
-              <div>
-                <span class="mdi-action-done medium-text green-text"></span>
-              </div>
-            </td>
-            <td>
-              <a class='dropdown-button text-center' href='#' data-activates='dropdown3'><span class="mdi-navigation-more-vert medium-text"></span></a>
-              <ul id='dropdown3' class='dropdown-content'>
-                <li><a href="#!">Deactivate</a></li>
-                <li class="divider"></li>
-                <li><a href="#!">View</a></li>
-                <li><a href="#!">Edit properties</a></li>
-                <li><a href="#!">Delete Entity</a></li>
-              </ul>
-            </td>
-          </tr>
-
-          <tr>
-            <td><span class="mdi-action-assignment large-text"></span></td>
-            <td>Transaction</td>
-            <td>October 01, 2014</td>
-            <td>Manuel "Mad dog" Vincente Vivo</td>
-            <td class="text-center">
-              <div>
-                <span class="mdi-content-clear medium-text red-text"></span>
-              </div>
-            </td>
-            <td>
-              <a class='dropdown-button text-center' href='#' data-activates='dropdown4'><span class="mdi-navigation-more-vert medium-text"></span></a>
-              <ul id='dropdown4' class='dropdown-content'>
-                <li><a href="#!">Activate</a></li>
-                <li class="divider"></li>
-                <li><a href="#!">View</a></li>
-                <li><a href="#!">Edit properties</a></li>
-                <li><a href="#!">Delete Entity</a></li>
-              </ul>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col s4">
-      <div class="property-panel">
-        <table class="table hoverable">
-          <thead>
-            <tr>
-              <th>Property</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>wheelCount</td>
-              <td>number</td>
-              <td>
-                <a class='dropdown-button text-center' href='#' data-activates='dropdown5'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown5' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>manufacturer</td>
-              <td>string</td>
-              <td>
-                <a class='dropdown-button text-center' href='#' data-activates='dropdown6'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown6' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>modelName</td>
-              <td>string</td>
-              <td>
-                <a class='dropdown-button text-center' href='#' data-activates='dropdown7'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown7' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>manufactureDate</td>
-              <td>date</td>
-              <td>
-                <a class='dropdown-button text-center' href='#' data-activates='dropdown8'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown8' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="instance-list-panel">
-        <hr/>
-        <div class="card action-card dropdown-content" id="modal1">
-          <div class="valign-wrapper">
-            <span class="action-label">Delete instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-action-delete no-line-height"></i></a>
-          </div>
-          <div class="valign-wrapper">
-            <span class="action-label">Edit instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-image-edit no-line-height"></i></a>
-          </div>
-          <div class="valign-wrapper">
-            <span class="action-label">Find instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-action-search no-line-height"></i></a>
-          </div>
-          <div class="valign-wrapper">
-            <span class="action-label">New instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-content-add no-line-height"></i></a>
-          </div>
-          <div class="valign-wrapper cancel-action-card-button">
-            <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red"><i class="mdi-content-clear modal-close"></i></a>
-          </div>
-        </div>
-        <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
-        <textarea class="materialize-textarea full-height no-border-bottom" disabled></textarea>
-      </div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
