@@ -33,8 +33,8 @@ app.set('view engine', 'hbs');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(session(
-  {secret: uuid.v4(), resave: false, saveUninitialized: true}
-));  // Generate random secret.
+  {secret: uuid.v4(), resave: false, saveUninitialized: true} // Generate random secret.
+));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
