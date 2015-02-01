@@ -23,8 +23,8 @@ apiFactoryApp.directive('materialDropdown',  ['$rootScope', function($rootScope)
                     hover: false // Activate on click
                 }
             );
+
             element.click(function() {
-                console.log("Clicked!");
                 var dropdown = element.next();
                 dropdown.show();
                 var height = dropdown.css('height');
@@ -32,9 +32,9 @@ apiFactoryApp.directive('materialDropdown',  ['$rootScope', function($rootScope)
                 dropdown.animate({
                     'opacity': '1',
                     'height': height
-                });
-            })
-            console.log("Applied");
+                }, 'fast');
+                dropdown.attr('visible', 'visible');
+            });
         }
     };
 }]);
