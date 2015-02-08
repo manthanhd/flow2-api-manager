@@ -11,7 +11,7 @@
           </span>
           <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
           <ul class="right side-nav">
-            <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
+            <li><a ng-click="showAddEntity()"><span class="large-btn mdi-content-add"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
@@ -24,7 +24,22 @@
           <!--Major banner import-->
           <div class="row">
             <div class="col offset-s1 s11">
-              <h3>Entities</h3>
+              <h3 ng-if="enableEntityAdd == undefined">
+                Entities
+              </h3>
+              <div ng-if="enableEntityAdd">
+                <form class="row">
+                     <div class="input-field col s6">
+                       <input class="text-h3 validate" id="newEntityName" type="text" required ng-model="newEntity.name" placeholder="New entity name">
+                       <!--<label for="newEntityName" class="white-text">New entity name</label>-->
+                     </div>
+                     <div class="input-field col s6">
+                       <button class="waves-effect btn red darken-2 entity-name-ok-button" type="submit">
+                         <i class="mdi-action-done line-height-36"></i>
+                       </button>
+                     </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
