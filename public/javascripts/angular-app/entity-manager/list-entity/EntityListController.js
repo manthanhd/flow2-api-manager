@@ -8,10 +8,16 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
     };
 
     function onEntityListFailure(data, statusCode) {
-
+        toast("Failed to load entities.", 2000);
     };
 
+    $scope.$on("RefreshEntityList", function(event) {
+        RequestService.getEntityList(onEntityListSuccess, onEntityListFailure);
+    });
+
     function view(entity) {
-        $scope.$parent.$broadcast("ViewEntity", entity);
+        if(!$scope.$parent.newEntity) {
+            $scope.$parent.$broadcast("ViewEntity", entity);
+        }
     };
 });

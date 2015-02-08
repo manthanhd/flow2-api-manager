@@ -53,7 +53,8 @@ router.get('/material', function(req, res) {
 
 /* GET home page. */
 router.get('/', function (req, res) {
-  res.render('material-app');
+    res.cookie("XSRF-TOKEN", req.session.csrfToken);
+    res.render('material-app');
 });
 
 router.get('/resetDB', function (req, res) {

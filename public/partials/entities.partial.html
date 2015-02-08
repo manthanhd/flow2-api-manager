@@ -28,16 +28,41 @@
                 Entities
               </h3>
               <div ng-if="enableEntityAdd">
-                <form class="row">
-                     <div class="input-field col s6">
-                       <input class="text-h3 validate" id="newEntityName" type="text" required ng-model="newEntity.name" placeholder="New entity name">
-                       <!--<label for="newEntityName" class="white-text">New entity name</label>-->
+                <form class="row" ng-submit="saveEntity()">
+                     <div class="input-field col s10">
+                       <input class="text-h3 validate border-bottom-1px" id="newEntityName" type="text" required ng-model="newEntity.entityName" placeholder="New entity name">
                      </div>
-                     <div class="input-field col s6">
-                       <button class="waves-effect btn red darken-2 entity-name-ok-button" type="submit">
+                     <div class="input-field col s2">
+                       <button ng-click="hideAddEntity()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
+                         <i class="mdi-content-clear line-height-36"></i>
+                       </button>
+                       &nbsp;&nbsp;
+                       <button class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="submit">
                          <i class="mdi-action-done line-height-36"></i>
                        </button>
                      </div>
+                    <div class="modal black-text" id="confirmAddModal">
+                      <h4>Are you sure?</h4>
+                          <p>You are about to save the following entity:</p>
+                          <h5>{{newEntity.name}}</h5>
+                          <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
+                          <table class="hoverable" ng-if="newEntity.properties.length > 0">
+                            <thead>
+                              <th>Property name</th>
+                              <th>Type</th>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="property in newEntity.properties">
+                                <td>{{property.name}}</td>
+                                <td>{{property.type}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                      <div class="action-bar">
+                      <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                      <a class="waves-effect waves-green btn-flat modal-action" ng-click="confirmSave()">Save</a>
+                    </div>
+                    </div>
                 </form>
               </div>
             </div>
@@ -61,8 +86,11 @@
 
           <div class="row">
             <div class="col offset-s1 s11">
-              <h5 class="instance-header">Cars</h5>
-              <span class="instance-tagline">Edited on January 01, 2015 21:33</span>
+              <h5 class="instance-header" ng-hide="newEntity">{{entity.name}}</h5>
+              <h5 class="instance-header" ng-show="newEntity && newEntity.name">{{newEntity.name}}</h5>
+
+              <span class="instance-tagline" ng-if="!newEntity && entity.lastAccessDate">Last accessed on {{entity.lastAccessDate}}</span>
+              <span class="instance-tagline" ng-show="newEntity && newEntity.createdOn">Created on {{newEntity.createdOn}}</span>
             </div>
           </div>
         </div>
@@ -120,10 +148,29 @@
           <div class="row table-header-row">
             <div class="col s6 table-header">Property</div>
             <div class="col s5 table-header">Type</div>
-            <div class="col s1 table-header">&nbsp;</div>
+            <div class="col s1 table-header">
+              <a ng-if="$parent.newEntity" class="no-line-height" ng-click="addProperty()"><i class="mdi-content-add small"></i></a>
+              &nbsp;
+            </div>
           </div>
-          <p class="text-align-center italics" ng-if="entity == undefined">No entity selected.</p>
-          <div class="row table-row valign-wrapper" ng-repeat="property in entity.properties">
+
+          <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties">
+            <div class="col s6 table-cell">
+              <input type="text" placeholder="Property name" ng-model="property.name" required/>
+            </div>
+            <div class="col s5 table-cell">
+              <input type="text" placeholder="Property name" ng-model="property.type" required/>
+            </div>
+            <div class="col s2 table-cell">
+              <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+                <li><a ng-click="removePropertyAt($index)">Remove</a></li>
+              </ul>
+            </div>
+          </div>
+          <p class="text-align-center italics" ng-if="entity == undefined && $parent.newEntity.properties.length == 0">Click the add button to add properties.</p>
+
+          <div class="row table-row valign-wrapper" ng-if="!$parent.newEntity" ng-repeat="property in $parent.entity.properties">
             <div class="col s6 table-cell">{{property.name}}</div>
             <div class="col s5 table-cell">{{property.type}}</div>
             <div class="col s2 table-cell">
@@ -133,6 +180,7 @@
               </ul>
             </div>
           </div>
+          <p class="text-align-center italics" ng-if="entity == undefined && !$parent.newEntity">No entity selected.</p>
         </div>
         <div class="instance-list-panel" ng-controller="InstanceListController">
           <hr/>
@@ -164,9 +212,7 @@
     $(document).unbind('ready');
     $(document).ready(function() {
       $('.modal-trigger').leanModal();
-    })
-
-
+    });
 
     $(document).mouseup(function(e) {
       var dropdown = $("ul.dropdown-content[visible=visible]");
