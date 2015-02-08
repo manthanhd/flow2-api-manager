@@ -68,20 +68,20 @@
           <div class="col s1 table-header">&nbsp;</div>
         </div>
 
-        <div class="row table-row valign-wrapper" ng-repeat="entity in entityList">
-          <div class="col s1 table-cell"><span class="mdi-action-assignment large-text"></span></div>
-          <div class="col s3 table-cell">{{entity.name}}</div>
-          <div class="col s3 table-cell">
+        <div class="row table-row valign-wrapper link" ng-repeat="entity in entityList">
+          <div class="col s1 table-cell" ng-click="view(entity)"><span class="mdi-action-assignment large-text"></span></div>
+          <div class="col s3 table-cell" ng-click="view(entity)">{{entity.name}}</div>
+          <div class="col s3 table-cell" ng-click="view(entity)">
             <span ng-if="entity.createdOn">{{entity.createdOn}}</span>
             <span ng-if="!entity.createdOn">N/A</span>
             <!-- September 21, 2014 -->
           </div>
-          <div class="col s3 table-cell">
+          <div class="col s3 table-cell" ng-click="view(entity)">
             <span ng-if="entity.username">{{entity.username}}</span>
             <span ng-if="!entity.username">Unknown</span>
             <!--Manthan "The Duke" Dave-->
           </div>
-          <div class="col s1 table-cell text-center">
+          <div class="col s1 table-cell text-center" ng-click="view(entity)">
             <div>
               <span ng-if="entity.active" class="mdi-action-done medium-text green-text"></span>
               <span ng-if="!entity.active" class="mdi-navigation-close medium-text red-text"></span>
@@ -92,7 +92,7 @@
             <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
               <li><a href="#">Deactivate</a></li>
               <li class="divider"></li>
-              <li><a href="#">View</a></li>
+              <li><a ng-click="view(entity)">View</a></li>
               <li><a href="#">Edit properties</a></li>
               <li><a href="#">Delete Entity</a></li>
             </ul>
@@ -100,60 +100,26 @@
         </div>
       </div>
 
-      <div class="col s4">
+      <div class="col s4" ng-controller="EntityPropertyController">
         <div class="property-panel">
-          <table class="table hoverable">
-            <thead>
-            <tr>
-              <th>Property</th>
-              <th>Type</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>wheelCount</td>
-              <td>number</td>
-              <td>
-                <a material-dropdown class='dropdown-button text-center' href="#" data-activates='dropdown58'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown58' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>manufacturer</td>
-              <td>string</td>
-              <td>
-                <a material-dropdown class='dropdown-button text-center' href='#' data-activates='dropdown50'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown50' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>modelName</td>
-              <td>string</td>
-              <td>
-                <a class='dropdown-button text-center' href='#' data-activates='dropdown5'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown5' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>manufactureDate</td>
-              <td>date</td>
-              <td>
-                <a class='dropdown-button text-center' href='#' data-activates='dropdown8'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                <ul id='dropdown8' class='dropdown-content'>
-                  <li><a href="#!">Remove</a></li>
-                </ul>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="row table-header-row">
+            <div class="col s6 table-header">Property</div>
+            <div class="col s5 table-header">Type</div>
+            <div class="col s1 table-header">&nbsp;</div>
+          </div>
+          <p class="text-align-center italics" ng-if="entity == undefined">No entity selected.</p>
+          <div class="row table-row valign-wrapper" ng-repeat="property in entity.properties">
+            <div class="col s6 table-cell">{{property.name}}</div>
+            <div class="col s5 table-cell">{{property.type}}</div>
+            <div class="col s2 table-cell">
+              <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+                <li><a href="#">Remove</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="instance-list-panel">
+        <div class="instance-list-panel" ng-controller="InstanceListController">
           <hr/>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
@@ -173,7 +139,7 @@
             </div>
           </div>
           <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
-          <textarea class="materialize-textarea full-height no-border-bottom" disabled></textarea>
+          <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{instanceString}}</textarea>
         </div>
       </div>
     </div>

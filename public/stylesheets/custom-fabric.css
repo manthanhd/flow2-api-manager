@@ -54,7 +54,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .instance-list-panel {
-    height: 150px;
+    height: 205px;
+}
+
+.instance-list-textarea {
+    margin-top: -76px;
+    overflow: auto;
 }
 
 .full-height {
@@ -156,6 +161,14 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
 }
 
-a{
+a, .link{
     cursor: pointer;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.italics {
+    font-style: italic;
 }
