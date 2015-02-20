@@ -1,8 +1,9 @@
 var entitiesModule = angular.module("Entities");
+
 entitiesModule.controller("EntityController", function($scope, RequestService) {
     $scope.$on("ViewEntity", function(event, entity) {
         $scope.entity = entity;
-    })
+    });
 
     $scope.showAddEntity = function(force) {
         if($scope.newEntity && !force) {
@@ -28,6 +29,18 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         }
         $scope.newEntity = undefined;
         $scope.enableEntityAdd = undefined;
+    }
+
+    $scope.showSearchBar = function() {
+        $scope.hideAddEntity(true);
+        $scope.enableEntitySearch = true;
+
+        $scope.searchEntityNameText = "";
+    }
+
+    $scope.cancelSearchBar = function() {
+        $scope.enableEntitySearch = undefined;
+        $scope.searchEntityNameText = undefined;
     }
 
     $scope.saveEntity = function(force) {

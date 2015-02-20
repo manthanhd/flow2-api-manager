@@ -22,4 +22,36 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
             toast("Cannot view entity while a new entity is being created.", 2000);
         }
     };
+
+    $scope.entitySearchFilter = function(entity) {
+        if($scope.$parent.searchEntityNameText == undefined || $scope.$parent.searchEntityNameText == "") {
+            return true;
+        }
+
+        var lEntityName = entity.name.toLowerCase();
+        var lSearchString = $scope.searchEntityNameText.toLowerCase();
+        var regex = new RegExp(lSearchString);
+        if(regex.test(lEntityName) == true) {
+            return true;
+        }
+        return false;
+    }
 });
+
+//entitiesModule.filter('entitySearchFilter', function() {
+//    return function(entity, scope) {
+//        console.log("filtering..");
+//        if(!scope.$parent.searchEntityNameText) {
+//            return true;
+//        }
+//
+//        var lEntityName = entity.name.toLowerCase();
+//        var lSearchString = $scope.$parent.searchEntityNameText.toLowerCase();
+//        var regex = new RegExp(lSearchString);
+//        if(regex.test(lEntityName) == true) {
+//            return true;
+//        }
+//
+//        return false;
+//    }
+//})

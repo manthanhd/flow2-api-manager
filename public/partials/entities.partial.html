@@ -12,7 +12,7 @@
           <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
           <ul class="right side-nav">
             <li><a ng-click="showAddEntity()"><span class="large-btn mdi-content-add"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+            <li><a ng-click="showSearchBar()"><span class="large-btn mdi-action-search"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
@@ -24,9 +24,21 @@
           <!--Major banner import-->
           <div class="row">
             <div class="col offset-s1 s11">
-              <h3 ng-if="enableEntityAdd == undefined">
+              <h3 ng-if="enableEntityAdd == undefined && enableEntitySearch == undefined">
                 Entities
               </h3>
+              <div ng-show="enableEntitySearch != undefined">
+                <form class="row" ng-submit="saveEntity()">
+                  <div class="input-field col s10">
+                    <input class="text-h3 validate border-bottom-1px" id="searchText" type="text" required ng-model="searchEntityNameText" placeholder="Entity name to search...">
+                  </div>
+                  <div class="input-field col s2">
+                    <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
+                      <i class="mdi-content-clear line-height-36"></i>
+                    </a>
+                  </div>
+                </form>
+              </div>
               <div ng-if="enableEntityAdd">
                 <form class="row" ng-submit="saveEntity()">
                      <div class="input-field col s10">
@@ -163,7 +175,7 @@
           <div class="col s1 table-header">&nbsp;</div>
         </div>
 
-        <div class="row table-row valign-wrapper link" ng-repeat="entity in entityList">
+        <div class="row table-row valign-wrapper link" ng-repeat="entity in entityList | filter:entitySearchFilter">
           <div class="col s1 table-cell" ng-click="view(entity)"><span class="mdi-action-assignment large-text"></span></div>
           <div class="col s3 table-cell" ng-click="view(entity)">{{entity.name}}</div>
           <div class="col s3 table-cell" ng-click="view(entity)">
