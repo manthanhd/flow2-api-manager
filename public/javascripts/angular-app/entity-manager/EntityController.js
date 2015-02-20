@@ -6,6 +6,12 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
     });
 
     $scope.showAddEntity = function(force) {
+        $scope.cancelSearchBar();
+        if($scope.newEntity) {  // This will happen if the user flicks to the search screen and then decides to head back to the add screen.
+            $scope.enableEntityAdd = true;
+            return;
+        }
+
         if($scope.newEntity && !force) {
             //toast("<span>Reset</span><a class='btn-flat yellow-text' href='#'>Confirm<a>", 5000)
             $('#confirmResetEntity').openModal();
@@ -20,28 +26,40 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         };
         $scope.entity = undefined;
         $scope.enableEntityAdd = true;
-    }
+    };
 
     $scope.hideAddEntity = function(force) {
+        if($scope.enableEntitySearch) {
+            $scope.enableEntityAdd = undefined;
+            return;
+        }
+
         if($scope.newEntity && !force) {
             $("#confirmCancelEntityCreation").openModal();
             return;
         }
+
         $scope.newEntity = undefined;
         $scope.enableEntityAdd = undefined;
-    }
+    };
 
     $scope.showSearchBar = function() {
-        $scope.hideAddEntity(true);
         $scope.enableEntitySearch = true;
-
         $scope.searchEntityNameText = "";
-    }
+        $scope.hideAddEntity();
+    };
 
     $scope.cancelSearchBar = function() {
+        if(!$scope.enableEntitySearch) {
+            return;
+        }
         $scope.enableEntitySearch = undefined;
         $scope.searchEntityNameText = undefined;
-    }
+
+        if($scope.newEntity) {
+            $scope.showAddEntity();
+        }
+    };
 
     $scope.saveEntity = function(force) {
         var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
@@ -72,7 +90,7 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         } else {
             $scope.confirmSave();
         }
-    }
+    };
 
     $scope.retryCount = 0;
 
@@ -99,5 +117,5 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
             setTimeout($scope.confirmSave, 2000);
             $scope.retryCount++;
         }
-    }
+    };
 });
