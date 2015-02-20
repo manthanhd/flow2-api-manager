@@ -13,10 +13,10 @@
           <ul class="right side-nav">
             <li><a ng-click="showAddEntity()"><span class="large-btn mdi-content-add"></span></a></li>
             <li><a ng-click="showSearchBar()"><span class="large-btn mdi-action-search"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
-            <li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>
+            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>-->
             <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
           </ul>
           <br/>
@@ -139,7 +139,7 @@
       <nav>
         <div class="nav-wrapper red accent-4 lines-3">
           <ul class="right side-nav">
-            <li><a href="#"><span class="large-btn mdi-content-add"></span></a></li>
+            <li ng-show="newEntity"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>
             <li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>
@@ -211,9 +211,9 @@
         <div class="property-panel">
           <div class="row table-header-row">
             <div class="col s6 table-header">Property</div>
-            <div class="col s5 table-header">Type</div>
-            <div class="col s1 table-header">
-              <a ng-if="$parent.newEntity" class="no-line-height" ng-click="addProperty()"><i class="mdi-content-add small"></i></a>
+            <div class="col s4 table-header">Type</div>
+            <div class="col s2 table-header">
+              <!--<a ng-if="$parent.newEntity" class="no-line-height" ng-click="addProperty()"><i class="mdi-content-add small"></i></a>-->
               &nbsp;
             </div>
           </div>
@@ -222,7 +222,7 @@
             <div class="col s6 table-cell">
               <input type="text" placeholder="Property name" ng-model="property.name" required/>
             </div>
-            <div class="col s5 table-cell">
+            <div class="col s4 table-cell">
               <input type="text" placeholder="Property name" ng-model="property.type" required/>
             </div>
             <div class="col s2 table-cell">
@@ -236,7 +236,7 @@
 
           <div class="row table-row valign-wrapper" ng-if="!$parent.newEntity" ng-repeat="property in $parent.entity.properties">
             <div class="col s6 table-cell">{{property.name}}</div>
-            <div class="col s5 table-cell">{{property.type}}</div>
+            <div class="col s4 table-cell">{{property.type}}</div>
             <div class="col s2 table-cell">
               <!--<a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>-->
               <!--<ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>-->

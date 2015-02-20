@@ -118,4 +118,10 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
             $scope.retryCount++;
         }
     };
+
+    $scope.broadcastAddProperty = function() {
+        if($scope.newEntity) {
+            $scope.$parent.$broadcast("AddProperty");
+        }
+    }
 });

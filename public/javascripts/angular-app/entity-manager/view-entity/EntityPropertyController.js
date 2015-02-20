@@ -9,7 +9,7 @@ propertiesModule.controller("EntityPropertyController", function($scope, Request
         $scope.entity = entity;
     });
 
-    $scope.addProperty = function() {
+    $scope.$on("AddProperty", function() {
         $scope.$parent.newEntity.properties.push({
             name: "",
             type: "string",
@@ -17,7 +17,7 @@ propertiesModule.controller("EntityPropertyController", function($scope, Request
         });
 
         toast("New property added!", 1000);
-    }
+    });
 
     $scope.removePropertyAt = function(index) {
         if($scope.$parent.newEntity.properties.length == 1) {
