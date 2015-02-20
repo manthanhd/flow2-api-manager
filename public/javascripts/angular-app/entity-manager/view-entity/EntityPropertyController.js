@@ -6,7 +6,6 @@ propertiesModule.controller("EntityPropertyController", function($scope, Request
     })
 
     $scope.$on("ViewEntity", function(event, entity) {
-        console.log(entity);
         $scope.entity = entity;
     });
 

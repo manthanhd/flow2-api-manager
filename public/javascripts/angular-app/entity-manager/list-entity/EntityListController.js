@@ -18,6 +18,8 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
     function view(entity) {
         if(!$scope.$parent.newEntity) {
             $scope.$parent.$broadcast("ViewEntity", entity);
+        } else {
+            toast("Cannot view entity while a new entity is being created.", 2000);
         }
     };
 });

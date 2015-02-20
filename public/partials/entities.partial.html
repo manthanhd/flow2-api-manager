@@ -33,9 +33,9 @@
                        <input class="text-h3 validate border-bottom-1px" id="newEntityName" type="text" required ng-model="newEntity.entityName" placeholder="New entity name">
                      </div>
                      <div class="input-field col s2">
-                       <button ng-click="hideAddEntity()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
+                       <a ng-click="hideAddEntity()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
                          <i class="mdi-content-clear line-height-36"></i>
-                       </button>
+                       </a>
                        &nbsp;&nbsp;
                        <button class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="submit">
                          <i class="mdi-action-done line-height-36"></i>
@@ -53,7 +53,7 @@
                             </thead>
                             <tbody>
                               <tr ng-repeat="property in newEntity.properties">
-                                <td>{{property.name}}</td>
+                                <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
                                 <td>{{property.type}}</td>
                               </tr>
                             </tbody>
@@ -63,6 +63,58 @@
                       <a class="waves-effect waves-green btn-flat modal-action" ng-click="confirmSave()">Save</a>
                     </div>
                     </div>
+
+                  <div class="modal black-text" id="confirmResetEntity">
+                    <h4>Are you sure?</h4>
+                    <p>Do you want to reset all fields of the current entity?</p>
+                    <h5>{{newEntity.entityName}}</h5>
+                    <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
+                    <div class="row">
+                    <table class="col s6" ng-if="newEntity.properties.length > 0">
+                      <thead>
+                      <th>Property name</th>
+                      <th>Type</th>
+                      </thead>
+                      <tbody>
+                      <tr ng-repeat="property in newEntity.properties">
+                        <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
+                        <td>{{property.type}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                      <div class="col s6"></div>
+                    </div>
+                    <div class="action-bar">
+                      <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                      <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="showAddEntity(true)">Yes, Reset</a>
+                    </div>
+                  </div>
+
+                  <div class="modal black-text" id="confirmCancelEntityCreation">
+                    <h4>Are you sure?</h4>
+                    <p>Do you want to discard all the changes to the following entity?</p>
+                    <h5>{{newEntity.entityName}}</h5>
+                    <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
+                    <div class="row">
+                      <table class="col s6" ng-if="newEntity.properties.length > 0">
+                        <thead>
+                        <th>Property name</th>
+                        <th>Type</th>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="property in newEntity.properties">
+                          <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
+                          <td>{{property.type}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                      <div class="col s6"></div>
+                    </div>
+                    <div class="action-bar">
+                      <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                      <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="hideAddEntity(true)">Yes, Discard</a>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
@@ -186,19 +238,19 @@
           <hr/>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
-              <span class="action-label">Delete instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-action-delete no-line-height"></i></a>
+              <span class="action-label">Delete instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-delete no-line-height"></i></a>
             </div>
             <div class="valign-wrapper">
-              <span class="action-label">Edit instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-image-edit no-line-height"></i></a>
+              <span class="action-label">Edit instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-image-edit no-line-height"></i></a>
             </div>
             <div class="valign-wrapper">
-              <span class="action-label">Find instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-action-search no-line-height"></i></a>
+              <span class="action-label">Find instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-search no-line-height"></i></a>
             </div>
             <div class="valign-wrapper">
-              <span class="action-label">New instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3"><i class="mdi-content-add no-line-height"></i></a>
+              <span class="action-label">New instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-content-add no-line-height"></i></a>
             </div>
             <div class="valign-wrapper cancel-action-card-button">
-              <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red"><i class="mdi-content-clear modal-close"></i></a>
+              <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red modal-close"><i class="mdi-content-clear modal-close"></i></a>
             </div>
           </div>
           <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>

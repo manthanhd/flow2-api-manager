@@ -4,7 +4,12 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         $scope.entity = entity;
     })
 
-    $scope.showAddEntity = function() {
+    $scope.showAddEntity = function(force) {
+        if($scope.newEntity && !force) {
+            //toast("<span>Reset</span><a class='btn-flat yellow-text' href='#'>Confirm<a>", 5000)
+            $('#confirmResetEntity').openModal();
+            return;
+        }
         $scope.newEntity = {
             name: "",
             properties: [{
@@ -16,12 +21,16 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         $scope.enableEntityAdd = true;
     }
 
-    $scope.hideAddEntity = function() {
+    $scope.hideAddEntity = function(force) {
+        if($scope.newEntity && !force) {
+            $("#confirmCancelEntityCreation").openModal();
+            return;
+        }
         $scope.newEntity = undefined;
         $scope.enableEntityAdd = undefined;
     }
 
-    $scope.saveEntity = function() {
+    $scope.saveEntity = function(force) {
         var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
         if(alphaNumericUnderscoreRegex.test($scope.newEntity.entityName) != true) {
             toast("Entity name cannot contain spaces or special characters. A-Z, a-z, 0-9 and _ allowed.", 2000);
@@ -45,7 +54,11 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
                 return;
             }
         }
-        $("#confirmAddModal").openModal();
+        if(!force) {
+            $("#confirmAddModal").openModal();
+        } else {
+            $scope.confirmSave();
+        }
     }
 
     $scope.retryCount = 0;
