@@ -5,6 +5,10 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         $scope.entity = entity;
     });
 
+    $scope.showEntityDocumentationModal = function() {
+        $("#entityDocumentationModal").openModal();
+    }
+
     $scope.showAddEntity = function(force) {
         $scope.cancelSearchBar();
         if($scope.newEntity) {  // This will happen if the user flicks to the search screen and then decides to head back to the add screen.
@@ -74,6 +78,7 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         // Thorough property validation.
         for(var i = 0; i < $scope.newEntity.properties.length; i++) {
             var property = $scope.newEntity.properties[i];
+            console.log("'" + property.name + "'");
             if(property.name == "") {
                 toast("Property name of property " + (i + 1) + " cannot be blank.", 2000);
                 return;

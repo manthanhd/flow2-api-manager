@@ -11,9 +11,9 @@ propertiesModule.controller("EntityPropertyController", function($scope, $timeou
         $scope.entity = entity;
     });
 
-    $scope.hello = function() {
+    $scope.initializeMaterialSelect = function() {
         $('select').material_select();
-    }
+    };
 
     //$scope.$evalAsync(function() {
     //    $('select').material_select();

@@ -37,7 +37,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .main-container {
-    padding-top: 104px;
+    /*padding-top: 104px;*/
+    position: absolute;
+    top: 196px;
+    right: 0px;
+    left: 0px;
 }
 
 .medium-text {
@@ -54,12 +58,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .instance-list-panel {
-    height: 205px;
+    /*height: 205px;*/
+    height: 255px;
 }
 
 .instance-list-textarea {
     margin-top: -76px;
     overflow: auto;
+    position: absolute;
+    height: 200px !important;
+    width: 622px !important;
 }
 
 .full-height {
@@ -92,8 +100,8 @@ h1, h2, h3, h4, h5, h6 {
 .action-card {
     float: right !important;
     position: absolute;
-    top: 393px !important;
-    right: 46px;
+    top: 200px !important;
+    right: 41px;
     padding: 12px 0px 0px 17px;
 }
 
@@ -198,4 +206,16 @@ a, .link{
 .window-height {
     overflow: auto;
     height: 77.7vh;
+}
+
+.modal-large {
+    top: 4% !important;
+    max-width: 90% !important;
+    max-height: 92vh !important;
+}
+
+.side-nav li {
+    padding-top: 24px !important;
+    padding-left: 27px !important;
+    padding-bottom: 22px !important;
 }

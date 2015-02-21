@@ -4,23 +4,102 @@
     <div class="col s8 nav-part">
       <nav>
         <div class="nav-wrapper red darken-3 lines-3">
-
-          <span>
-              <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i>
-              <span class="brand-logo padding-left-10px"></span></a>
-          </span>
+          <!--<span>-->
+              <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
+              <!--<span class="brand-logo padding-left-10px"></span></a>-->
+          <!--</span>-->
           <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
-          <ul class="right side-nav">
-            <li ng-show="!newEntity || enableEntitySearch"><a ng-click="showAddEntity()"><span class="large-btn mdi-content-add"></span></a></li>
-            <li><a ng-click="showSearchBar()"><span class="large-btn mdi-action-search"></span></a></li>
+          <ul class="right">
+            <li ng-show="!newEntity || enableEntitySearch"><a ng-click="showAddEntity()"><i class="large-btn mdi-content-add"></i></a></li>
+            <li><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
             <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>-->
-            <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
+            <li ng-show="!newEntity && entity" ng-click="showEntityDocumentationModal()"><a><i class="large-btn mdi-action-info"></i></a></li>
+            <li><a href="#"><i class="large-btn mdi-navigation-more-vert"></i></a></li>
           </ul>
           <br/>
-
+          <div class="modal black-text modal-fixed-footer modal-large" id="entityDocumentationModal">
+            <div class="modal-content">
+              <h4>API Documentation for {{entity.name}} entity.</h4>
+              <p>REST Endpoint(s):
+              <table>
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>URL</th>
+                    <th>Sample Request Body</th>
+                    <th>Sample Response</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>GET</td>
+                    <td>http(s)://&lt;hostname&gt;:&lt;port&gt;/entity</td>
+                    <td>N/A</td>
+                    <td>
+                      <code>
+                        {
+                          "entityList": []
+                        }
+                      </code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>POST</td>
+                    <td>http(s)://&lt;hostname&gt;:&lt;port&gt;/entity</td>
+                    <td>
+                      <code>
+                        {
+                          entityName: <em>Alphanumeric string</em>,
+                          properties: [
+                                          {
+                                            name: <em>Alphanumeric String</em>,
+                                            type: <em>string/number/date as value</em>
+                                          }
+                                      ]
+                        }
+                      </code>
+                    </td>
+                    <td>
+                      <code>
+                        {
+                        "entityList": []
+                        }
+                      </code>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </p>
+              <p>Properties:</p>
+              <h6 ng-if="entity.properties.length == 0">This entity has no properties.</h6>
+              <div class="row">
+                <div class="col s6">
+                  <table class="table-responsive" ng-if="entity.properties.length > 0">
+                    <thead>
+                      <tr>
+                        <th>Property name</th>
+                        <th>Type</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="property in entity.properties">
+                        <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
+                        <td>{{property.type}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col s6"></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <!--<div class="action-bar">-->
+                <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Close</a>
+              <!--</div>-->
+            </div>
+          </div>
           <!--Major banner import-->
           <div class="row">
             <div class="col offset-s1 s11">
@@ -49,80 +128,86 @@
                          <i class="mdi-content-clear line-height-36"></i>
                        </a>
                        &nbsp;&nbsp;
-                       <button class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="submit">
+                       <a class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" ng-click="saveEntity()">
                          <i class="mdi-action-done line-height-36"></i>
-                       </button>
+                       </a>
                      </div>
-                    <div class="modal black-text" id="confirmAddModal">
+                    <div class="modal black-text modal-fixed-footer" id="confirmAddModal">
+                      <div class="modal-content">
+                        <h4>Are you sure?</h4>
+                        <p>You are about to save the following entity:</p>
+                        <h5>{{newEntity.entityName}}</h5>
+                        <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
+                        <table class="hoverable" ng-if="newEntity.properties.length > 0">
+                          <thead>
+                            <th>Property name</th>
+                            <th>Type</th>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="property in newEntity.properties">
+                              <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
+                              <td>{{property.type}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                        <a class="waves-effect waves-green btn-flat modal-action" ng-click="confirmSave()">Save</a>
+                      </div>
+                    </div>
+
+                    <div class="modal black-text modal-fixed-footer" id="confirmResetEntity">
+                      <div class="modal-content">
+                        <h4>Are you sure?</h4>
+                        <p>Do you want to reset all fields of the current entity?</p>
+                        <h5>{{newEntity.entityName}}</h5>
+                        <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
+                        <div class="row">
+                        <table class="col s6" ng-if="newEntity.properties.length > 0">
+                          <thead>
+                          <th>Property name</th>
+                          <th>Type</th>
+                          </thead>
+                          <tbody>
+                          <tr ng-repeat="property in newEntity.properties">
+                            <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
+                            <td>{{property.type}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                          <div class="col s6"></div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                        <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="showAddEntity(true)">Yes, Reset</a>
+                      </div>
+                    </div>
+
+                  <div class="modal black-text modal-fixed-footer" id="confirmCancelEntityCreation">
+                    <div class="modal-content">
                       <h4>Are you sure?</h4>
-                          <p>You are about to save the following entity:</p>
-                          <h5>{{newEntity.entityName}}</h5>
-                          <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
-                          <table class="hoverable" ng-if="newEntity.properties.length > 0">
-                            <thead>
-                              <th>Property name</th>
-                              <th>Type</th>
-                            </thead>
-                            <tbody>
-                              <tr ng-repeat="property in newEntity.properties">
-                                <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
-                                <td>{{property.type}}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                      <div class="action-bar">
-                      <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
-                      <a class="waves-effect waves-green btn-flat modal-action" ng-click="confirmSave()">Save</a>
+                      <p>Do you want to discard all the changes to the following entity?</p>
+                      <h5>{{newEntity.entityName}}</h5>
+                      <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
+                      <div class="row">
+                        <table class="col s6" ng-if="newEntity.properties.length > 0">
+                          <thead>
+                          <th>Property name</th>
+                          <th>Type</th>
+                          </thead>
+                          <tbody>
+                          <tr ng-repeat="property in newEntity.properties">
+                            <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
+                            <td>{{property.type}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                        <div class="col s6"></div>
+                      </div>
                     </div>
-                    </div>
-
-                  <div class="modal black-text" id="confirmResetEntity">
-                    <h4>Are you sure?</h4>
-                    <p>Do you want to reset all fields of the current entity?</p>
-                    <h5>{{newEntity.entityName}}</h5>
-                    <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
-                    <div class="row">
-                    <table class="col s6" ng-if="newEntity.properties.length > 0">
-                      <thead>
-                      <th>Property name</th>
-                      <th>Type</th>
-                      </thead>
-                      <tbody>
-                      <tr ng-repeat="property in newEntity.properties">
-                        <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
-                        <td>{{property.type}}</td>
-                      </tr>
-                      </tbody>
-                    </table>
-                      <div class="col s6"></div>
-                    </div>
-                    <div class="action-bar">
-                      <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
-                      <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="showAddEntity(true)">Yes, Reset</a>
-                    </div>
-                  </div>
-
-                  <div class="modal black-text" id="confirmCancelEntityCreation">
-                    <h4>Are you sure?</h4>
-                    <p>Do you want to discard all the changes to the following entity?</p>
-                    <h5>{{newEntity.entityName}}</h5>
-                    <h6 ng-if="newEntity.properties.length == 0">This entity has no properties.</h6>
-                    <div class="row">
-                      <table class="col s6" ng-if="newEntity.properties.length > 0">
-                        <thead>
-                        <th>Property name</th>
-                        <th>Type</th>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="property in newEntity.properties">
-                          <td>{{property.name}}<span ng-if="property.name.trim() == ''"><em>&lt;Blank&gt;</em></span></td>
-                          <td>{{property.type}}</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                      <div class="col s6"></div>
-                    </div>
-                    <div class="action-bar">
+                    <div class="modal-footer">
                       <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
                       <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="hideAddEntity(true)">Yes, Discard</a>
                     </div>
@@ -138,7 +223,7 @@
     <div class="col s4 nav-part">
       <nav>
         <div class="nav-wrapper red accent-4 lines-3">
-          <ul class="right side-nav">
+          <ul class="right">
             <li ng-show="newEntity"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>
             <li ng-show="entity || newEntity"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
             <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
@@ -218,7 +303,7 @@
             </div>
           </div>
 
-          <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties" on-finish-render="hello">
+          <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties" on-finish-render="initializeMaterialSelect">
             <div class="col s6 table-cell">
               <input type="text" placeholder="Property name" ng-model="property.name" required/>
             </div>
