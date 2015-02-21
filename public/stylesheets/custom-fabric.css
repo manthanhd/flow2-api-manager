@@ -194,3 +194,8 @@ a, .link{
     border-bottom-style: solid !important;
     border-width: thin;
 }
+
+.window-height {
+    overflow: auto;
+    height: 77.7vh;
+}

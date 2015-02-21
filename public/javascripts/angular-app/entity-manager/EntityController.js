@@ -102,7 +102,7 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
             if(statusCode == 200) {
                 $scope.$broadcast("RefreshEntityList");
                 $scope.$broadcast("ViewEntity", entity);
-                $scope.hideAddEntity();
+                $scope.hideAddEntity(true);
                 toast("Entity saved!", 1000);
                 $("#confirmAddModal").closeModal();
             }

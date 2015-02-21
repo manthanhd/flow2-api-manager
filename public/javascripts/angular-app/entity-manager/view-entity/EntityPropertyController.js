@@ -1,13 +1,24 @@
 var propertiesModule = angular.module("Entities");
-propertiesModule.controller("EntityPropertyController", function($scope, RequestService) {
+propertiesModule.controller("EntityPropertyController", function($scope, $timeout, $http, RequestService) {
 
     $scope.$on("NewEntityCreateStart", function(event) {
         $scope.entity = $scope.$parent.newEntity;
+        console.log("New entity!!")
+        $scope.getTypes();
     })
 
     $scope.$on("ViewEntity", function(event, entity) {
         $scope.entity = entity;
     });
+
+    $scope.hello = function() {
+        $('select').material_select();
+    }
+
+    //$scope.$evalAsync(function() {
+    //    $('select').material_select();
+    //});
+    $scope.i = 0;
 
     $scope.$on("AddProperty", function() {
         $scope.$parent.newEntity.properties.push({
@@ -15,6 +26,11 @@ propertiesModule.controller("EntityPropertyController", function($scope, Request
             type: "string",
             required: true
         });
+
+        //$timeout(function() {   // Runs after DOM has been rendered.
+        //    console.log($scope.i++);
+        //    $('select').material_select();
+        //});
 
         toast("New property added!", 1000);
     });
@@ -28,4 +44,17 @@ propertiesModule.controller("EntityPropertyController", function($scope, Request
         $scope.$parent.newEntity.properties.splice(index, 1);
         toast("Property removed.", 1000);
     }
+
+    $scope.getTypes = function() {
+        $http.get('/entity/metadata/types').success(function(data, statusCode) {
+            if(statusCode == 200) {
+                $scope.supportedTypes = data.typeList;
+            }
+            console.log($scope.supportedTypes);
+
+            //$scope.resetNewEntity();
+        });
+    }
+
+    $scope.getTypes();
 });

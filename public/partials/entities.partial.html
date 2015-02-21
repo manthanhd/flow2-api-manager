@@ -165,7 +165,7 @@
   <!-- Content Body -->
   <div class="main-container">
     <div class="row">
-      <div class="col s8 table-div" ng-controller="EntityListController">
+      <div class="col s8 table-div window-height" ng-controller="EntityListController">
         <div class="row table-header-row">
           <div class="col s1 table-header">&nbsp;</div>
           <div class="col s3 table-header">Name</div>
@@ -218,12 +218,13 @@
             </div>
           </div>
 
-          <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties">
+          <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties" on-finish-render="hello">
             <div class="col s6 table-cell">
               <input type="text" placeholder="Property name" ng-model="property.name" required/>
             </div>
             <div class="col s4 table-cell">
-              <input type="text" placeholder="Property name" ng-model="property.type" required/>
+              <!--<input type="text" placeholder="Property name" ng-model="property.type" required/>-->
+              <select ng-model="property.type" ng-init="property.type = supportedTypes[0]" ng-options="typeString as typeString for typeString in supportedTypes"></select>
             </div>
             <div class="col s2 table-cell">
               <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
