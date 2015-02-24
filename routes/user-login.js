@@ -88,7 +88,7 @@ router.post("/reset", function(req, res) {
     
     UserAccountManager.resetPassword(account.username, req.body.passwordText1, successCallback, failureCallback);
   } else {
-    res.render("user-reset", { username: account.username, csrfToken: req.csrfToken(), errorMessage: "Username and password did not match." });
+    res.render("user-reset", { username: account.username, csrfToken: req.csrfToken(), errorMessage: "Passwords don't match. Please try again." });
   }
 });
 
