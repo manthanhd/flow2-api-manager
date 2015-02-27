@@ -10,13 +10,13 @@
           <!--</span>-->
           <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
           <ul class="right">
-            <li ng-show="!newEntity || enableEntitySearch"><a ng-click="showAddEntity()"><i class="large-btn mdi-content-add"></i></a></li>
-            <li><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
+            <li ng-show="!newEntity || enableEntitySearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add entity"><a ng-click="showAddEntity()"><i class="large-btn mdi-content-add"></i></a></li>
+            <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
             <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-            <li ng-show="!newEntity && entity" ng-click="showEntityDocumentationModal()"><a><i class="large-btn mdi-action-info"></i></a></li>
-            <li><a href="#"><i class="large-btn mdi-navigation-more-vert"></i></a></li>
+            <li ng-show="!newEntity && entity" ng-click="showEntityDocumentationModal()" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Show documentation"><a><i class="large-btn mdi-action-info"></i></a></li>
+            <!--<li><a href="#"><i class="large-btn mdi-navigation-more-vert"></i></a></li>-->
           </ul>
           <br/>
           <div class="modal black-text modal-fixed-footer modal-large" id="entityDocumentationModal">
@@ -224,13 +224,13 @@
       <nav>
         <div class="nav-wrapper red accent-4 lines-3">
           <ul class="right">
-            <li ng-show="newEntity"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>
-            <li ng-show="entity || newEntity"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+            <li ng-show="newEntity" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add property"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>
+            <li ng-show="entity || newEntity" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
             <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>-->
-            <li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>
+            <!--<li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>-->
           </ul>
 
           <div class="row">
