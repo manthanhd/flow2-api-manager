@@ -1,49 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head>
-<!--    Import CSS-->
-    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/stylesheets/style.css"/>
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 text-center">
-          <h1>User Access Gateway</h1>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-          <br/>
-          {{#if errorMessage}}
-          <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            {{errorMessage}}
-          </div>
-          {{/if}}
-          
-          {{#if message}}
-          <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            {{message}}
-          </div>
-          {{/if}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4 col-md-offset-4 text-center">
-          <form role="form" class="form" method="post">
-            
-            <input type="text" class="form-control" id="usernameText" name="usernameText" placeholder="Username"/>
-            <input type="password" class="form-control" id="passwordText" name="passwordText" placeholder="Password"/>
-            <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
-            <div class="pull-right">
-              <input class="btn btn-success" type="submit" value="Login"/>
+<head>
+  <!--    Import CSS-->
+  <!--<link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>-->
+  <!--<link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"/>-->
+
+  <!--<link rel="stylesheet" href="/stylesheets/style.css"/>-->
+  <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
+  <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
+  <script src="/javascripts/jquery-1.11.1.min.js"></script>
+  <script src="/javascripts/materialize.min.js"></script>
+</head>
+<body>
+<br/>
+<br/>
+
+<div class="container">
+  <div class="row">
+    <div class="col m8 offset-m4">
+      <br/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col m6 offset-m3">
+      <div class="card">
+        <form role="form" method="post">
+          <div class="card-content">
+            <span class="card-title black-text center-align"><h2>Login</h2></span>
+              {{#if message}}
+                <p class="center-align grey-text darken-2">
+                    {{message}}
+                </p>
+                <br/>
+              {{/if}}
+              {{#if errorMessage}}
+                <p class="center-align red-text darken-2">
+                    {{errorMessage}}
+                </p>
+                <br/>
+              {{/if}}
+            <div class="row">
+              <div class="col m8 offset-m2">
+                <input class="center-align" type="text" id="usernameText" name="usernameText" placeholder="Username"/>
+                <input class="center-align" type="password" id="passwordText" name="passwordText"
+                       placeholder="Password"/>
+              </div>
             </div>
-          </form>
-        </div>
+            <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+
+          </div>
+          <div class="card-action">
+            <a class="btn-flat waves-effect waves-red black-text">Sign up</a>
+            <button class="btn red waves-effect waves-light pull-right" type="submit">Login</button>
+          </div>
+        </form>
+
       </div>
     </div>
-  </body>
+  </div>
+</div>
+</body>
 </html>
