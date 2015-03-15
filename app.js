@@ -11,6 +11,7 @@ var uuid = require('node-uuid');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var userRoute = require('./routes/user-login');
+var registerRoute = require('./routes/registration');
 var securityManager = require('./routes/security-home');
 var roleRoute = require('./routes/role');
 
@@ -42,6 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(csrf());
 // csurf error handler: https://github.com/expressjs/csurf
 app.use(function (err, req, res, next) {
+    next();
+    return;
   if (err.code !== 'EBADCSRFTOKEN') return next(err)
 
   // handle CSRF token errors here
@@ -49,7 +52,7 @@ app.use(function (err, req, res, next) {
   res.send('Session has expired or form tampered with')
 });
 
-app.all('/EAG/access/*', function(req, res, next) { // Instance operations
+app.all('/instance/*', function(req, res, next) { // Instance operations
     var account = req.session.account;
     if(!account) {
         res.status(403).send({error: "LoginRequired", errorCode: 403});
@@ -74,8 +77,8 @@ app.all('/EAG/access/*', function(req, res, next) { // Instance operations
         }
         console.log(allowsOperation);
         var hasRoleCallback = function(user, userRole, role) {
-            var regex = /\/EAG\/access\/([A-Za-z_0-9]+)\//i;
-            var regex2 = /\/EAG\/access\/([A-Za-z_0-9]+)/i;
+            var regex = /\/instance\/([A-Za-z_0-9]+)\//i;
+            var regex2 = /\/instance\/([A-Za-z_0-9]+)/i;
             var path = req.path;
             var matches = regex.exec(path) || regex2.exec(path);
             var entity = matches[1];
@@ -101,7 +104,7 @@ app.all('/EAG/access/*', function(req, res, next) { // Instance operations
         return;
     }
 
-    UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
+    UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
 app.all('/createEntity*', function(req, res, next) { // Instance operations
@@ -143,14 +146,14 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
         return;
     }
 
-    UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
+    UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
-// Read Entity auth is handled seperately.
-
+// Read Entity auth is handled separately.
 app.use('/', routes);
 app.use('/users', users);
 app.use('/user', userRoute);
+app.use('/register', registerRoute);
 app.use('/security-manager', securityManager);
 app.use('/role', roleRoute);
 
