@@ -2,10 +2,32 @@
 var express = require("express");
 var router = express.Router();
 var mongoose = require("mongoose");
+var AccountManager = require('./lib/sec/AccountManager');
 var UserAccountManager = require("./lib/sec/UserAccountManager");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
-var RoleModel = require('./lib/sec/RoleModel');
 var RoleManager = require('./lib/sec/RoleManager');
+
+router.get('/register', function (req, res) {
+    req.session.csrfToken = req.csrfToken();
+    res.render("user-register", {
+        csrfToken: req.session.csrfToken,
+        errorMessage: req.query.errorMessage,
+        message: req.query.message
+    });
+});
+
+router.post('/register', function (req, res) {
+    var successCallback = function (account) {
+        UserAccountManager.createDefaultAdminAccount(account.accountId);
+        res.redirect("/user/login");
+    }
+
+    var failureCallback = function () {
+        res.redirect("/user/register?errorMessage=Domain is already in use.");
+    }
+
+    AccountManager.createAccount(req.body.domainNameText, req.body.firstName, req.body.lastName, successCallback, failureCallback);
+});
 
 router.get('/login', function (req, res) {
     req.session.csrfToken = req.csrfToken();

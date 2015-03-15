@@ -11,13 +11,10 @@ var uuid = require('node-uuid');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var userRoute = require('./routes/user-login');
-var registerRoute = require('./routes/registration');
 var securityManager = require('./routes/security-home');
 var roleRoute = require('./routes/role');
 
-var UserAccountModel = require('./routes/lib/sec/UserAccountModel');
 var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
-var RoleModel = require('./routes/lib/sec/RoleModel');
 var RoleManager = require('./routes/lib/sec/RoleManager');
 //var SavedGenericEntity = require('./lib/GenericEntityModel');
 RoleManager.init();
@@ -153,7 +150,6 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
 app.use('/', routes);
 app.use('/users', users);
 app.use('/user', userRoute);
-app.use('/register', registerRoute);
 app.use('/security-manager', securityManager);
 app.use('/role', roleRoute);
 

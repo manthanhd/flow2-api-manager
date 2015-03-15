@@ -2,25 +2,6 @@ var UserAccountModel = require('./UserAccountModel');
 var AccountManager = require('./AccountManager');
 var UserAccountManager = {};
 
-//Initialize accounts.
-UserAccountManager.init = function () {
-    //UserAccountModel.find({isAdmin: true}, function (err, accounts) {
-    //    if (err) {
-    //        console.log("Fatal error. User account manager failed to initialize.");
-    //        process.exit(1);
-    //    }
-    //
-    //    console.log("System has " + accounts.length + " account(s).");
-    //
-    //    if (accounts.length == 0) {
-    //        console.log("User account manager did not find any admin accounts on the system.");
-    //        console.log("Creating the default admin account for system access.");
-    //        UserAccountManager.createDefaultAdminAccount();
-    //        return;
-    //    }
-    //});
-}
-
 UserAccountManager.createDefaultAdminAccount = function (accountId) {
     var defaultAdmin = new UserAccountModel();
     defaultAdmin.accountId = accountId;
