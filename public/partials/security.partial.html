@@ -1,0 +1,438 @@
+<section ng-controller="UserController">
+  <!-- Header -->
+  <div class="row">
+    <div class="col s8 nav-part">
+      <nav>
+        <div class="nav-wrapper red darken-3 lines-3">
+          <!--<span>-->
+              <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
+              <!--<span class="brand-logo padding-left-10px"></span></a>-->
+          <!--</span>-->
+          <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
+          <ul class="right">
+            <li ng-show="!newUser || enableUserSearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add user"><a ng-click="showAddUser()"><i class="large-btn mdi-content-add"></i></a></li>
+            <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
+            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
+            <!--<li ng-show="!newUser && User" ng-click="showUserDocumentationModal()"><a><i class="large-btn mdi-action-info"></i></a></li>-->
+            <!--<li><a href="#"><i class="large-btn mdi-navigation-more-vert"></i></a></li>-->
+          </ul>
+          <br/>
+          <!--Major banner import-->
+          <div class="row">
+            <div class="col offset-s1 s11">
+              <h3 ng-if="enableUserAdd == undefined && enableUserSearch == undefined">
+                Security
+              </h3>
+              <div ng-show="enableUserSearch != undefined">
+                <form class="row" ng-submit="saveUser()">
+                  <div class="input-field col s10">
+                    <input class="text-h3 validate border-bottom-1px" id="searchText" type="text" required ng-model="searchUserNameText" placeholder="Username to search...">
+                  </div>
+                  <div class="input-field col s2">
+                    <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
+                      <i class="mdi-content-clear line-height-36"></i>
+                    </a>
+                  </div>
+                </form>
+              </div>
+              <div ng-if="enableUserAdd">
+                <form class="row" ng-submit="saveUser()">
+                     <div class="input-field col s10">
+                       <input class="text-h3 validate border-bottom-1px" id="newUserName" type="text" required ng-model="newUser.username" placeholder="New user name">
+                     </div>
+                     <div class="input-field col s2">
+                       <a ng-click="hideAddUser()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
+                         <i class="mdi-content-clear line-height-36"></i>
+                       </a>
+                       &nbsp;&nbsp;
+                       <a class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" ng-click="saveUser()">
+                         <i class="mdi-action-done line-height-36"></i>
+                       </a>
+                     </div>
+                    <div class="modal black-text modal-fixed-footer" id="confirmAddModal">
+                      <div class="modal-content">
+                        <h4>Are you sure?</h4>
+                        <p>You are about to save the following user:</p>
+                        <h5>{{newUser.username}}</h5>
+                        <table class="hoverable">
+                          <thead>
+                            <tr>
+                              <th>Property</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Username</td>
+                              <td>{{newUser.username}}</td>
+                            </tr>
+                            <tr>
+                              <td>Temporary Password</td>
+                              <td>{{newUser.password}}</td>
+                            </tr>
+                            <tr>
+                              <td>To be reset?</td>
+                              <td>{{newUser.hasBeenReset}}</td>
+                            </tr>
+                            <tr>
+                              <td>Is user admin?</td>
+                              <td>{{newUser.isAdmin}}</td>
+                            </tr>
+                            <tr>
+                              <td>Has user been enabled?</td>
+                              <td>{{newUser.isEnabled}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="modal-footer">
+                        <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                        <a class="waves-effect waves-green btn-flat modal-action" ng-click="confirmSave()">Save</a>
+                      </div>
+                    </div>
+
+                    <div class="modal black-text modal-fixed-footer" id="confirmResetUser">
+                      <div class="modal-content">
+                        <h4>Are you sure?</h4>
+                        <p>Do you want to reset all fields of the current user that is being created?</p>
+                        <h5>{{newUser.username}}</h5>
+                        <div class="row">
+                        <table class="col s6">
+                          <thead>
+                            <tr>
+                              <th>Property</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Username</td>
+                              <td>{{newUser.username}}</td>
+                            </tr>
+                            <tr>
+                              <td>Temporary Password</td>
+                              <td>{{newUser.password}}</td>
+                            </tr>
+                            <tr>
+                              <td>To be reset?</td>
+                              <td>{{newUser.hasBeenReset}}</td>
+                            </tr>
+                            <tr>
+                              <td>Is user admin?</td>
+                              <td>{{newUser.isAdmin}}</td>
+                            </tr>
+                            <tr>
+                              <td>Has user been enabled?</td>
+                              <td>{{newUser.isEnabled}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                          <div class="col s6"></div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                        <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="showAddEntity(true)">Yes, Reset</a>
+                      </div>
+                    </div>
+
+                  <div class="modal black-text modal-fixed-footer" id="confirmCancelUserCreation">
+                    <div class="modal-content">
+                      <h4>Are you sure?</h4>
+                      <p>Do you want to discard all the changes to the following user?</p>
+                      <h5>{{newUser.username}}</h5>
+                      <div class="row">
+                        <table class="col s6">
+                          <thead>
+                          <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr>
+                            <td>Username</td>
+                            <td>{{newUser.username}}</td>
+                          </tr>
+                          <tr>
+                            <td>Temporary Password</td>
+                            <td>{{newUser.password}}</td>
+                          </tr>
+                          <tr>
+                            <td>To be reset?</td>
+                            <td>{{newUser.hasBeenReset}}</td>
+                          </tr>
+                          <tr>
+                            <td>Is user admin?</td>
+                            <td>{{newUser.isAdmin}}</td>
+                          </tr>
+                          <tr>
+                            <td>Has user been enabled?</td>
+                            <td>{{newUser.isEnabled}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                        <div class="col s6"></div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
+                      <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="hideAddUser(true)">Yes, Discard</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="col s4 nav-part">
+      <nav>
+        <div class="nav-wrapper red accent-4 lines-3">
+          <ul class="right">
+            <!--<li ng-show="newUser"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>-->
+            <li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
+            <li ng-show="(user || newUser) && (user.isAdmin == false || newUser.isAdmin == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Make admin"><a href="#"><span class="large-btn mdi-action-accessibility"></span></a></li>
+            <li ng-show="(user && (!user.hasBeenReset || user.hasBeenReset == false))" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Reset password"><a href="#"><span class="large-btn mdi-navigation-refresh"></span></a></li>
+            <li ng-show="(user || newUser) && (user.isEnabled == false || newUser.isEnabled == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Enable user"><a href="#"><span class="large-btn mdi-action-lock-open"></span></a></li>
+            <li ng-show="(user || newUser) && (user.isEnabled == true || newUser.isEnabled == true)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Disable user"><a href="#"><span class="large-btn mdi-action-lock"></span></a></li>
+            <li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Delete"><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>-->
+            <!--<li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>-->
+          </ul>
+
+          <div class="row">
+            <div class="col offset-s1 s11">
+              <h5 class="instance-header" ng-hide="newUser">{{user.username}}</h5>
+              <h5 class="instance-header" ng-show="newUser && newUser.username">{{newUser.username}}</h5>
+
+              <span class="instance-tagline" ng-show="newUser && newUser.createdBy">Created by {{newUser.createdBy}}</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Content Body -->
+  <div class="main-container">
+    <div class="row">
+      <div class="col s8 table-div window-height" ng-controller="UserListController">
+        <div class="row table-header-row">
+          <div class="col s1 table-header">&nbsp;</div>
+          <div class="col s7 table-header">Username</div>
+          <div class="col s1 table-header">To be reset?</div>
+          <div class="col s1 table-header">Is Admin?</div>
+          <div class="col s1 table-header">Is Enabled?</div>
+          <div class="col s1 table-header">&nbsp;</div>
+        </div>
+
+        <div class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
+          <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text"></span></div>
+          <div class="col s7 table-cell" ng-click="view(user)">{{user.username}}</div>
+          <div class="col s1 table-cell" ng-click="view(user)">
+            <div class="center">
+              <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
+              <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+            </div>
+            <!--<span ng-if="!entity.createdOn">N/A</span>-->
+            <!-- September 21, 2014 -->
+          </div>
+          <div class="col s1 table-cell" ng-click="view(user)">
+            <div class="center">
+              <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
+              <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
+            </div>
+            <!--<span ng-if="!entity.username">Unknown</span>-->
+            <!--Manthan "The Duke" Dave-->
+          </div>
+          <div class="col s1 table-cell text-center" ng-click="view(user)">
+            <div class="center">
+              <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
+              <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
+            </div>
+          </div>
+          <div class="col s1 table-cell">
+            <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+            <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+              <li><a ng-click="view(user)">View</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Disable</a></li>
+              <li><a href="#">Reset password</a></li>
+              <li><a href="#">Make admin</a></li>
+              <li><a href="#">Delete</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col s4" ng-controller="UserPropertyController">
+        <div class="property-panel">
+          <div class="row table-header-row">
+            <div class="col s5 table-header">Property</div>
+            <div class="col s7 table-header">Type</div>
+          </div>
+
+          <div ng-if="$parent.newUser">
+            <!--<div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">-->
+              <!--<div class="col s5 table-cell">-->
+                <!--Username-->
+              <!--</div>-->
+              <!--<div class="col s7 table-cell">-->
+                <!--<input type="text" placeholder="Username" ng-model="newUser.username" required/>-->
+              <!--</div>-->
+            <!--</div>-->
+
+            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+              <div class="col s5 table-cell">
+                Password
+              </div>
+              <div class="col s7 table-cell">
+                <input class="tooltipped" data-position="bottom" data-tooltip="Default password is change1t." type="password" placeholder="Password" ng-model="newUser.password" required/>
+                <script>
+                  $('.tooltipped').tooltip({delay: 50});
+                </script>
+              </div>
+            </div>
+
+            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+              <div class="col s5 table-cell">
+                Reset password on create?
+              </div>
+              <div class="col s7 table-cell">
+                <p>
+                  <input id="hasBeenResetCheckbox" type="checkbox" ng-model="newUser.hasBeenReset"/>
+                  <label for="hasBeenResetCheckbox"></label>
+                </p>
+              </div>
+            </div>
+
+            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+              <div class="col s5 table-cell">
+                Is admin?
+              </div>
+              <div class="col s7 table-cell">
+                <p>
+                  <input id="isAdminCheckbox" type="checkbox" ng-model="newUser.isAdmin"/>
+                  <label for="isAdminCheckbox"></label>
+                </p>
+              </div>
+            </div>
+
+            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+              <div class="col s5 table-cell">
+                Is enabled?
+              </div>
+              <div class="col s7 table-cell">
+                <p>
+                  <input id="isEnabledCheckbox" type="checkbox" ng-model="newUser.isEnabled"/>
+                  <label for="isEnabledCheckbox"></label>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="!$parent.newUser && user">
+            <div>
+              <div class="row table-row valign-wrapper">
+                <div class="col s5 table-cell">Username</div>
+                <div class="col s5 table-cell">{{user.username}}</div>
+                <div class="col s2 table-cell"></div>
+              </div>
+
+              <div class="row table-row valign-wrapper">
+                <div class="col s5 table-cell">Has been reset?</div>
+                <div class="col s5 table-cell">
+                  <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
+                  <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+                </div>
+                <div class="col s2 table-cell"></div>
+              </div>
+
+              <div class="row table-row valign-wrapper">
+                <div class="col s5 table-cell">Is admin?</div>
+                <div class="col s5 table-cell">
+                  <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
+                  <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
+                </div>
+                <div class="col s2 table-cell"></div>
+              </div>
+            </div>
+
+            <div class="row table-row valign-wrapper">
+              <div class="col s5 table-cell">Is enabled?</div>
+              <div class="col s5 table-cell">
+                <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
+              </div>
+              <div class="col s2 table-cell"></div>
+            </div>
+
+            <div class="row table-row valign-wrapper">
+              <div class="col s5 table-cell">Created by</div>
+              <div class="col s5 table-cell" ng-if="user.createdBy">{{user.createdBy}}</div>
+              <div class="col s5 table-cell" ng-if="!user.createdBy"><strong>default</strong></div>
+              <div class="col s2 table-cell"></div>
+            </div>
+          </div>
+          <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
+        </div>
+        <div class="instance-list-panel" ng-controller="RoleListController">
+          <hr/>
+          <div class="card action-card dropdown-content" id="modal1">
+            <div class="valign-wrapper">
+              <span class="action-label">Delete role</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-delete no-line-height"></i></a>
+            </div>
+            <div class="valign-wrapper">
+              <span class="action-label">Edit role</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-image-edit no-line-height"></i></a>
+            </div>
+            <div class="valign-wrapper">
+              <span class="action-label">Find role</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-search no-line-height"></i></a>
+            </div>
+            <div class="valign-wrapper">
+              <span class="action-label">New role</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-content-add no-line-height"></i></a>
+            </div>
+            <div class="valign-wrapper cancel-action-card-button">
+              <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red modal-close"><i class="mdi-content-clear modal-close"></i></a>
+            </div>
+          </div>
+          <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
+          <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{roleString}}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Must always be placed at the end of the script.
+    $(document).unbind('ready');
+    $(document).ready(function() {
+      $('.modal-trigger').leanModal();
+      $('.side-nav-toggle').sideNav({
+          menuWidth: 300, // Default is 240
+          edge: 'left', // Choose the horizontal origin
+          closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        }
+      );
+    });
+
+    $(document).mouseup(function(e) {
+      var dropdown = $("ul.dropdown-content[visible=visible]");
+      if(dropdown){
+        dropdown.animate({
+          'opacity': '0'
+        });
+        dropdown.hide();
+        dropdown.removeAttr("visible");
+      }
+    });
+
+
+  </script>
+</section>

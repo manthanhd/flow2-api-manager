@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="APIFactoryWeb">
+<head>
+  <title>API Factory</title>
+  <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
+  <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
+  <script src="/javascripts/jquery-1.11.1.min.js"></script>
+  <script src="/javascripts/materialize.min.js"></script>
+  <script src="/javascripts/angular.min.js"></script>
+  <script src="/javascripts/angular-route.min.js"></script>
+
+  <script src="/javascripts/angular-app/main/Main.js"></script>
+  <script src="/javascripts/angular-app/main/MainController.js"></script>
+
+  <!--Imports for Shared classes-->
+  <script src="/javascripts/angular-app/shared/Shared.js"></script>
+  <script src="/javascripts/angular-app/shared/services/RequestService.js"></script>
+
+  <!--Imports for Entities section-->
+  <script src="/javascripts/angular-app/entity-manager/Entities.js"></script>
+  <script src="/javascripts/angular-app/entity-manager/EntityController.js"></script>
+  <script src="/javascripts/angular-app/entity-manager/list-entity/EntityListController.js"></script>
+  <script src="/javascripts/angular-app/entity-manager/view-entity/EntityPropertyController.js"></script>
+  <script src="/javascripts/angular-app/entity-manager/list-instance/InstanceListController.js"></script>
+
+  <!--Imports for Security section-->
+  <script src="/javascripts/angular-app/security-manager/Users.js"></script>
+  <script src="/javascripts/angular-app/security-manager/UserController.js"></script>
+  <script src="/javascripts/angular-app/security-manager/list-users/UserListController.js"></script>
+  <script src="/javascripts/angular-app/security-manager/view-user/UserPropertyController.js"></script>
+  <script src="/javascripts/angular-app/security-manager/list-roles/RoleListController.js"></script>
+
+  <script src="/javascripts/angular-app/app.js"></script>
+</head>
+<script>
+//    $(document).ready(function () {
+//        $('.modal-trigger').leanModal();
+//    });
+</script>
+<body ng-controller="MainController">
+  <!-- START LEFT NAVIGATION DRAWER-->
+  <ul id="slide-out" class="side-nav full">
+    <li><a href="#/entities"><i class="mdi-action-view-module"></i> Entities</a></li>
+    <li><a href="#/security"><i class="mdi-action-lock"></i> Security</a></li>
+    <li class="grey lighten-1"><a><i class="mdi-device-storage"></i> Data Source Manager</a></li>
+    <li class="grey lighten-1"><a><i class="mdi-editor-insert-chart"></i> Analytics</a></li>
+    <li><a href="#/account"><i class="mdi-action-account-box"></i> My Account</a></li>
+    <li><a href="#/logout"><i class="mdi-action-exit-to-app"></i> Log Out</a></li>
+  </ul>
+  <!--END LEFT NAVIGATION DRAWER-->
+
+  <div ng-view>
+  </div>
+
+</body>
+</html>

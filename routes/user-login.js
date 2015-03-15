@@ -32,7 +32,7 @@ router.post('/login', function(req, res) {
     account.save(function(err, newAccount) {
       req.session.account = newAccount;
     });
-    res.redirect("/user/home");
+    res.redirect("/");
   }
   
   var notFoundCallback = function() {
@@ -45,7 +45,7 @@ router.post('/login', function(req, res) {
 router.post('/logout', function(req, res) {
   req.session.account = undefined;
   req.session.fwd = undefined;
-  res.redirect('/user/login');
+  res.redirect('/');
 });
 
 router.get("/reset", function(req, res) {
@@ -88,7 +88,7 @@ router.post("/reset", function(req, res) {
     
     UserAccountManager.resetPassword(account.username, req.body.passwordText1, successCallback, failureCallback);
   } else {
-    res.render("user-reset", { username: account.username, csrfToken: req.csrfToken(), errorMessage: "Username and password did not match." });
+    res.render("user-reset", { username: account.username, csrfToken: req.csrfToken(), errorMessage: "Passwords don't match. Please try again." });
   }
 });
 
@@ -109,7 +109,7 @@ router.get("/home", function(req, res) {
     return;
   }
   
-  res.render("user-home", { account: account })
+  res.render("material-app", { account: account })
 });
 
 // APIs
