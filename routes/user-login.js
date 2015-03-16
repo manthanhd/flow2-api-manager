@@ -59,6 +59,25 @@ router.get('/login', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
+    var domainName = req.body.domainName.trim();
+    var username = req.body.usernameText.trim();
+    var password = req.body.passwordText.trim();
+
+    if(!domainName || domainName == "" || !username || username == "" || !password || password == "") {
+        res.redirect("/user/login?errorMessage=Domain name, username and password are required fields.");
+        return;
+    }
+    var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
+    if(alphaNumericUnderscoreRegex.test(domainName) != true) {
+        res.redirect("/user/login?errorMessage=Domain name must be alpha-numeric.");
+        return;
+    }
+
+    if(alphaNumericUnderscoreRegex.test(username) != true) {
+        res.redirect("/user/login?errorMessage=Username must be alpha-numeric.");
+        return;
+    }
+
     var foundCallback = function (user) {
         req.session.account = user;
 
@@ -85,7 +104,7 @@ router.post('/login', function (req, res) {
         res.redirect("/user/login?errorMessage=Incorrect username or password.");
     }
 
-    UserAccountManager.validate(req.body.domainName, req.body.usernameText, req.body.passwordText, foundCallback, notFoundCallback);
+    UserAccountManager.validate(domainName, username, password, foundCallback, notFoundCallback);
 });
 
 router.get('/logout', function (req, res) {

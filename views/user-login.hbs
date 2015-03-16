@@ -37,10 +37,10 @@
               {{/if}}
             <div class="row">
               <div class="col m8 offset-m2">
-                <input class="center-align" type="text" id="domainName" name="domainName" placeholder="Domain name"/>
-                <input class="center-align" type="text" id="usernameText" name="usernameText" placeholder="Username"/>
+                <input class="center-align" type="text" id="domainName" name="domainName" placeholder="Domain name" required/>
+                <input class="center-align" type="text" id="usernameText" name="usernameText" placeholder="Username" required/>
                 <input class="center-align" type="password" id="passwordText" name="passwordText"
-                       placeholder="Password"/>
+                       placeholder="Password" required/>
               </div>
             </div>
             <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
