@@ -17,6 +17,26 @@ router.get('/register', function (req, res) {
 });
 
 router.post('/register', function (req, res) {
+    var domainName = req.body.domainNameText.trim();
+    var firstName = req.body.firstName.trim();
+    var lastName = req.body.lastName.trim();
+
+    if(!domainName || domainName == "" || !firstName || firstName == "" || !lastName || lastName == "") {
+        res.redirect("/user/register?errorMessage=Domain name, first name and last name are required fields.");
+        return;
+    }
+    var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
+    if(alphaNumericUnderscoreRegex.test(domainName) != true) {
+        res.redirect("/user/register?errorMessage=Domain name can only contain alpha-numeric characters.");
+        return;
+    }
+
+    var alphaRegex = new RegExp("^[A-Za-z]+$");
+    if(alphaRegex.test(firstName) != true || alphaRegex.test(lastName) != true) {
+        res.redirect("/user/register?errorMessage=First name and last name can only contain alphabets.");
+        return;
+    }
+
     var successCallback = function (account) {
         UserAccountManager.createDefaultAdminAccount(account.accountId);
         res.redirect("/user/login");
@@ -26,7 +46,7 @@ router.post('/register', function (req, res) {
         res.redirect("/user/register?errorMessage=Domain is already in use.");
     }
 
-    AccountManager.createAccount(req.body.domainNameText, req.body.firstName, req.body.lastName, successCallback, failureCallback);
+    AccountManager.createAccount(domainName, firstName, lastName, successCallback, failureCallback);
 });
 
 router.get('/login', function (req, res) {
