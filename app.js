@@ -93,7 +93,7 @@ app.all('/instance/*', function(req, res, next) { // Instance operations
             return;
         }
 
-        RoleManager.hasRole("instance", allowsOperation, account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "instance", allowsOperation, account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function() {
@@ -135,7 +135,7 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
             return;
         }
 
-        RoleManager.hasRole("entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function() {
