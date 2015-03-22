@@ -32,6 +32,7 @@ properties.parse("db.properties", {
     mongoose.connect(uri, options, function (err, res) {
         if (err) {
             console.log("Error connecting to DB.");
+            console.log(err);
         } else {
             console.log("Successfully connected to DB.");
         }
