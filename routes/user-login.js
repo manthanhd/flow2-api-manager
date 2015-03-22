@@ -196,7 +196,7 @@ router.get('/', function (req, res) {
 
     var hasRoleCallback = function (user, userRole, role) {
 
-        UserAccountModel.find({}, function (err, users) {
+        UserAccountModel.find({accountId: account.accountId}, function (err, users) {
             if (err || !users) {
                 console.log("Error occured while listing users.");
                 res.status(500).send({error: "UserListError", errorCode: 500});
@@ -235,7 +235,7 @@ router.get('/', function (req, res) {
         return;
     }
 
-    RoleManager.hasRole("user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+    RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
 router.get('/:userId', function (req, res) {
@@ -247,7 +247,7 @@ router.get('/:userId', function (req, res) {
     var hasRoleCallback = function (user, userRole, role) {
         var userId = req.params.userId;
 
-        UserAccountModel.findOne({_id: userId}, function (err, user) {
+        UserAccountModel.findOne({accountId: account.accountId, _id: userId}, function (err, user) {
             if (err || !user) {
                 res.status(500).send({error: "UserListError", errorCode: 500});
                 return;
@@ -268,7 +268,7 @@ router.get('/:userId', function (req, res) {
         return;
     }
 
-    RoleManager.hasRole("user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+    RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 })
 
 router.post('/', function (req, res) {
@@ -308,6 +308,7 @@ router.post('/', function (req, res) {
             // Do a role check if user is allowed to assign roles or not.
 
             var newUser = new UserAccountModel();
+            newUser.accountId = account.accountId;
             newUser.username = req.body.username;
             newUser.password = req.body.password;
             newUser.hasBeenReset = true;
@@ -342,7 +343,7 @@ router.post('/', function (req, res) {
         return;
     }
 
-    RoleManager.hasRole("user", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+    RoleManager.hasRole(account.accountId, "user", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
 router.delete('/:id', function (req, res) {
@@ -354,7 +355,7 @@ router.delete('/:id', function (req, res) {
 
     var hasRoleCallback = function (loggedUser, userRole, role) {
         var userId = req.params.id;
-        UserAccountModel.findOne({_id: userId}, function (err, user) {
+        UserAccountModel.findOne({accountId: account.accountId,_id: userId}, function (err, user) {
             if (err || !user) {
                 console.log("Failed to list user with ID " + userId);
                 console.log(err);
@@ -378,7 +379,7 @@ router.delete('/:id', function (req, res) {
         return;
     }
 
-    RoleManager.hasRole("user", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+    RoleManager.hasRole(account.accountId, "user", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
 router.post('/:userId', function (req, res) {
@@ -438,7 +439,7 @@ router.post('/:userId', function (req, res) {
         res.status(404).send({error: "UserNotFoundError", errorCode: 404});
     }
 
-    UserAccountManager.doesUserIdExist(userId, userExistsCallback, userNotFoundCallback);
+    UserAccountManager.doesUserIdExist(account.accountId, userId, userExistsCallback, userNotFoundCallback);
 });
 
 router.put('/:userId', function (req, res) {
@@ -485,7 +486,7 @@ router.put('/:userId', function (req, res) {
         res.status(404).send({error: "UserNotFoundError", errorCode: 404});
     }
 
-    UserAccountManager.doesUserIdExist(userId, userExistsCallback, userNotFoundCallback);
+    UserAccountManager.doesUserIdExist(account.accountId, userId, userExistsCallback, userNotFoundCallback);
 });
 
 router.delete('/:userId/:roleAssignmentId', function (req, res) {
