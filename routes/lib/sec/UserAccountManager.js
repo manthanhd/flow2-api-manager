@@ -81,8 +81,8 @@ UserAccountManager.doesUserExist = function (accountId, username, foundCallback,
     })
 }
 
-UserAccountManager.doesUserIdExist = function (id, foundCallback, notFoundCallback) {
-    UserAccountModel.findOne({_id: id}, function (err, user) {
+UserAccountManager.doesUserIdExist = function (accountId, id, foundCallback, notFoundCallback) {
+    UserAccountModel.findOne({accountId: accountId, _id: id}, function (err, user) {
         if (err) {
             notFoundCallback();
             return;
