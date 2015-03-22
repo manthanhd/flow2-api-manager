@@ -1,9 +1,9 @@
-function ErrorObject(){
+function ErrorObject() {
     this.error = undefined;
     this.errorCode = undefined;
     this.errorDetail = [];
 }
-ErrorObject.create = function(error, code){
+ErrorObject.create = function (error, code) {
     var errorObject = new ErrorObject();
     errorObject.error = error;
     errorObject.errorCode = code;

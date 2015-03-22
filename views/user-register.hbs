@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login - API Factory</title>
+  <title>Register - API Factory</title>
   <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
   <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
   <script src="/javascripts/jquery-1.11.1.min.js"></script>
@@ -22,7 +22,7 @@
       <div class="card">
         <form role="form" method="post">
           <div class="card-content">
-            <span class="card-title black-text center-align"><h2>Login</h2></span>
+            <span class="card-title black-text center-align"><h2>Register</h2></span>
               {{#if message}}
                 <p class="center-align grey-text darken-2">
                     {{message}}
@@ -37,18 +37,19 @@
               {{/if}}
             <div class="row">
               <div class="col m8 offset-m2">
-                <input class="center-align" type="text" id="domainName" name="domainName" placeholder="Domain name" required/>
-                <input class="center-align" type="text" id="usernameText" name="usernameText" placeholder="Username" required/>
-                <input class="center-align" type="password" id="passwordText" name="passwordText"
-                       placeholder="Password" required/>
+                <input class="center-align" type="text" id="domainNameText" name="domainNameText" placeholder="Domain name - eg. mycoolco" required/>
+                <input class="center-align" type="text" id="firstName" name="firstName"
+                       placeholder="First name" required/>
+                <input class="center-align" type="text" id="lastName" name="lastName"
+                       placeholder="Last name" required/>
               </div>
             </div>
             <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
 
           </div>
           <div class="card-action">
-            <a href="/user/register" class="btn-flat waves-effect waves-red black-text">Sign up</a>
-            <button class="btn red waves-effect waves-light pull-right" type="submit">Login</button>
+            <a href="/user/login" class="btn-flat waves-effect waves-red black-text">Sign in</a>
+            <button class="btn red waves-effect waves-light pull-right" type="submit">Register</button>
           </div>
         </form>
 
