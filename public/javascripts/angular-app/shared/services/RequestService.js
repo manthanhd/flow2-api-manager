@@ -13,7 +13,7 @@ sharedModule.service("RequestService", function($http) {
     };
 
     this.getInstanceList = function(entityName, onSuccess, onFailure) {
-        $http.get("/EAG/access/" + entityName).success(function(data, statusCode) {
+        $http.get("/instance/" + entityName).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
             if(statusCode == 403 && data && data.errorCode == 403 && data.error == "LoginRequired") {
@@ -50,6 +50,18 @@ sharedModule.service("RequestService", function($http) {
 
     this.createUser = function(user, onSuccess, onFailure) {
         $http.post("/user", user).success(function(data, statusCode) {
+            onSuccess(data, statusCode);
+        }).error(function(data, statusCode) {
+            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "LoginRequired") {
+                window.location.href = "/user/login";
+            } else {
+                onFailure(data, statusCode);
+            }
+        });
+    }
+
+    this.createInstance = function(entityName, instanceObject, onSuccess, onFailure) {
+        $http.post("/instance/" + entityName, instanceObject).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
             if(statusCode == 403 && data && data.errorCode == 403 && data.error == "LoginRequired") {
