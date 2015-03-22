@@ -358,7 +358,7 @@ RoleManager.findRoleByContextAndOperation = function (context, operation, foundC
     })
 }
 
-RoleManager.hasRole = function (context, allowedOperation, userId, allowCallback, rejectCallback) {
+RoleManager.hasRole = function (accountId, context, allowedOperation, userId, allowCallback, rejectCallback) {
     var foundCallback = function (user) {
         // User exists...
         if (user.isAdmin && user.isAdmin == true) {
@@ -390,7 +390,7 @@ RoleManager.hasRole = function (context, allowedOperation, userId, allowCallback
         rejectCallback();
     }
 
-    UserAccountManager.doesUserIdExist(userId, foundCallback, notFoundCallback);
+    UserAccountManager.doesUserIdExist(accountId, userId, foundCallback, notFoundCallback);
 }
 
 module.exports = RoleManager;
