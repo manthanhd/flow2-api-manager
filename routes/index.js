@@ -91,7 +91,7 @@ router.get('/entity/metadata/types', function (req, res) {
             return;
         }
 
-        RoleManager.hasRole("entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function () {
@@ -140,7 +140,7 @@ router.get('/entity', function (req, res) { // Renamed from listEntities
             return;
         }
 
-        RoleManager.hasRole("entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function () {
@@ -289,7 +289,7 @@ router.get("/entity/:entityId", function (req, res) { // renamed from readEntity
             return;
         }
 
-        RoleManager.hasRole("entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function () {
@@ -358,7 +358,7 @@ router.delete("/entity/:entityId", function (req, res) {  // renamed from delete
             return;
         }
 
-        RoleManager.hasRole("entity", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "entity", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function () {
