@@ -1,5 +1,12 @@
 var instanceListModule = angular.module("Entities");
 instanceListModule.controller("InstanceListController", function($scope, RequestService) {
+    $scope.initializeMaterialSelect = function() {
+        $('select').material_select();
+    };
+
+    $scope.initializeMaterialSelect();
+
+
     $scope.$on("ViewEntity", function(event, entity) {
         RequestService.getInstanceList(entity.name, successHandler, failureHandler);
     });
@@ -39,6 +46,15 @@ instanceListModule.controller("InstanceListController", function($scope, Request
         RequestService.createInstance($scope.$parent.entity.name, $scope.newInstance, onSuccess, onFailure);
 
         $scope.newInstance = {};
+    }
+
+    $scope.showFindInstanceModal = function() {
+        $("#findInstanceModal").openModal();
+    }
+
+    $scope.findInstances = function() {
+        console.log($scope.findInstanceProperty);
+        console.log($scope.findInstanceValue);
     }
 
     function successHandler(data, statusCode) {
