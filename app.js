@@ -39,21 +39,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(csrf());
 // csurf error handler: https://github.com/expressjs/csurf
+// Disabled.
 app.use(function (err, req, res, next) {
     next();
     return;
-  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+    if (err.code !== 'EBADCSRFTOKEN') return next(err)
 
-  // handle CSRF token errors here
-  res.status(403)
-  res.send('Session has expired or form tampered with')
+    // handle CSRF token errors here
+    res.status(403)
+    res.send('Session has expired or form tampered with')
 });
 
 app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
 
 var basicAuth = require('basic-auth');
 function authenticate(req, res, next) {
-    if(req.path == "/user/login" || req.path == "/user/logout") {
+    if(req.path == "/apidocs" || req.path == "/" ||req.path == "/user/login" || req.path == "/user/logout") {   // Exclude these from authentication
         return next();
     }
 
@@ -64,28 +65,24 @@ function authenticate(req, res, next) {
     var blockAccess = function(req, res) {
         return res.status(403).send({error: "LoginRequired", errorCode: 403});
     }
-    console.log("Fetching domain");
+
     var domainName = req.get('X-Authorization-Domain');
     if(!domainName || domainName == '') {
-        console.log("empty-domain");
         return blockAccess(req, res);
     }
 
     var user = basicAuth(req);
 
     if(!user || !user.name || !user.pass) {
-        console.log("null");
         return blockAccess(req, res);
     }
 
     var userFoundCallback = function(user) {
-        console.log("asf");
         req.session.account = user; // Update session.
         return next();
     }
 
     var userNotFoundCallback = function() {
-        console.log("Not dfoun");
         return blockAccess(req, res);
     }
 
