@@ -246,7 +246,7 @@ router.get("/home", function (req, res) {
                     "roles": [ ]
                 }
             ]
-        }
+       }
  *
  */
 router.get('/', function (req, res) {
@@ -333,7 +333,7 @@ router.get('/', function (req, res) {
             "lastLoginDate": "2015-04-06T09:47:01.480Z",
             "username": "admin",
             "roles": [ ]
-        }
+       }
  *
  */
 router.get('/:userId', function (req, res) {
@@ -414,7 +414,7 @@ router.get('/:userId', function (req, res) {
             "lastLoginDate": "2015-04-06T09:47:01.480Z",
             "username": "admin",
             "roles": [ ]
-        }
+       }
  *
  */
 router.post('/', function (req, res) {
@@ -510,7 +510,7 @@ router.post('/', function (req, res) {
  *     HTTP/1.1 200 OK
  *     {
             "status": "OK"
-        }
+       }
  *
  */
 router.delete('/:id', function (req, res) {
