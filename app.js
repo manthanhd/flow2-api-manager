@@ -49,6 +49,8 @@ app.use(function (err, req, res, next) {
   res.send('Session has expired or form tampered with')
 });
 
+app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
+
 app.all('/instance/*', function(req, res, next) { // Instance operations
     var account = req.session.account;
     if(!account) {

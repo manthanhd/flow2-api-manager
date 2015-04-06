@@ -187,6 +187,68 @@ router.get("/home", function (req, res) {
 
 // APIs
 //==========================================================================================================
+/**
+ * @api {get} /user Get all users
+ * @apiName Get all users
+ * @apiGroup User
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform requested operation.
+ *
+ * @apiError (ServerError) {json} UserListError API factory has encountered an issue while listing users.
+ *
+ * @apiSuccess {Object[]} userList Array containing one or more user objects.
+ * @apiSuccess {String} userList._id User index.
+ * @apiSuccess {String} userList.accountId Id of the account the user belongs to.
+ * @apiSuccess {Boolean} userList.hasBeenReset Indicates whether or not the user's password is scheduled to be reset.
+ * @apiSuccess {Boolean} userList.isAdmin Indicates if the user is administrator.
+ * @apiSuccess {Boolean} userList.isEnabled Indicates if the user's account is enabled.
+ * @apiSuccess {Date} userList.lastLoginDate Date of the user's last login.
+ * @apiSuccess {String} userList.username Username of the user.
+ * @apiSuccess {Object[]} userList.roles List of roles the user is in. Admin users assume all roles by default.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *     HTTP/1.1 200 OK
+ *     {
+            "userList": [
+                {
+                    "_id": "550eb24ebeebe58583aa9fbc",
+                    "__v": 0,
+                    "accountId": "550eb24ebeebe58583aa9fba",
+                    "hasBeenReset": false,
+                    "isAdmin": true,
+                    "isEnabled": true,
+                    "lastLoginDate": "2015-04-06T09:20:50.989Z",
+                    "username": "admin",
+                    "roles": [ ]
+                },
+                {
+                    "_id": "550efb2d9590ca1100de4f43",
+                    "createdBy": "admin",
+                    "isEnabled": true,
+                    "isAdmin": true,
+                    "hasBeenReset": true,
+                    "username": "mrcool",
+                    "accountId": "550eb24ebeebe58583aa9fba",
+                    "__v": 0,
+                    "roles": [ ]
+                },
+                {
+                    "_id": "551a8eb10cbe5f1100287eb1",
+                    "createdBy": "admin",
+                    "isEnabled": true,
+                    "isAdmin": true,
+                    "hasBeenReset": false,
+                    "username": "leigh",
+                    "accountId": "550eb24ebeebe58583aa9fba",
+                    "__v": 0,
+                    "lastLoginDate": "2015-03-31T12:10:57.496Z",
+                    "roles": [ ]
+                }
+            ]
+       }
+ *
+ */
 router.get('/', function (req, res) {
     var account = req.session.account;
     if (!account) {
@@ -238,6 +300,42 @@ router.get('/', function (req, res) {
     RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
+/**
+ * @api {get} /user/:userId Get a specific user by Id.
+ * @apiName Get specific user by Id
+ * @apiGroup User
+ *
+ * @apiParam {String} _id value of the user to fetch details of.
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform requested operation.
+ *
+ * @apiError (ServerError) {json} UserListError API factory has encountered an issue while listing users.
+ *
+ * @apiSuccess {String} _id User index.
+ * @apiSuccess {String} accountId Id of the account the user belongs to.
+ * @apiSuccess {Boolean} hasBeenReset Indicates whether or not the user's password is scheduled to be reset.
+ * @apiSuccess {Boolean} isAdmin Indicates if the user is administrator.
+ * @apiSuccess {Boolean} isEnabled Indicates if the user's account is enabled.
+ * @apiSuccess {Date} lastLoginDate Date of the user's last login.
+ * @apiSuccess {String} username Username of the user.
+ * @apiSuccess {Object[]} roles List of roles the user is in. Admin users assume all roles by default.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *     HTTP/1.1 200 OK
+ *     {
+            "_id": "550eb24ebeebe58583aa9fbc",
+            "__v": 0,
+            "accountId": "550eb24ebeebe58583aa9fba",
+            "hasBeenReset": false,
+            "isAdmin": true,
+            "isEnabled": true,
+            "lastLoginDate": "2015-04-06T09:47:01.480Z",
+            "username": "admin",
+            "roles": [ ]
+       }
+ *
+ */
 router.get('/:userId', function (req, res) {
     var account = req.session.account;
     if (!account) {
@@ -253,11 +351,20 @@ router.get('/:userId', function (req, res) {
                 return;
             }
 
-            if (RegExp(userRole.affects).test(user.username) == true) {
-                res.send(user);
-                return;
+            // Strip out the password
+            user.password = undefined;
+
+            if(userRole) {
+                if (RegExp(userRole.affects).test(user.username) == true) {
+                    res.send(user);
+                    return;
+                } else {
+                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                    return;
+                }
             } else {
-                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                // We've allowed because this is an admin account
+                res.send(user);
                 return;
             }
         });
@@ -269,8 +376,47 @@ router.get('/:userId', function (req, res) {
     }
 
     RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
-})
+});
 
+/**
+ * @api {post} /user Create user
+ * @apiName Create a new user
+ * @apiGroup User
+ *
+ * @apiParam {String} username Username of the new user.
+ * @apiParam {String} password Temporary password of the new user. Upon first login, this user will be asked for a password reset.
+ * @apiParam {Boolean} isAdmin Flag indicating whether or not the user is admin.
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform requested operation.
+ * @apiError (ClientError) {json} UserExistsError The user that is being created already exists. This happens when the new user that is being created has the same username as an existing user.
+ *
+ * @apiError (ServerError) {json} UserSaveError API factory has encountered an issue while saving user.
+ *
+ * @apiSuccess {String} _id User index.
+ * @apiSuccess {String} accountId Id of the account the user belongs to.
+ * @apiSuccess {Boolean} hasBeenReset Indicates whether or not the user's password is scheduled to be reset.
+ * @apiSuccess {Boolean} isAdmin Indicates if the user is administrator.
+ * @apiSuccess {Boolean} isEnabled Indicates if the user's account is enabled.
+ * @apiSuccess {Date} lastLoginDate Date of the user's last login.
+ * @apiSuccess {String} username Username of the user.
+ * @apiSuccess {Object[]} roles List of roles the user is in. Admin users assume all roles by default.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *     HTTP/1.1 200 OK
+ *     {
+            "_id": "550eb24ebeebe58583aa9fbc",
+            "__v": 0,
+            "accountId": "550eb24ebeebe58583aa9fba",
+            "hasBeenReset": false,
+            "isAdmin": true,
+            "isEnabled": true,
+            "lastLoginDate": "2015-04-06T09:47:01.480Z",
+            "username": "admin",
+            "roles": [ ]
+       }
+ *
+ */
 router.post('/', function (req, res) {
     var account = req.session.account;
     if (!account) {
@@ -346,6 +492,27 @@ router.post('/', function (req, res) {
     RoleManager.hasRole(account.accountId, "user", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
 
+/**
+ * @api {delete} /user/:userId Delete user
+ * @apiName Delete a user by Id
+ * @apiGroup User
+ *
+ * @apiParam {String} userId _id of the user to be deleted.
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform requested operation.
+ *
+ * @apiError (ServerError) {json} UserListError API factory has encountered an issue while listing users.
+ *
+ * @apiSuccess {String} status Status of the operation (OK/ERROR).
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *     HTTP/1.1 200 OK
+ *     {
+            "status": "OK"
+       }
+ *
+ */
 router.delete('/:id', function (req, res) {
     var account = req.session.account;
     if (!account) {

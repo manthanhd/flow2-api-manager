@@ -102,6 +102,83 @@ router.get('/entity/metadata/types', function (req, res) {
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
+/**
+ * @api {get} /entity Get all entities
+ * @apiName Get Entities
+ * @apiGroup Entity
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiSuccess {Object[]} entityList Array containing zero or more entity objects.
+ * @apiSuccess {Boolean} entityList.active Indicates whether or not the entity is active.
+ * @apiSuccess {String} entityList.instanceClassName Internal reference to instance. To be used for bug tracking or debugging.
+ * @apiSuccess {String} entityList.name Name of the entity.
+ * @apiSuccess {Number} entityList.accountId Id of the account the entity belongs to.
+ * @apiSuccess {String} entityList._id Entity index.
+ * @apiSuccess {Object[]} entityList.properties Properties of the entity.
+ * @apiSuccess {String} entityList.properties.name Name of the property.
+ * @apiSuccess {String} entityList.properties.value Default value of the property.
+ * @apiSuccess {String} entityList.properties.type Data type of the property.
+ * @apiSuccess {String} entityList.properties._id Property index.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *     HTTP/1.1 200 OK
+ *     {
+            "entityList": [
+                {
+                    "active": true,
+                    "instanceClassName": "jet5505ed96c31d628c5f4a76f5",
+                    "name": "jet",
+                    "accountId": "5505ed96c31d628c5f4a76f5",
+                    "_id": "5505ede9c31d628c5f4a76fd",
+                    "__v": 0,
+                    "properties": [
+                        {
+                            "name": "wings",
+                            "value": "",
+                            "type": "number",
+                            "_id": "5505ede9c31d628c5f4a76fe"
+                        }
+                    ]
+                },
+                {
+                    "active": true,
+                    "instanceClassName": "stocklib5505ed96c31d628c5f4a76f5",
+                    "name": "stocklib",
+                    "accountId": "5505ed96c31d628c5f4a76f5",
+                    "_id": "550ef91fd280172590625f27",
+                    "__v": 0,
+                    "properties": [
+                        {
+                            "name": "itemName",
+                            "value": "",
+                            "type": "string",
+                            "_id": "550ef91fd280172590625f2a"
+                        },
+                        {
+                            "name": "stockDate",
+                            "value": "",
+                            "type": "date",
+                            "required": true,
+                            "_id": "550ef91fd280172590625f29"
+                        },
+                        {
+                            "name": "itemCount",
+                            "value": "",
+                            "type": "number",
+                            "required": true,
+                            "_id": "550ef91fd280172590625f28"
+                        }
+                    ]
+                }
+            ]
+        }
+ *
+ */
 router.get('/entity', function (req, res) { // Renamed from listEntities
     var account = req.session.account;
     if (!account) {
@@ -176,9 +253,49 @@ var checkEntityNameExists = function (accountId, entityName, doesNotExist, exist
     });
 }
 
+/**
+ * @api {post} /entity Create a new entity
+ * @apiName Create Entity
+ * @apiGroup Entity
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityExistsError User trying to create an entity with a name that already exists.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+
+ * @apiParam {Object[]} entityList Array containing zero or more entity objects.
+ * @apiParam {Boolean} [entityList.active] Indicates whether or not the entity is active.
+ * @apiParam {String} entityList.name Name of the entity.
+ * @apiParam {Object[]} entityList.properties Properties of the entity.
+ * @apiParam {String} entityList.properties.name Name of the property.
+ * @apiParam {String} entityList.properties.value Default value of the property.
+ * @apiParam {String} entityList.properties.type Data type of the property.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+    {
+        "active": true,
+        "instanceClassName": "jet5505ed96c31d628c5f4a76f5",
+        "name": "jet",
+        "accountId": "5505ed96c31d628c5f4a76f5",
+        "_id": "5505ede9c31d628c5f4a76fd",
+        "__v": 0,
+        "properties": [
+            {
+                "name": "wings",
+                "value": "",
+                "type": "number",
+                "_id": "5505ede9c31d628c5f4a76fe"
+            }
+        ]
+    }
+ *
+ */
 router.post("/entity", function (req, res) {  // Protected at app.js level. Renamed from createEntity
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
@@ -240,6 +357,51 @@ var findEntityDefinitionById = function (accountId, entityId, found, notFound) {
     });
 };
 
+/**
+ * @api {get} /entity/:id Get a specific entity by it's ID.
+ * @apiName Get entity by ID.
+ * @apiGroup Entity
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityExistsError User trying to create an entity with a name that already exists.
+ *
+ * @apiError (ServerError) {json} EntityNotFoundError API factory cannot find specified entity.
+ *
+ * @apiParam {String} id Index (id) of entity to get.
+ *
+ * @apiSuccess {Boolean} active Indicates whether or not the entity is active.
+ * @apiSuccess {String} instanceClassName Internal reference to instance. To be used for bug tracking or debugging.
+ * @apiSuccess {String} name Name of the entity.
+ * @apiSuccess {Number} accountId Id of the account the entity belongs to.
+ * @apiSuccess {String} _id Entity index.
+ * @apiSuccess {Object[]} properties Properties of the entity.
+ * @apiSuccess {String} properties.name Name of the property.
+ * @apiSuccess {String} properties.value Default value of the property.
+ * @apiSuccess {String} properties.type Data type of the property.
+ * @apiSuccess {String} properties._id Property index.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+    {
+        "active": true,
+        "instanceClassName": "jet5505ed96c31d628c5f4a76f5",
+        "name": "jet",
+        "accountId": "5505ed96c31d628c5f4a76f5",
+        "_id": "5505ede9c31d628c5f4a76fd",
+        "__v": 0,
+        "properties": [
+            {
+                "name": "wings",
+                "value": "",
+                "type": "number",
+                "_id": "5505ede9c31d628c5f4a76fe"
+            }
+        ]
+    }
+ *
+ */
 router.get("/entity/:entityId", function (req, res) { // renamed from readEntity/:entityId
     var account = req.session.account;
     if (!account) {
@@ -300,6 +462,31 @@ router.get("/entity/:entityId", function (req, res) { // renamed from readEntity
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
+/**
+ * @api {delete} /entity/:id Delete a specific entity by it's ID.
+ * @apiName Delete entity by ID.
+ * @apiGroup Entity
+ *
+ * * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityExistsError User trying to create an entity with a name that already exists.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiParam {String} id Index (id) of entity to delete.
+ *
+ * @apiSuccess {String} status Status of the delete operation (OK/ERROR).
+ * @apiSuccess {String} description Human readable description of the status.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+     "status": "OK",
+     "description": "Entity deleted."
+ }
+ *
+ */
 router.delete("/entity/:entityId", function (req, res) {  // renamed from deleteEntity/:entityId
     var account = req.session.account;
     if (!account) {
@@ -369,10 +556,44 @@ router.delete("/entity/:entityId", function (req, res) {  // renamed from delete
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
-router.get('/instance/:entityName', function(req, res) {
+/**
+ * @api {get} /instance/:entityName Get all instances for specified entity.
+ * @apiName Get instances for an entity.
+ * @apiGroup Instance
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityDoesNotExistError User trying to list instances of an entity that does not exist.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiParam {String} entityName Name of the entity to fetch instances of.
+ *
+ * @apiSuccess {Object[]} instanceList Array containing instance objects. Structure here is defined by properties specified in the entity definition.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+    "instanceList": [
+        {
+            "wings": 2,
+            "_id": "5505f047187e81286385956b",
+            "__v": 0
+        },
+        {
+            "wings": 4,
+            "_id": "5505f04c187e81286385956c",
+            "__v": 0
+        }
+    ]
+ }
+ *
+ */
+router.get('/instance/:entityName', function (req, res) {
     var entityName = req.params.entityName;
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
@@ -399,17 +620,41 @@ router.get('/instance/:entityName', function(req, res) {
         };
 
         var notFoundCallback = function () {
-            res.status(401).send("EntityDoesNotExistError1");
+            res.status(401).send("EntityDoesNotExistError");
         };
 
         GenericEntityInstance.listAll(entity, foundCallback, notFoundCallback);
     });
 });
 
-router.post('/instance/:entityName', function(req, res) {
+/**
+ * @api {post} /instance/:entityName Create an instance of the specified entity.
+ * @apiName Create instance.
+ * @apiGroup Instance
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityDoesNotExistError User trying to list instances of an entity that does not exist.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiParam {String} entityName Name of the entity to create instance of.
+ *
+ * @apiSuccess {Object} object Request object containing additional _id field of your newly created instance.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+    "wings": 200,
+    "_id": "551dd3d42860e830d3fd3754"
+}
+ *
+ */
+router.post('/instance/:entityName', function (req, res) {
     var entityName = req.params.entityName;
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
@@ -460,12 +705,37 @@ router.post('/instance/:entityName', function(req, res) {
     });
 });
 
-router.delete('/instance/:entityName/:instanceId', function(req, res) {
+/**
+ * @api {delete} /instance/:entityName/:instanceId Delete a specific instance of an entity by it's ID.
+ * @apiName Delete instance by ID.
+ * @apiGroup Instance
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityDoesNotExistError User trying to list instances of an entity that does not exist.
+ * @apiError (ClientError) {json} InstanceNotFoundError User trying to list an instance that does not exist.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiParam {String} entityName Name of the entity.
+ * @apiParam {String} instanceId ID of the instance to delete.
+ *
+ * @apiSuccess {String} status Status of the delete operation (OK/ERROR).
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+    "status": "OK"
+}
+ *
+ */
+router.delete('/instance/:entityName/:instanceId', function (req, res) {
     var entityName = req.params.entityName;
     var instanceId = req.params.instanceId;
 
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
@@ -522,13 +792,39 @@ router.delete('/instance/:entityName/:instanceId', function(req, res) {
     });
 });
 
+/**
+ * @api {delete} /instance/:entityName/:propertyName/:propertyValue Delete instances matching a specific property and value.
+ * @apiName Delete instance by property and value.
+ * @apiGroup Instance
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityDoesNotExistError User trying to list instances of an entity that does not exist.
+ * @apiError (ClientError) {json} InstanceNotFoundError User trying to list an instance that does not exist.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiParam {String} entityName Name of the entity.
+ * @apiParam {String} propertyName Name of the property to search. Must be defined in the entity.
+ * @apiParam {String} propertyValue Value of the property.
+ *
+ * @apiSuccess {String} status Status of the delete operation (OK/ERROR).
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+    "status": "OK"
+}
+ *
+ */
 router.delete("/instance/:entityName/:propertyName/:propertyValue", function (req, res) {
     var entityName = req.params.entityName;
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
 
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
@@ -583,10 +879,48 @@ router.delete("/instance/:entityName/:propertyName/:propertyValue", function (re
     });
 });
 
+/**
+ * @api {get} /instance/:entityName/:propertyName/:propertyValue Get all instances for specified entity matching given property and value.
+ * @apiName Get instances for an entity matching given property and value.
+ * @apiGroup Instance
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityDoesNotExistError User trying to list instances of an entity that does not exist.
+ * @apiError (ClientError) {json} InstanceNotFoundError User trying to list an instance that does not exist.
+ * @apiError (ClientError) {json} InvalidPropertyError User trying to search instances by a property that does not exist.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ *
+ * @apiParam {String} entityName Name of the entity to fetch instances of.
+ * @apiParam {String} propertyName Name of the property to search.
+ * @apiParam {String} propertyValue Value of the specified property.
+ *
+ * @apiSuccess {Object[]} instanceList Array containing instance objects. Structure here is defined by properties specified in the entity definition.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+    "instanceList": [
+        {
+            "wings": 2,
+            "_id": "5505f047187e81286385956b",
+            "__v": 0
+        },
+        {
+            "wings": 4,
+            "_id": "5505f04c187e81286385956c",
+            "__v": 0
+        }
+    ]
+ }
+ *
+ */
 router.get('/instance/:entityName/:propertyName/:propertyValue', function (req, res) {
     var entityName = req.params.entityName;
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
@@ -646,10 +980,38 @@ router.get('/instance/:entityName/:propertyName/:propertyValue', function (req, 
     });
 });
 
+/**
+ * @api {put} /instance/:entityName Update a specific instance of an entity.
+ * @apiName Update instance.
+ * @apiGroup Instance
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform operation.
+ * @apiError (ClientError) {json} UserNotFoundError User trying to access API was not found.
+ * @apiError (ClientError) {json} EntityDoesNotExistError User trying to list instances of an entity that does not exist.
+ * @apiError (ClientError) {json} InstanceNotFoundError User trying to list an instance that does not exist.
+ * @apiError (ClientError) {json} InvalidPropertyError User trying to search instances by a property that does not exist.
+ * @apiError (ClientError) {json} MissingArgumentException One or more required fields are missing.
+ *
+ * @apiError (ServerError) {json} EntityDefinitionListError API factory has encountered an issue while listing entities.
+ * @apiError (ServerError) {json} InstanceUpdateFailedError Failure was encountered while updating instance.
+ *
+ * @apiParam {String} entityName Name of the entity to update instance of.
+ *
+ * @apiSuccess {Object} object Updated instance object.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *  HTTP/1.1 200 OK
+ {
+    "wings": 425,
+    "_id": "551dd3d42860e830d3fd3754"
+}
+ *
+ */
 router.put("/instance/:entityName", function (req, res) {
     var entityName = req.params.entityName;
     var account = req.session.account;
-    if(!account || !account.accountId) {
+    if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
     }
