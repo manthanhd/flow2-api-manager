@@ -53,6 +53,10 @@ app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
 
 var basicAuth = require('basic-auth');
 function authenticate(req, res, next) {
+    if(req.path == "/user/login" || req.path == "/user/logout") {
+        return next();
+    }
+
     if(req.session.account) {
         return next();
     }
@@ -60,34 +64,35 @@ function authenticate(req, res, next) {
     var blockAccess = function(req, res) {
         return res.status(403).send({error: "LoginRequired", errorCode: 403});
     }
-
+    console.log("Fetching domain");
     var domainName = req.get('X-Authorization-Domain');
     if(!domainName || domainName == '') {
+        console.log("empty-domain");
         return blockAccess(req, res);
     }
 
     var user = basicAuth(req);
 
     if(!user || !user.name || !user.pass) {
+        console.log("null");
         return blockAccess(req, res);
     }
 
     var userFoundCallback = function(user) {
+        console.log("asf");
         req.session.account = user; // Update session.
         return next();
     }
 
     var userNotFoundCallback = function() {
+        console.log("Not dfoun");
         return blockAccess(req, res);
     }
 
     UserAccountManager.validate(domainName, user.name, user.pass, userFoundCallback, userNotFoundCallback);
 };
 
-app.all("/entity", authenticate);
-app.all("/instance", authenticate);
-app.all("/user", authenticate);
-
+app.all("/*", authenticate);
 
 app.all('/instance/*', function(req, res, next) { // Instance operations
     var account = req.session.account;
