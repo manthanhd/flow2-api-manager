@@ -379,11 +379,20 @@ router.get('/:userId', function (req, res) {
                 return;
             }
 
-            if (RegExp(userRole.affects).test(user.username) == true) {
-                res.send(user);
-                return;
+            // Strip out the password
+            user.password = undefined;
+
+            if(userRole) {
+                if (RegExp(userRole.affects).test(user.username) == true) {
+                    res.send(user);
+                    return;
+                } else {
+                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                    return;
+                }
             } else {
-                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                // We've allowed because this is an admin account
+                res.send(user);
                 return;
             }
         });
