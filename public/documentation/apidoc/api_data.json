@@ -1100,5 +1100,455 @@
     "version": "0.0.0",
     "filename": "routes/index.js",
     "groupTitle": "Instance"
+  },
+  {
+    "type": "post",
+    "url": "/user",
+    "title": "Create user",
+    "name": "Create_a_new_user",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username of the new user.</p> "
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>Temporary password of the new user. Upon first login, this user will be asked for a password reset.</p> "
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isAdmin",
+            "description": "<p>Flag indicating whether or not the user is admin.</p> "
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "ClientError": [
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "LoginRequired",
+            "description": "<p>The user needs to log in.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "AccessDeniedError",
+            "description": "<p>The user does not have sufficient privileges to perform requested operation.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "UserExistsError",
+            "description": "<p>The user that is being created already exists. This happens when the new user that is being created has the same username as an existing user.</p> "
+          }
+        ],
+        "ServerError": [
+          {
+            "group": "ServerError",
+            "type": "json",
+            "optional": false,
+            "field": "UserSaveError",
+            "description": "<p>API factory has encountered an issue while saving user.</p> "
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>User index.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "accountId",
+            "description": "<p>Id of the account the user belongs to.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "hasBeenReset",
+            "description": "<p>Indicates whether or not the user&#39;s password is scheduled to be reset.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isAdmin",
+            "description": "<p>Indicates if the user is administrator.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isEnabled",
+            "description": "<p>Indicates if the user&#39;s account is enabled.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "lastLoginDate",
+            "description": "<p>Date of the user&#39;s last login.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username of the user.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "roles",
+            "description": "<p>List of roles the user is in. Admin users assume all roles by default.</p> "
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response from a successful call:",
+          "content": "HTTP/1.1 200 OK\n{\n        \"_id\": \"550eb24ebeebe58583aa9fbc\",\n        \"__v\": 0,\n        \"accountId\": \"550eb24ebeebe58583aa9fba\",\n        \"hasBeenReset\": false,\n        \"isAdmin\": true,\n        \"isEnabled\": true,\n        \"lastLoginDate\": \"2015-04-06T09:47:01.480Z\",\n        \"username\": \"admin\",\n        \"roles\": [ ]\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user-login.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "delete",
+    "url": "/user/:userId",
+    "title": "Delete user",
+    "name": "Delete_a_user_by_Id",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>_id of the user to be deleted.</p> "
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "ClientError": [
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "LoginRequired",
+            "description": "<p>The user needs to log in.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "AccessDeniedError",
+            "description": "<p>The user does not have sufficient privileges to perform requested operation.</p> "
+          }
+        ],
+        "ServerError": [
+          {
+            "group": "ServerError",
+            "type": "json",
+            "optional": false,
+            "field": "UserListError",
+            "description": "<p>API factory has encountered an issue while listing users.</p> "
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Status of the operation (OK/ERROR).</p> "
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response from a successful call:",
+          "content": "HTTP/1.1 200 OK\n{\n        \"status\": \"OK\"\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user-login.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "/user",
+    "title": "Get all users",
+    "name": "Get_all_users",
+    "group": "User",
+    "error": {
+      "fields": {
+        "ClientError": [
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "LoginRequired",
+            "description": "<p>The user needs to log in.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "AccessDeniedError",
+            "description": "<p>The user does not have sufficient privileges to perform requested operation.</p> "
+          }
+        ],
+        "ServerError": [
+          {
+            "group": "ServerError",
+            "type": "json",
+            "optional": false,
+            "field": "UserListError",
+            "description": "<p>API factory has encountered an issue while listing users.</p> "
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "userList",
+            "description": "<p>Array containing one or more user objects.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "userList._id",
+            "description": "<p>User index.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "userList.accountId",
+            "description": "<p>Id of the account the user belongs to.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "userList.hasBeenReset",
+            "description": "<p>Indicates whether or not the user&#39;s password is scheduled to be reset.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "userList.isAdmin",
+            "description": "<p>Indicates if the user is administrator.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "userList.isEnabled",
+            "description": "<p>Indicates if the user&#39;s account is enabled.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "userList.lastLoginDate",
+            "description": "<p>Date of the user&#39;s last login.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "userList.username",
+            "description": "<p>Username of the user.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "userList.roles",
+            "description": "<p>List of roles the user is in. Admin users assume all roles by default.</p> "
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response from a successful call:",
+          "content": "HTTP/1.1 200 OK\n{\n        \"userList\": [\n            {\n                \"_id\": \"550eb24ebeebe58583aa9fbc\",\n                \"__v\": 0,\n                \"accountId\": \"550eb24ebeebe58583aa9fba\",\n                \"hasBeenReset\": false,\n                \"isAdmin\": true,\n                \"isEnabled\": true,\n                \"lastLoginDate\": \"2015-04-06T09:20:50.989Z\",\n                \"username\": \"admin\",\n                \"roles\": [ ]\n            },\n            {\n                \"_id\": \"550efb2d9590ca1100de4f43\",\n                \"createdBy\": \"admin\",\n                \"isEnabled\": true,\n                \"isAdmin\": true,\n                \"hasBeenReset\": true,\n                \"username\": \"mrcool\",\n                \"accountId\": \"550eb24ebeebe58583aa9fba\",\n                \"__v\": 0,\n                \"roles\": [ ]\n            },\n            {\n                \"_id\": \"551a8eb10cbe5f1100287eb1\",\n                \"createdBy\": \"admin\",\n                \"isEnabled\": true,\n                \"isAdmin\": true,\n                \"hasBeenReset\": false,\n                \"username\": \"leigh\",\n                \"accountId\": \"550eb24ebeebe58583aa9fba\",\n                \"__v\": 0,\n                \"lastLoginDate\": \"2015-03-31T12:10:57.496Z\",\n                \"roles\": [ ]\n            }\n        ]\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user-login.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "/user/:userId",
+    "title": "Get a specific user by Id.",
+    "name": "Get_specific_user_by_Id",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>value of the user to fetch details of.</p> "
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "ClientError": [
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "LoginRequired",
+            "description": "<p>The user needs to log in.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "AccessDeniedError",
+            "description": "<p>The user does not have sufficient privileges to perform requested operation.</p> "
+          }
+        ],
+        "ServerError": [
+          {
+            "group": "ServerError",
+            "type": "json",
+            "optional": false,
+            "field": "UserListError",
+            "description": "<p>API factory has encountered an issue while listing users.</p> "
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>User index.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "accountId",
+            "description": "<p>Id of the account the user belongs to.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "hasBeenReset",
+            "description": "<p>Indicates whether or not the user&#39;s password is scheduled to be reset.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isAdmin",
+            "description": "<p>Indicates if the user is administrator.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isEnabled",
+            "description": "<p>Indicates if the user&#39;s account is enabled.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "lastLoginDate",
+            "description": "<p>Date of the user&#39;s last login.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username of the user.</p> "
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "roles",
+            "description": "<p>List of roles the user is in. Admin users assume all roles by default.</p> "
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Example response from a successful call:",
+          "content": "HTTP/1.1 200 OK\n{\n        \"_id\": \"550eb24ebeebe58583aa9fbc\",\n        \"__v\": 0,\n        \"accountId\": \"550eb24ebeebe58583aa9fba\",\n        \"hasBeenReset\": false,\n        \"isAdmin\": true,\n        \"isEnabled\": true,\n        \"lastLoginDate\": \"2015-04-06T09:47:01.480Z\",\n        \"username\": \"admin\",\n        \"roles\": [ ]\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user-login.js",
+    "groupTitle": "User"
   }
 ]
