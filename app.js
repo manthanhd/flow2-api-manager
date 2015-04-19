@@ -54,7 +54,7 @@ app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
 
 var basicAuth = require('basic-auth');
 function authenticate(req, res, next) {
-    if(req.path == "/apidocs" || req.path == "/" ||req.path == "/user/login" || req.path == "/user/logout") {   // Exclude these from authentication
+    if(req.path == "/apidocs" || req.path == "/" || req.path == "/user/login" || req.path == "/user/register" || req.path == "/user/logout") {   // Exclude these from authentication
         return next();
     }
 
