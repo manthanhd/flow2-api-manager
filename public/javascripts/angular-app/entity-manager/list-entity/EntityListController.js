@@ -65,7 +65,7 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
         if(entity != undefined) {
             RequestService.deleteEntity(entity._id, function(data, statusCode) {
                 $scope.$parent.$broadcast("RefreshEntityList");
-                toast("Entity " + entity.name + " and all its associated instances have been deleted.");
+                toast("Entity " + entity.name + " and all its associated instances have been deleted.", 2000);
             }, function(data, statusCode) {
                 if(statusCode == 404) {
                     toast("Lost server uplink. Please try again.", 2000);
