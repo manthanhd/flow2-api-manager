@@ -239,8 +239,8 @@
           <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
           <div class="col s2 table-cell center" ng-click="view(user)">
             <div class="center">
-              <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
-              <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+              <span ng-if="user.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
+              <span ng-if="user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
             </div>
             <!--<span ng-if="!entity.createdOn">N/A</span>-->
             <!-- September 21, 2014 -->
