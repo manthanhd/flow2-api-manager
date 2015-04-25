@@ -630,12 +630,10 @@ router.delete('/:id', function (req, res) {
 
     var hasRoleCallback = function (loggedUser, userRole, role) {
         var userId = req.params.id;
-        UserAccountModel.findOne({accountId: account.accountId,_id: userId}, function (err, user) {
-            if (err || !user) {
-                console.log("Failed to list user with ID " + userId);
-                console.log(err);
-                res.status(500).send({error: "UserListError", errorCode: 500});
-                return;
+
+        UserAccountManager.doesUserIdExist(account.accountId, userId, function(user) {
+            if(user.createdBy == undefined) {
+                return res.status(403).send({error: "AccessDeniedError", errorCode: 403});
             }
 
             if (loggedUser.isAdmin == true || (RegExp(userRole.affects).test(user.username) == true)) {
@@ -646,6 +644,8 @@ router.delete('/:id', function (req, res) {
                 res.status(403).send({error: "AccessDeniedError", errorCode: 403});
                 return;
             }
+        }, function(){
+            return res.status(500).send({error: "UserListError", errorCode: 500});
         });
     }
 
