@@ -282,7 +282,8 @@
           <div class="col s1 table-cell">
             <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
             <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-              <li><a href="#">Deactivate</a></li>
+              <li><a ng-show="entity.active == true" ng-click="deactivate(entity)">Deactivate</a></li>
+              <li><a ng-show="entity.active == false" ng-click="activate(entity)">Activate</a></li>
               <li class="divider"></li>
               <li><a ng-click="view(entity)">View</a></li>
               <li><a href="#">Edit properties</a></li>
