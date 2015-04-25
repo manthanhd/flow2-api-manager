@@ -195,12 +195,12 @@
         <div class="nav-wrapper red accent-4 lines-3">
           <ul class="right">
             <!--<li ng-show="newUser"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>-->
-            <li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
-            <li ng-show="(user || newUser) && (user.isAdmin == false || newUser.isAdmin == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Make admin"><a href="#"><span class="large-btn mdi-action-accessibility"></span></a></li>
-            <li ng-show="(user && (!user.hasBeenReset || user.hasBeenReset == false))" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Reset password"><a href="#"><span class="large-btn mdi-navigation-refresh"></span></a></li>
-            <li ng-show="(user || newUser) && (user.isEnabled == false || newUser.isEnabled == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Enable user"><a href="#"><span class="large-btn mdi-action-lock-open"></span></a></li>
-            <li ng-show="(user || newUser) && (user.isEnabled == true || newUser.isEnabled == true)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Disable user"><a href="#"><span class="large-btn mdi-action-lock"></span></a></li>
-            <li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Delete"><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+            <li>&nbsp;</li>
+            <!--<li ng-show="(user || newUser) && (user.isAdmin == false || newUser.isAdmin == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Make admin"><a href="#"><span class="large-btn mdi-action-accessibility"></span></a></li>-->
+            <!--<li ng-show="(user && (!user.hasBeenReset || user.hasBeenReset == false))" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Reset password"><a href="#"><span class="large-btn mdi-navigation-refresh"></span></a></li>-->
+            <!--<li ng-show="(user || newUser) && (user.isEnabled == false || newUser.isEnabled == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Enable user"><a href="#"><span class="large-btn mdi-action-lock-open"></span></a></li>-->
+            <!--<li ng-show="(user || newUser) && (user.isEnabled == true || newUser.isEnabled == true)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Disable user"><a href="#"><span class="large-btn mdi-action-lock"></span></a></li>-->
+            <!--<li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Delete"><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
@@ -213,7 +213,8 @@
               <h5 class="instance-header" ng-hide="newUser">{{user.username}}</h5>
               <h5 class="instance-header" ng-show="newUser && newUser.username">{{newUser.username}}</h5>
 
-              <span class="instance-tagline" ng-show="newUser && newUser.createdBy">Created by {{newUser.createdBy}}</span>
+              <span class="instance-tagline" ng-if="user && user.lastLoginDate">Last accessed {{user.lastLoginDate | date: 'medium'}}.</span>
+              <span class="instance-tagline" ng-if="user && !user.lastLoginDate">Last accessed <em>never</em>.</span>
             </div>
           </div>
         </div>
