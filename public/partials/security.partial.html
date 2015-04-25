@@ -264,9 +264,12 @@
             <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
               <li><a ng-click="view(user)">View</a></li>
               <li class="divider"></li>
-              <li><a href="#">Disable</a></li>
-              <li><a href="#">Reset password</a></li>
-              <li><a href="#">Make admin</a></li>
+              <li><a ng-show="user.isEnabled==true" ng-click="disableUser(user)">Disable</a></li>
+              <li><a ng-show="user.isEnabled==false" ng-click="enableUser(user)">Enable</a></li>
+              <li><a ng-show="user.hasBeenReset==false" ng-click="resetPassword(user)">Reset password</a></li>
+              <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
+              <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
+              <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
               <li><a href="#">Delete</a></li>
             </ul>
           </div>
