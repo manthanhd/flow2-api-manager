@@ -4,7 +4,7 @@ var entitySchema = mongoose.Schema({
     accountId: {type: mongoose.Schema.Types.ObjectId, required: true},
     name: String,
     instanceClassName: String,
-    active: Boolean,
+    active: {type: Boolean, default: true},
     properties: [{
         name: String,
         value: String,
