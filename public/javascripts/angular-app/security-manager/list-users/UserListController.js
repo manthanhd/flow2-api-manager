@@ -8,6 +8,7 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
     $scope.unmakeAdmin = unmakeAdmin;
     $scope.resetPassword = resetPassword;
     $scope.cancelResetPassword = cancelResetPassword;
+    $scope.deleteUser = deleteUser;
 
     function onUserListSuccess(data, statusCode) {
         $scope.userList = data.userList;
@@ -134,6 +135,19 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
         RequestService.updateUser(user._id, {hasBeenReset: "false"}, function(data, statusCode) {
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " will not be prompted for password reset.", 2000);
+        }, function(data, statusCode) {
+            if(statusCode == 403 || statusCode == 401) {
+                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            } else {
+                toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
+            }
+        });
+    }
+
+    function deleteUser(user) {
+        RequestService.deleteUser(user._id, function(data, statusCode) {
+            $scope.$parent.$broadcast("RefreshUserList");
+            toast("User " + user.username + " has been deleted successfully.", 2000);
         }, function(data, statusCode) {
             if(statusCode == 403 || statusCode == 401) {
                 toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
