@@ -24,8 +24,8 @@
 }
 
 .instance-tagline {
-    margin-top: -10px;
-!important;
+    margin-top: -18px !important;
+    float: left;
 }
 
 h1, h2, h3, h4, h5, h6 {
