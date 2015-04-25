@@ -326,9 +326,10 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
         var dbGenericEntity = new SavedGenericEntity();
         dbGenericEntity.accountId = account.accountId;
         dbGenericEntity.name = entity.name;
-        dbGenericEntity.instanceClassName = entity.name + account.accountId;
         dbGenericEntity.active = true;
         dbGenericEntity.properties = entity.properties;
+        dbGenericEntity.save();
+        dbGenericEntity.instanceClassName = entity.name + dbGenericEntity._id;
         dbGenericEntity.save();
 
         res.send(entity);
@@ -615,7 +616,6 @@ router.delete("/entity/:entityId", function (req, res) {  // renamed from delete
                         console.log(err);
                     } finally {
                         GenericEntityInstance.instanceModelCache[entityName] = undefined;
-
                         entity.remove();
                         console.log("Entity deleted.");
                         res.send({
