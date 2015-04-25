@@ -63,6 +63,8 @@ instanceListModule.controller("InstanceListController", function($scope, Request
     }
 
     function failureHandler(data, statusCode) {
-
+        if(statusCode == 403 && data == "EntityNotActiveError") {
+            toast("Cannot display instances as entity has been deactivated.", 2000);
+        }
     }
 });

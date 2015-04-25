@@ -495,6 +495,88 @@
     "groupTitle": "Entity"
   },
   {
+    "type": "put",
+    "url": "/entity/:entityId",
+    "title": "Modify entity metadata",
+    "name": "Modify_Entity",
+    "group": "Entity",
+    "error": {
+      "fields": {
+        "ClientError": [
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "LoginRequired",
+            "description": "<p>The user needs to log in.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "AccessDeniedError",
+            "description": "<p>The user does not have sufficient privileges to perform operation.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "UserNotFoundError",
+            "description": "<p>User trying to access API was not found.</p> "
+          },
+          {
+            "group": "ClientError",
+            "type": "json",
+            "optional": false,
+            "field": "EntityExistsError",
+            "description": "<p>User trying to create an entity with a name that already exists.</p> "
+          }
+        ],
+        "ServerError": [
+          {
+            "group": "ServerError",
+            "type": "json",
+            "optional": false,
+            "field": "EntityDefinitionListError",
+            "description": "<p>API factory has encountered an issue while fetching requested entity.</p> "
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "entityId",
+            "description": "<p>Index (id) of entity to delete.</p> "
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": true,
+            "field": "active",
+            "description": "<p>Indicates whether or not the entity is active.</p> "
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Example response from a successful call:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"active\": true,\n    \"instanceClassName\": \"jet5505ed96c31d628c5f4a76f5\",\n    \"name\": \"jet\",\n    \"accountId\": \"5505ed96c31d628c5f4a76f5\",\n    \"_id\": \"5505ede9c31d628c5f4a76fd\",\n    \"__v\": 0,\n    \"properties\": [\n        {\n            \"name\": \"wings\",\n            \"value\": \"\",\n            \"type\": \"number\",\n            \"_id\": \"5505ede9c31d628c5f4a76fe\"\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/index.js",
+    "groupTitle": "Entity"
+  },
+  {
     "type": "post",
     "url": "/instance/:entityName",
     "title": "Create an instance of the specified entity.",
