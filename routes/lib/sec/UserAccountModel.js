@@ -6,10 +6,10 @@ var userSchema = mongoose.Schema({
     accountId: {type: mongoose.Schema.Types.ObjectId, required: true},
     username: {type: String, required: true},
     password: {type: String, required: true},
-    hasBeenReset: Boolean,
+    hasBeenReset: {type: Boolean, default: true},
     isAdmin: Boolean,
     lastLoginDate: Date,
-    isEnabled: Boolean,
+    isEnabled: {type: Boolean, default: true},
     createdBy: String,
     roles: [{roleId: String, affects: String}]
 });

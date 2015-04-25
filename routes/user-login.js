@@ -493,6 +493,114 @@ router.post('/', function (req, res) {
 });
 
 /**
+ * @api {post} /user Modify user
+ * @apiName Modify user
+ * @apiGroup User
+ *
+ * @apiParam {Boolean} isAdmin Flag indicating whether or not the user is admin.
+ * @apiParam {Boolean} hasBeenReset Flag indicating whether or not the user password has been marked for reset at next login.
+ * @apiParam {Boolean} isEnabled Flag indicating whether or not the user access and login is enabled.
+ *
+ * @apiError (ClientError) {json} LoginRequired The user needs to log in.
+ * @apiError (ClientError) {json} AccessDeniedError The user does not have sufficient privileges to perform requested operation.
+ * @apiError (ClientError) {json} UserExistsError The user that is being created already exists. This happens when the new user that is being created has the same username as an existing user.
+ *
+ * @apiError (ServerError) {json} UserSaveError API factory has encountered an issue while saving user.
+ *
+ * @apiSuccess {String} _id User index.
+ * @apiSuccess {String} accountId Id of the account the user belongs to.
+ * @apiSuccess {Boolean} hasBeenReset Indicates whether or not the user's password is scheduled to be reset.
+ * @apiSuccess {Boolean} isAdmin Indicates if the user is administrator.
+ * @apiSuccess {Boolean} isEnabled Indicates if the user's account is enabled.
+ * @apiSuccess {Date} lastLoginDate Date of the user's last login.
+ * @apiSuccess {String} username Username of the user.
+ * @apiSuccess {Object[]} roles List of roles the user is in. Admin users assume all roles by default.
+ *
+ * @apiSuccessExample Example response from a successful call:
+ *     HTTP/1.1 200 OK
+ *     {
+            "_id": "550eb24ebeebe58583aa9fbc",
+            "__v": 0,
+            "accountId": "550eb24ebeebe58583aa9fba",
+            "hasBeenReset": false,
+            "isAdmin": true,
+            "isEnabled": true,
+            "lastLoginDate": "2015-04-06T09:47:01.480Z",
+            "username": "admin",
+            "roles": [ ]
+       }
+ *
+ */
+router.put('/:userId', function (req, res) {
+    var account = req.session.account;
+    if (!account) {
+        res.status(403).send({error: "LoginRequired", errorCode: 403});
+        return;
+    }
+
+    var userId = req.params.userId;
+
+    var hasRoleCallback = function (loggedUser, userRole, role) {
+
+        var foundCallback = function (user) {
+
+            console.log(req.body);
+            if(req.body.isAdmin) {
+                if(user.createdBy == undefined) {
+                    return res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                }
+
+                if(req.body.isAdmin == true || req.body.isAdmin == "true") {
+                    user.isAdmin = true;
+                } else if (req.body.isAdmin == false || req.body.isAdmin == "false") {
+                    user.isAdmin = false;
+                }
+            }
+
+            if(req.body.hasBeenReset) {
+                if(req.body.hasBeenReset == true || req.body.hasBeenReset == "true") {
+                    user.hasBeenReset = true;
+                } else if (req.body.hasBeenReset == false || req.body.hasBeenReset == "false") {
+                    user.hasBeenReset = false;
+                }
+            }
+
+            if(req.body.isEnabled) {
+                if(req.body.isEnabled == true || req.body.isEnabled == "true") {
+                    user.isEnabled = true;
+                } else if (req.body.isEnabled == false || req.body.isEnabled == "false") {
+                    user.isEnabled = false;
+                }
+            }
+
+            user.save(function(err, savedUser) {
+                savedUser.password = undefined;
+                res.send(savedUser);
+            });
+
+        }
+
+        var notFoundCallback = function () {
+            return res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+        };
+
+        if (loggedUser.isAdmin == true || RegExp(userRole.affects).test(req.body.username) == true) {
+            UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
+        } else {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+        }
+    }
+
+    var doesNotHaveRoleCallback = function () {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+    }
+
+    RoleManager.hasRole(account.accountId, "user", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+});
+
+/**
  * @api {delete} /user/:userId Delete user
  * @apiName Delete a user by Id
  * @apiGroup User

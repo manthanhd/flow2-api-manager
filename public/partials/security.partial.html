@@ -195,12 +195,12 @@
         <div class="nav-wrapper red accent-4 lines-3">
           <ul class="right">
             <!--<li ng-show="newUser"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>-->
-            <li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>
-            <li ng-show="(user || newUser) && (user.isAdmin == false || newUser.isAdmin == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Make admin"><a href="#"><span class="large-btn mdi-action-accessibility"></span></a></li>
-            <li ng-show="(user && (!user.hasBeenReset || user.hasBeenReset == false))" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Reset password"><a href="#"><span class="large-btn mdi-navigation-refresh"></span></a></li>
-            <li ng-show="(user || newUser) && (user.isEnabled == false || newUser.isEnabled == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Enable user"><a href="#"><span class="large-btn mdi-action-lock-open"></span></a></li>
-            <li ng-show="(user || newUser) && (user.isEnabled == true || newUser.isEnabled == true)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Disable user"><a href="#"><span class="large-btn mdi-action-lock"></span></a></li>
-            <li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Delete"><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>
+            <li>&nbsp;</li>
+            <!--<li ng-show="(user || newUser) && (user.isAdmin == false || newUser.isAdmin == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Make admin"><a href="#"><span class="large-btn mdi-action-accessibility"></span></a></li>-->
+            <!--<li ng-show="(user && (!user.hasBeenReset || user.hasBeenReset == false))" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Reset password"><a href="#"><span class="large-btn mdi-navigation-refresh"></span></a></li>-->
+            <!--<li ng-show="(user || newUser) && (user.isEnabled == false || newUser.isEnabled == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Enable user"><a href="#"><span class="large-btn mdi-action-lock-open"></span></a></li>-->
+            <!--<li ng-show="(user || newUser) && (user.isEnabled == true || newUser.isEnabled == true)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Disable user"><a href="#"><span class="large-btn mdi-action-lock"></span></a></li>-->
+            <!--<li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Delete"><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
             <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
@@ -213,7 +213,8 @@
               <h5 class="instance-header" ng-hide="newUser">{{user.username}}</h5>
               <h5 class="instance-header" ng-show="newUser && newUser.username">{{newUser.username}}</h5>
 
-              <span class="instance-tagline" ng-show="newUser && newUser.createdBy">Created by {{newUser.createdBy}}</span>
+              <span class="instance-tagline" ng-if="user && user.lastLoginDate">Last accessed {{user.lastLoginDate | date: 'medium'}}.</span>
+              <span class="instance-tagline" ng-if="user && !user.lastLoginDate">Last accessed <em>never</em>.</span>
             </div>
           </div>
         </div>
@@ -239,8 +240,8 @@
           <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
           <div class="col s2 table-cell center" ng-click="view(user)">
             <div class="center">
-              <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
-              <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+              <span ng-if="user.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
+              <span ng-if="user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
             </div>
             <!--<span ng-if="!entity.createdOn">N/A</span>-->
             <!-- September 21, 2014 -->
@@ -264,9 +265,12 @@
             <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
               <li><a ng-click="view(user)">View</a></li>
               <li class="divider"></li>
-              <li><a href="#">Disable</a></li>
-              <li><a href="#">Reset password</a></li>
-              <li><a href="#">Make admin</a></li>
+              <li><a ng-show="user.isEnabled==true" ng-click="disableUser(user)">Disable</a></li>
+              <li><a ng-show="user.isEnabled==false" ng-click="enableUser(user)">Enable</a></li>
+              <li><a ng-show="user.hasBeenReset==false" ng-click="resetPassword(user)">Reset password</a></li>
+              <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
+              <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
+              <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
               <li><a href="#">Delete</a></li>
             </ul>
           </div>
@@ -384,7 +388,7 @@
           </div>
           <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
         </div>
-        <div class="instance-list-panel" ng-controller="RoleListController">
+        <div ng-hide="true" class="instance-list-panel" ng-controller="RoleListController">
           <hr/>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
