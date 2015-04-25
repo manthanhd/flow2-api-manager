@@ -108,4 +108,16 @@ sharedModule.service("RequestService", function($http) {
         });
     }
 
+    this.deleteUser = function(userId, onSuccess, onFailure) {
+        $http.delete("/user/" + userId).success(function(data, statusCode) {
+            onSuccess(data, statusCode);
+        }).error(function(data, statusCode) {
+            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "LoginRequired") {
+                window.location.href = "/user/login";
+            } else {
+                onFailure(data, statusCode);
+            }
+        });
+    }
+
 });
