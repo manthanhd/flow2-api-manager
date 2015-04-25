@@ -271,7 +271,7 @@
               <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
               <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
               <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
-              <li><a href="#">Delete</a></li>
+              <li><a ng-click="deleteUser(user)">Delete</a></li>
             </ul>
           </div>
         </div>
