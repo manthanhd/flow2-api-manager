@@ -1,8 +1,8 @@
 /**
-    This depends on Mongoose.
-*/
+ This depends on Mongoose.
+ */
 
-function GenericEntityProperty(propName, propValue, propType, required){
+function GenericEntityProperty(propName, propValue, propType, required) {
     this.name = propName;
     this.value = propValue;
     this.type = propType;
@@ -16,19 +16,19 @@ var supportedTypes = [GenericEntityProperty.TYPE_STRING, GenericEntityProperty.T
 
 GenericEntityProperty.supportedTypes = supportedTypes;
 
-GenericEntityProperty.getMongooseType = function(localType){
-    if(localType == GenericEntityProperty.TYPE_STRING){
+GenericEntityProperty.getMongooseType = function (localType) {
+    if (localType == GenericEntityProperty.TYPE_STRING) {
         return String;
-    } else if(localType == GenericEntityProperty.TYPE_NUMBER) {
+    } else if (localType == GenericEntityProperty.TYPE_NUMBER) {
         return Number;
-    } else if(localType == GenericEntityProperty.TYPE_DATE) {
+    } else if (localType == GenericEntityProperty.TYPE_DATE) {
         return Date;
     }
 }
 
-GenericEntityProperty.isValidType = function(localType){
-    for(var i = 0; i < supportedTypes.length; i++){
-        if(localType.toLowerCase() == supportedTypes[i].toLowerCase()){
+GenericEntityProperty.isValidType = function (localType) {
+    for (var i = 0; i < supportedTypes.length; i++) {
+        if (localType.toLowerCase() == supportedTypes[i].toLowerCase()) {
             return true;
         }
     }

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register - API Factory</title>
+  <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
+  <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
+  <script src="/javascripts/jquery-1.11.1.min.js"></script>
+  <script src="/javascripts/materialize.min.js"></script>
+</head>
+<body>
+<br/>
+<br/>
+
+<div class="container">
+  <div class="row">
+    <div class="col m8 offset-m4">
+      <br/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col m6 offset-m3">
+      <div class="card">
+        <form role="form" method="post">
+          <div class="card-content">
+            <span class="card-title black-text center-align"><h2>Register</h2></span>
+              {{#if message}}
+                <p class="center-align grey-text darken-2">
+                    {{message}}
+                </p>
+                <br/>
+              {{/if}}
+              {{#if errorMessage}}
+                <p class="center-align red-text darken-2">
+                    {{errorMessage}}
+                </p>
+                <br/>
+              {{/if}}
+            <div class="row">
+              <div class="col m8 offset-m2">
+                <input class="center-align" type="text" id="domainNameText" name="domainNameText" placeholder="Domain name - eg. mycoolco" required/>
+                <input class="center-align" type="text" id="firstName" name="firstName"
+                       placeholder="First name" required/>
+                <input class="center-align" type="text" id="lastName" name="lastName"
+                       placeholder="Last name" required/>
+              </div>
+            </div>
+            <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+
+          </div>
+          <div class="card-action">
+            <a href="/user/login" class="btn-flat waves-effect waves-red black-text">Sign in</a>
+            <button class="btn red waves-effect waves-light pull-right" type="submit">Register</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

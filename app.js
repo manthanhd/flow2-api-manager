@@ -14,9 +14,7 @@ var userRoute = require('./routes/user-login');
 var securityManager = require('./routes/security-home');
 var roleRoute = require('./routes/role');
 
-var UserAccountModel = require('./routes/lib/sec/UserAccountModel');
 var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
-var RoleModel = require('./routes/lib/sec/RoleModel');
 var RoleManager = require('./routes/lib/sec/RoleManager');
 //var SavedGenericEntity = require('./lib/GenericEntityModel');
 RoleManager.init();
@@ -41,15 +39,59 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(csrf());
 // csurf error handler: https://github.com/expressjs/csurf
+// Disabled.
 app.use(function (err, req, res, next) {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+    next();
+    return;
+    if (err.code !== 'EBADCSRFTOKEN') return next(err)
 
-  // handle CSRF token errors here
-  res.status(403)
-  res.send('Session has expired or form tampered with')
+    // handle CSRF token errors here
+    res.status(403)
+    res.send('Session has expired or form tampered with')
 });
 
-app.all('/EAG/access/*', function(req, res, next) { // Instance operations
+app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
+
+var basicAuth = require('basic-auth');
+function authenticate(req, res, next) {
+    if(req.path == "/apidocs" || req.path == "/" || req.path == "/user/login" || req.path == "/user/register" || req.path == "/user/logout") {   // Exclude these from authentication
+        return next();
+    }
+
+    if(req.session.account) {
+        return next();
+    }
+
+    var blockAccess = function(req, res) {
+        return res.status(403).send({error: "LoginRequired", errorCode: 403});
+    }
+
+    var domainName = req.get('X-Authorization-Domain');
+    if(!domainName || domainName == '') {
+        return blockAccess(req, res);
+    }
+
+    var user = basicAuth(req);
+
+    if(!user || !user.name || !user.pass) {
+        return blockAccess(req, res);
+    }
+
+    var userFoundCallback = function(user) {
+        req.session.account = user; // Update session.
+        return next();
+    }
+
+    var userNotFoundCallback = function() {
+        return blockAccess(req, res);
+    }
+
+    UserAccountManager.validate(domainName, user.name, user.pass, userFoundCallback, userNotFoundCallback);
+};
+
+app.all("/*", authenticate);
+
+app.all('/instance/*', function(req, res, next) { // Instance operations
     var account = req.session.account;
     if(!account) {
         res.status(403).send({error: "LoginRequired", errorCode: 403});
@@ -74,8 +116,8 @@ app.all('/EAG/access/*', function(req, res, next) { // Instance operations
         }
         console.log(allowsOperation);
         var hasRoleCallback = function(user, userRole, role) {
-            var regex = /\/EAG\/access\/([A-Za-z_0-9]+)\//i;
-            var regex2 = /\/EAG\/access\/([A-Za-z_0-9]+)/i;
+            var regex = /\/instance\/([A-Za-z_0-9]+)\//i;
+            var regex2 = /\/instance\/([A-Za-z_0-9]+)/i;
             var path = req.path;
             var matches = regex.exec(path) || regex2.exec(path);
             var entity = matches[1];
@@ -93,7 +135,7 @@ app.all('/EAG/access/*', function(req, res, next) { // Instance operations
             return;
         }
 
-        RoleManager.hasRole("instance", allowsOperation, account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "instance", allowsOperation, account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function() {
@@ -101,7 +143,7 @@ app.all('/EAG/access/*', function(req, res, next) { // Instance operations
         return;
     }
 
-    UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
+    UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
 app.all('/createEntity*', function(req, res, next) { // Instance operations
@@ -135,7 +177,7 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
             return;
         }
 
-        RoleManager.hasRole("entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
     }
 
     var userNotFoundCallback = function() {
@@ -143,11 +185,10 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
         return;
     }
 
-    UserAccountManager.doesUserExist(account.username, userFoundCallback, userNotFoundCallback);
+    UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
-// Read Entity auth is handled seperately.
-
+// Read Entity auth is handled separately.
 app.use('/', routes);
 app.use('/users', users);
 app.use('/user', userRoute);

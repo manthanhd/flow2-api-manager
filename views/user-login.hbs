@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--    Import CSS-->
-  <!--<link rel="stylesheet" href="/stylesheets/bootstrap.min.css"/>-->
-  <!--<link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"/>-->
-
-  <!--<link rel="stylesheet" href="/stylesheets/style.css"/>-->
+  <title>Login - API Factory</title>
   <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
   <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
   <script src="/javascripts/jquery-1.11.1.min.js"></script>
@@ -41,16 +37,17 @@
               {{/if}}
             <div class="row">
               <div class="col m8 offset-m2">
-                <input class="center-align" type="text" id="usernameText" name="usernameText" placeholder="Username"/>
+                <input class="center-align" type="text" id="domainName" name="domainName" placeholder="Domain name" required/>
+                <input class="center-align" type="text" id="usernameText" name="usernameText" placeholder="Username" required/>
                 <input class="center-align" type="password" id="passwordText" name="passwordText"
-                       placeholder="Password"/>
+                       placeholder="Password" required/>
               </div>
             </div>
             <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
 
           </div>
           <div class="card-action">
-            <a class="btn-flat waves-effect waves-red black-text">Sign up</a>
+            <a href="/user/register" class="btn-flat waves-effect waves-red black-text">Sign up</a>
             <button class="btn red waves-effect waves-light pull-right" type="submit">Login</button>
           </div>
         </form>

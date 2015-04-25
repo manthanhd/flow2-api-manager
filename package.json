@@ -1,11 +1,12 @@
 {
-  "name": "flow2",
-  "version": "0.3.0",
+  "name": "API-Factory",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "basic-auth": "^1.0.0",
     "bcrypt": "^0.8.0",
     "body-parser": "^1.8.4",
     "cookie-parser": "~1.3.3",
@@ -14,10 +15,14 @@
     "express": "^4.9.8",
     "express-session": "^1.9.3",
     "hbs": "~2.7.0",
-    "mongoose": "^3.8.21",
+    "mongoose": "^4.0.1",
     "morgan": "^1.3.2",
     "node-uuid": "^1.4.2",
     "properties": "^1.2.1",
     "serve-favicon": "^2.1.7"
+  },
+  "apidoc": {
+    "title": "API Factory Documentation",
+    "url": "https://www.apifactory.com"
   }
 }
