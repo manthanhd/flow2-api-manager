@@ -30,3 +30,8 @@ node_modules
 # IDE specific files
 .idea
 *.iml
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
