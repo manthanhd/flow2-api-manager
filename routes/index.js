@@ -195,8 +195,10 @@ router.get('/entity', function (req, res) { // Renamed from listEntities
                     console.log(err);
                     res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
                 }
-                console.log("has " + result.length + " for " + account.accountId);
-                if (userRole) {
+
+                if (user.isAdmin == true) {
+                    res.send({entityList: result});
+                } else if (userRole) {
                     var entityList = [];
                     for (var i = 0; i < result.length; i++) {
                         if (RegExp(userRole.affects).test(result[i].name) == true) {
@@ -204,11 +206,8 @@ router.get('/entity', function (req, res) { // Renamed from listEntities
                         }
                     }
                     res.send({entityList: entityList});
-                } else if (user && user.isAdmin == true) {
-                    res.send({entityList: result});
                 } else {
                     res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                    return;
                 }
             });
 
@@ -417,8 +416,9 @@ router.get("/entity/:entityId", function (req, res) { // renamed from readEntity
             var entityId = req.params.entityId;
 
             var entityFoundCallback = function (entity) {
-                if (userRole) { // User is not an Admin.
-
+                if (user.isAdmin == true) {
+                    res.send(entity);
+                } else if (userRole) { // User is not an Admin.
                     if (entity != undefined) {
                         var entityName = entity.name;
                         if (RegExp(userRole.affects).test(entityName) == true || user.isAdmin == true) {
@@ -432,10 +432,7 @@ router.get("/entity/:entityId", function (req, res) { // renamed from readEntity
                         res.status(500).send({error: "Internal Server Error", errorCode: 500});
                     }
 
-                } else if (user && user.isAdmin == true) {
-                    res.send(entity);
-                    return;
-                } else {
+                } else  {
                     res.status(403).send({error: "AccessDeniedError", errorCode: 403});
                     return;
                 }
