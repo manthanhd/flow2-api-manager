@@ -7,6 +7,11 @@ var UserAccountManager = require("./lib/sec/UserAccountManager");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
 var RoleManager = require('./lib/sec/RoleManager');
 
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+
 router.get('/register', function (req, res) {
     req.session.csrfToken = req.csrfToken();
     res.render("user-register", {
@@ -18,7 +23,7 @@ router.get('/register', function (req, res) {
 
 function sendEmail(account, user) {
     app.mailer.send('email', {
-             to: 'manthanhd@live.com', // REQUIRED. This can be a comma delimited string just like a normal email to field.
+             to: account.emailAddress, // REQUIRED. This can be a comma delimited string just like a normal email to field.
              subject: 'Welcome to API Factory', // REQUIRED.
              domainName: account.domainName,
              password: user.originalPassword
@@ -35,11 +40,26 @@ router.post('/register', function (req, res) {
     var domainName = req.body.domainNameText.trim();
     var firstName = req.body.firstName.trim();
     var lastName = req.body.lastName.trim();
+    var emailAddress = req.body.emailAddress.trim();
+    var confirmEmailAddress = req.body.confirmEmailAddress.trim();
+
+    if(emailAddress.length <= 3) {
+        res.redirect("/user/register?errorMessage=Invalid email address.");
+    }
+
+    if(validateEmail(emailAddress) != true){
+        res.redirect("/user/register?errorMessage=Email address must be valid.");
+    }
+
+    if(emailAddress.length != confirmEmailAddress.length || emailAddress != confirmEmailAddress) {
+        res.redirect("/user/register?errorMessage=Email addresses must match.");
+    }
 
     if(!domainName || domainName == "" || !firstName || firstName == "" || !lastName || lastName == "") {
         res.redirect("/user/register?errorMessage=Domain name, first name and last name are required fields.");
         return;
     }
+
     var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
     if(alphaNumericUnderscoreRegex.test(domainName) != true) {
         res.redirect("/user/register?errorMessage=Domain name can only contain alpha-numeric characters.");
@@ -63,7 +83,7 @@ router.post('/register', function (req, res) {
         res.redirect("/user/register?errorMessage=Domain is already in use.");
     }
 
-    AccountManager.createAccount(domainName, firstName, lastName, successCallback, failureCallback);
+    AccountManager.createAccount(domainName, firstName, lastName, emailAddress, successCallback, failureCallback);
 });
 
 router.get('/login', function (req, res) {
