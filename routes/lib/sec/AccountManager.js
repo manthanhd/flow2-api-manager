@@ -2,11 +2,12 @@ var AccountModel = require("./AccountModel");
 
 var AccountManager = {};
 
-AccountManager.createAccount = function(domainName, firstName, lastName, successCallback, failureCallback) {
+AccountManager.createAccount = function(domainName, firstName, lastName, emailAddress, successCallback, failureCallback) {
     var newAccount = new AccountModel();
     newAccount.domainName = domainName;
     newAccount.firstName = firstName;
     newAccount.lastName = lastName;
+    newAccount.emailAddress = emailAddress;
     newAccount.save(function(err, savedAccount) {
         if(err || !savedAccount){
             console.log("Failed to save new account. Error: ");
