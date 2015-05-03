@@ -16,12 +16,13 @@ var roleRoute = require('./routes/role');
 
 var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
 var RoleManager = require('./routes/lib/sec/RoleManager');
-//var SavedGenericEntity = require('./lib/GenericEntityModel');
+var app = express();
+
+var RedisStore = require('connect-redis')(session);
+
 RoleManager.init();
 
 RoleManager.buildCache();   // For future role optimizations
-
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,9 +31,44 @@ app.set('view engine', 'hbs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
-app.use(session(
-  {secret: uuid.v4(), resave: false, saveUninitialized: true} // Generate random secret.
-));
+
+if(!process.env.SESSION_SECRET) {
+    console.log("SESSION_SECRET environment variable not set.");
+    process.exit(2);
+}
+
+if(process.env.HOST_REDIS) {
+    var HOST_REDIS = process.env.HOST_REDIS || 'localhost';
+    var PORT_REDIS = process.env.PORT_REDIS || 6379;
+    var DB_REDIS = process.env.DB_REDIS || 1;
+    var DB_REDIS_PASS = process.env.DB_REDIS_PASS || undefined;
+    var SESSION_SECRET = process.env.SESSION_SECRET || 'hn84n4ybiubv2f9eb2ybc392';
+
+    console.log("Redis option(s) defined in environment.");
+    console.log("Redis host: " + HOST_REDIS);
+    console.log("Redis port: " + PORT_REDIS);
+    console.log("Redis DB: " + DB_REDIS);
+
+    app.use(session(
+        {
+            store: new RedisStore({
+                host: HOST_REDIS,
+                port: PORT_REDIS,
+                db: DB_REDIS,
+                pass: DB_REDIS_PASS
+            }),
+            secret: SESSION_SECRET,
+            resave: true,
+            saveUninitialized: true
+        }
+    ));
+} else {
+    console.log("No Redis host defined. Using local session.");
+    app.use(session(
+        {secret: uuid.v4(), resave: false, saveUninitialized: true} // Generate random secret.
+    ));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
