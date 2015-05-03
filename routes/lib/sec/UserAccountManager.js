@@ -2,11 +2,41 @@ var UserAccountModel = require('./UserAccountModel');
 var AccountManager = require('./AccountManager');
 var UserAccountManager = {};
 
-UserAccountManager.createDefaultAdminAccount = function (accountId) {
+var str = "abcdefghijklmnopqrstuvwxyz";
+var lowerArray = str.split("");
+var upperArray = str.toUpperCase().split("");
+var numbersArray = [0,1,2,3,4,5,6,7,8,9];
+var specialCharactersArray = "-=+*!$@~".split("");
+
+var generatePassword = function() {
+    var password = "";
+    // All passwords are 12 characters long.
+    for(var i = 0; i < 12; i++) {
+        if(i < 6) {
+            // lower characters
+            password += lowerArray[getRandomInt(0, lowerArray.length)];
+        } else if (i >= 6 && i < 8) {
+            password += upperArray[getRandomInt(0, upperArray.length)];
+        } else if ( i >= 8 && i < 11) {
+            password += numbersArray[getRandomInt(0, numbersArray.length)];
+        } else {
+            password += specialCharactersArray[getRandomInt(0, specialCharactersArray.length)];
+        }
+    }
+
+    return password;
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+UserAccountManager.createDefaultAdminAccount = function (accountId, callback) {
     var defaultAdmin = new UserAccountModel();
     defaultAdmin.accountId = accountId;
     defaultAdmin.username = "admin";
-    defaultAdmin.password = "shiny-admin!1#";
+    var password = generatePassword();
+    defaultAdmin.password = password;
     defaultAdmin.hasBeenReset = true;
     defaultAdmin.isAdmin = true;
     defaultAdmin.isEnabled = true;
@@ -18,6 +48,8 @@ UserAccountManager.createDefaultAdminAccount = function (accountId) {
         }
 
         console.log("Admin user for account Id " + accountId + ": " + savedDefaultAdmin.username + " was saved successfully.");
+        savedDefaultAdmin.originalPassword = password;
+        callback(savedDefaultAdmin);
     });
 }
 
