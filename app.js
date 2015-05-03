@@ -10,22 +10,51 @@ var uuid = require('node-uuid');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var userRoute = require('./routes/user-login');
+
 var securityManager = require('./routes/security-home');
 var roleRoute = require('./routes/role');
 
 var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
 var RoleManager = require('./routes/lib/sec/RoleManager');
-//var SavedGenericEntity = require('./lib/GenericEntityModel');
+//var SavedGenericEntity = require('./lib/GenericEntityModel')
+
+var mailer = require('express-mailer');
+
 RoleManager.init();
 
 RoleManager.buildCache();   // For future role optimizations
 
-var app = express();
+app = express();
+
+mailer.extend(app, {
+    from: 'no-reply@thunderlab.co.uk',
+    host: 'smtp.gmail.com', // hostname
+    secureConnection: true, // use SSL
+    port: 465, // port for secure SMTP
+    transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+    auth: {
+        user: 'manthan@thunderlab.co.uk',
+        pass: process.env.REGISTER_EMAIL_PASS
+    }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+
+var userRoute = require('./routes/user-login');
+
+/*app.mailer.send('email', {
+    to: 'manthanhd@live.com', // REQUIRED. This can be a comma delimited string just like a normal email to field.
+    subject: 'Test Email1', // REQUIRED.
+    otherProperty: 'Other Property1' // All additional properties are also passed to the template as local variables.
+}, function (err) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+//    res.send('Email Sent');
+});*/
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

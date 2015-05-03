@@ -16,6 +16,21 @@ router.get('/register', function (req, res) {
     });
 });
 
+function sendEmail(account, user) {
+    app.mailer.send('email', {
+             to: 'manthanhd@live.com', // REQUIRED. This can be a comma delimited string just like a normal email to field.
+             subject: 'Welcome to API Factory', // REQUIRED.
+             domainName: account.domainName,
+             password: user.originalPassword
+         }, function (err) {
+         if (err) {
+             console.log("Failed to send email to account: " + account.firstName + " " + account.lastName);
+             console.log(err);
+             return;
+         }
+     });
+}
+
 router.post('/register', function (req, res) {
     var domainName = req.body.domainNameText.trim();
     var firstName = req.body.firstName.trim();
@@ -38,8 +53,10 @@ router.post('/register', function (req, res) {
     }
 
     var successCallback = function (account) {
-        UserAccountManager.createDefaultAdminAccount(account.accountId);
-        res.redirect("/user/login");
+        UserAccountManager.createDefaultAdminAccount(account.accountId, function(user) {
+            sendEmail(account, user);
+            res.redirect("/user/login");
+        });
     }
 
     var failureCallback = function () {
