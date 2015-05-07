@@ -27,10 +27,10 @@
               </h3>
               <div ng-show="enableEntitySearch != undefined">
                 <form class="row" ng-submit="saveEntity()">
-                  <div class="input-field col s10">
+                  <div class="input-field col s8">
                     <input class="text-h3 validate border-bottom-1px" id="searchText" type="text" required ng-model="searchEntityNameText" placeholder="Entity name to search...">
                   </div>
-                  <div class="input-field col s2">
+                  <div class="input-field col s4">
                     <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
                       <i class="mdi-content-clear line-height-36"></i>
                     </a>
@@ -39,10 +39,10 @@
               </div>
               <div ng-if="enableEntityAdd">
                 <form class="row" ng-submit="saveEntity()">
-                     <div class="input-field col s10">
+                     <div class="input-field col s8">
                        <input class="text-h3 validate border-bottom-1px" id="newEntityName" type="text" required ng-model="newEntity.entityName" placeholder="New entity name">
                      </div>
-                     <div class="input-field col s2">
+                     <div class="input-field col s4">
                        <a ng-click="hideAddEntity()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
                          <i class="mdi-content-clear line-height-36"></i>
                        </a>

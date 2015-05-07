@@ -200,7 +200,10 @@ a, .link{
 
 .border-bottom-1px {
     border-bottom-style: solid !important;
-    border-width: thin;
+    border-bottom-width: 2px !important;
+    padding-bottom: 10px !important;
+    padding-left: 0px !important;
+    margin-left: -12px !important;
 }
 
 .window-height {
