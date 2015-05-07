@@ -28,7 +28,7 @@
               <div ng-show="enableUserSearch != undefined">
                 <form class="row" ng-submit="saveUser()">
                   <div class="input-field col s8">
-                    <input class="text-h3 validate border-bottom-1px" id="searchText" type="text" required ng-model="searchUserNameText" placeholder="Username to search...">
+                    <input class="text-h3 validate border-bottom-1px milky-placeholder" id="searchText" type="text" required ng-model="searchUserNameText" placeholder="Username to search...">
                   </div>
                   <div class="input-field col s4">
                     <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
@@ -40,7 +40,7 @@
               <div ng-if="enableUserAdd">
                 <form class="row" ng-submit="saveUser()">
                      <div class="input-field col s8">
-                       <input class="text-h3 validate border-bottom-1px" id="newUserName" type="text" required ng-model="newUser.username" placeholder="New user name">
+                       <input class="text-h3 validate border-bottom-1px milky-placeholder" id="newUserName" type="text" required ng-model="newUser.username" placeholder="New user name">
                      </div>
                      <div class="input-field col s4">
                        <a ng-click="hideAddUser()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
@@ -225,18 +225,18 @@
   <!-- Content Body -->
   <div class="main-container">
     <div class="row">
-      <div class="col s8 table-div window-height" ng-controller="UserListController">
+      <div class="col s8 table-div window-height nopadding" ng-controller="UserListController">
         <div class="row table-header-row">
           <div class="col s1 table-header">&nbsp;</div>
-          <div class="col s4 table-header">Username</div>
-          <div class="col s2 table-header text-align-center">To be reset?</div>
-          <div class="col s2 table-header text-align-center">Is Admin?</div>
-          <div class="col s2 table-header text-align-center">Is Enabled?</div>
-          <div class="col s1 table-header">&nbsp;</div>
+          <div class="col s4 table-header bottom-bordered shift-25px-right">Username</div>
+          <div class="col s2 table-header text-align-center bottom-bordered">To be reset?</div>
+          <div class="col s2 table-header text-align-center bottom-bordered">Is Admin?</div>
+          <div class="col s2 table-header text-align-center bottom-bordered">Is Enabled?</div>
+          <div class="col s1 table-header bottom-bordered">&nbsp;</div>
         </div>
 
         <div class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
-          <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text"></span></div>
+          <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text round-icon"></span></div>
           <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
           <div class="col s2 table-cell center" ng-click="view(user)">
             <div class="center">
@@ -277,11 +277,11 @@
         </div>
       </div>
 
-      <div class="col s4" ng-controller="UserPropertyController">
+      <div class="col s4 nopadding" ng-controller="UserPropertyController">
         <div class="property-panel">
           <div class="row table-header-row">
-            <div class="col s5 table-header">Property</div>
-            <div class="col s7 table-header">Type</div>
+            <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
+            <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
           </div>
 
           <div ng-if="$parent.newUser">

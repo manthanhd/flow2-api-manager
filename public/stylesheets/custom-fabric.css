@@ -1,4 +1,7 @@
 /*Index CSS*/
+body {
+    color: #444444;
+}
 
 .side-nav-toggle {
     padding-left: 10px;
@@ -119,11 +122,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table-header {
-    padding: 15px 5px !important;
+    padding: 15px 0px !important;
     display: table-cell;
     text-align: left;
     vertical-align: middle;
-    font-weight: bold;
+    color: #989898;
+}
+
+.bottom-bordered {
     border-style: none none solid;
     border-width: thin;
 }
@@ -152,8 +158,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table-header-row {
-    padding: 15px;
+    /*padding: 15px;*/
     margin: 0px !important;
+}
+
+.shift-25px-right {
+    padding-left: 25px !important;
+}
+
+.shift-14px-right {
+    padding-left: 14px !important;
+}
+
+.shift-7px-right {
+    padding-left: 7px !important;
 }
 
 .clr{
@@ -171,6 +189,7 @@ h1, h2, h3, h4, h5, h6 {
 
 a, .link{
     cursor: pointer;
+    color: #444444;
 }
 
 .text-align-center {
@@ -221,4 +240,36 @@ a, .link{
     padding-top: 24px !important;
     padding-left: 27px !important;
     padding-bottom: 22px !important;
+}
+
+.nopadding {
+    padding: 0px !important;
+}
+
+.round-icon {
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    padding: 10px;
+    border-color: white;
+    background-color: #989898;
+    color: white;
+}
+
+/* CSS for styling .milky-placeholder placeholders  */
+.milky-placeholder::-webkit-input-placeholder { /* WebKit browsers */
+    color: white;
+    opacity: 0.5;
+}
+.milky-placeholder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: white;
+    opacity: 0.5;
+}
+.milky-placeholder::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: white;
+    opacity: 0.5;
+}
+.milky-placeholder:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: white;
+    opacity: 0.5;
 }
