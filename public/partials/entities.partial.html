@@ -1,9 +1,9 @@
-<section ng-controller="EntityController">
+<section ng-controller="EntityController" class="full-height">
   <!-- Header -->
-  <div class="row">
-    <div class="col s8 nav-part">
-      <nav>
-        <div class="nav-wrapper red darken-3 lines-3">
+  <div class="row major">
+    <div class="col s8 nav-part fill-height z-depth-2">
+      <nav class="fill-height">
+        <div class="nav-wrapper red major-header">
           <!--<span>-->
               <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
               <!--<span class="brand-logo padding-left-10px"></span></a>-->
@@ -20,7 +20,7 @@
           </ul>
           <br/>
           <!--Major banner import-->
-          <div class="row">
+          <div class="row banner">
             <div class="col offset-s1 s11">
               <h3 ng-if="enableEntityAdd == undefined && enableEntitySearch == undefined">
                 Entities
@@ -37,7 +37,7 @@
                   </div>
                 </form>
               </div>
-              <div ng-if="enableEntityAdd">
+              <div ng-show="enableEntityAdd">
                 <form class="row" ng-submit="saveEntity()">
                      <div class="input-field col s8">
                        <input class="text-h3 validate border-bottom-1px milky-placeholder" id="newEntityName" type="text" required ng-model="newEntity.entityName" placeholder="New entity name">
@@ -139,9 +139,9 @@
       </nav>
     </div>
 
-    <div class="col s4 nav-part">
-      <nav>
-        <div class="nav-wrapper red accent-4 lines-3">
+    <div class="col s4 nav-part fill-height">
+      <nav class="fill-height">
+        <div class="nav-wrapper red darken-2 minor-header">
           <ul class="right">
             <li ng-show="newEntity" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add property"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>
             <li>&nbsp</li>
@@ -158,7 +158,7 @@
               <h5 class="instance-header" ng-hide="newEntity">{{entity.name}}</h5>
               <h5 class="instance-header" ng-show="newEntity && newEntity.name">{{newEntity.name}}</h5>
 
-              <span class="instance-tagline" ng-if="!newEntity && entity.lastAccessDate">Last accessed on {{entity.lastAccessDate}}</span>
+              <span class="instance-tagline" ng-show="!newEntity && entity.lastAccessDate">Last accessed on {{entity.lastAccessDate}}</span>
               <span class="instance-tagline" ng-show="newEntity && newEntity.createdOn">Created on {{newEntity.createdOn}}</span>
             </div>
           </div>
@@ -169,8 +169,8 @@
 
   <!-- Content Body -->
   <div class="main-container">
-    <div class="row">
-      <div class="col s8 table-div window-height nopadding" ng-controller="EntityListController">
+    <div class="row full-height">
+      <div class="col s8 table-div nopadding major-body z-depth-1" ng-controller="EntityListController">
         <div class="row table-header-row">
           <div class="col s1 table-header">&nbsp;</div>
             <div class="col s3 table-header bottom-bordered shift-25px-right">Name</div>
@@ -213,7 +213,7 @@
         </div>
       </div>
 
-      <div class="col s4 nopadding" ng-controller="EntityPropertyController">
+      <div class="col s4 nopadding minor-body-top full-height" ng-controller="EntityPropertyController">
         <div class="property-panel">
           <div class="row table-header-row">
             <div class="col s6 table-header bottom-bordered shift-25px-right">Property</div>
@@ -253,7 +253,7 @@
           </div>
           <p class="text-align-center italics" ng-if="entity == undefined && !$parent.newEntity">No entity selected.</p>
         </div>
-        <div class="instance-list-panel" ng-controller="InstanceListController">
+        <div class="instance-list-panel minor-body-bottom" ng-controller="InstanceListController">
           <hr/>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
@@ -272,7 +272,7 @@
               <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red modal-close"><i class="mdi-content-clear modal-close"></i></a>
             </div>
           </div>
-          <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
+          <a href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{instanceString}}</textarea>
           <div class="modal black-text modal-fixed-footer" id="addInstanceModal">
             <div class="modal-content">
