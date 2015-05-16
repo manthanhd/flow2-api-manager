@@ -60,11 +60,11 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 24pt;
 }
 
-.entity-list-header {
+.major-body-list-header {
     height: 7%;
 }
 
-.entity-list-body {
+.major-body-list-body {
     height: 93%;
     overflow-y: auto;
 }
