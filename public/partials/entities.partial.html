@@ -167,7 +167,7 @@
           </div>
         </div>
         <div class="major-body-list-body">
-          <div class="row table-row valign-wrapper link" ng-repeat="entity in entityList | filter:entitySearchFilter">
+          <div ng-click="view(entity)" class="row table-row valign-wrapper link" ng-repeat="entity in entityList | filter:entitySearchFilter">
             <div class="col s1 table-cell" ng-click="view(entity)"><span class="mdi-action-assignment large-text round-icon"></span></div>
             <div class="col s3 table-cell" ng-click="view(entity)">{{entity.name}}</div>
             <div class="col s3 table-cell" ng-click="view(entity)">

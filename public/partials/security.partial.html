@@ -215,7 +215,7 @@
           </div>
         </div>
         <div class="major-body-list-body">
-          <div class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
+          <div ng-click="view(user)" class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
             <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text round-icon"></span></div>
             <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
             <div class="col s2 table-cell center" ng-click="view(user)">
