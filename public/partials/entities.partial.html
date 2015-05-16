@@ -255,6 +255,7 @@
         </div>
         <div class="instance-list-panel minor-body-bottom" ng-controller="InstanceListController">
           <hr/>
+          <a ng-show="entity" href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
               <span class="action-label">Delete instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-delete no-line-height"></i></a>
@@ -272,7 +273,6 @@
               <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red modal-close"><i class="mdi-content-clear modal-close"></i></a>
             </div>
           </div>
-          <a href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{instanceString}}</textarea>
           <div class="modal black-text modal-fixed-footer" id="addInstanceModal">
             <div class="modal-content">

@@ -113,11 +113,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .action-card {
-    float: right !important;
+    /*float: right !important;
     position: absolute;
-    top: 200px !important;
-    right: 41px;
+    top: 41.4% !important;
+    right: 30px;
+    padding: 12px 0px 0px 17px;*/
+
+    float: right !important;
+    position: relative !important;
+    right: -26px;
     padding: 12px 0px 0px 17px;
+    top: -287px !important;
+    max-height: 320px;
 }
 
 .cancel-action-card-button {
