@@ -60,9 +60,27 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 24pt;
 }
 
+.entity-list-header {
+    height: 7%;
+}
+
+.entity-list-body {
+    height: 93%;
+    overflow-y: auto;
+}
+
 .property-panel {
     height: 64.8%;
     overflow: auto !important;
+}
+
+.property-panel-header {
+    height: 12%;
+}
+
+.property-panel-body {
+    height: 88%;
+    overflow-y: auto;
 }
 
 .instance-list-panel {
@@ -113,12 +131,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .action-card {
-    /*float: right !important;
-    position: absolute;
-    top: 41.4% !important;
-    right: 30px;
-    padding: 12px 0px 0px 17px;*/
-
     float: right !important;
     position: relative !important;
     right: -26px;
