@@ -2,28 +2,29 @@
 <html ng-app="APIFactoryWeb">
 <head>
   <title>API Factory</title>
+
   <link rel="stylesheet" href="/stylesheets/materialize.min.css"/>
   <link rel="stylesheet" href="/stylesheets/custom-fabric.css"/>
+  <link rel="stylesheet" href="/stylesheets/loading-bar.min.css"/>
+
   <script src="/javascripts/jquery-1.11.1.min.js"></script>
   <script src="/javascripts/materialize.min.js"></script>
   <script src="/javascripts/angular.min.js"></script>
   <script src="/javascripts/angular-route.min.js"></script>
+  <script src="/javascripts/loading-bar.min.js"></script>
 
   <script src="/javascripts/angular-app/main/Main.js"></script>
   <script src="/javascripts/angular-app/main/MainController.js"></script>
 
-  <!--Imports for Shared classes-->
   <script src="/javascripts/angular-app/shared/Shared.js"></script>
   <script src="/javascripts/angular-app/shared/services/RequestService.js"></script>
 
-  <!--Imports for Entities section-->
   <script src="/javascripts/angular-app/entity-manager/Entities.js"></script>
   <script src="/javascripts/angular-app/entity-manager/EntityController.js"></script>
   <script src="/javascripts/angular-app/entity-manager/list-entity/EntityListController.js"></script>
   <script src="/javascripts/angular-app/entity-manager/view-entity/EntityPropertyController.js"></script>
   <script src="/javascripts/angular-app/entity-manager/list-instance/InstanceListController.js"></script>
 
-  <!--Imports for Security section-->
   <script src="/javascripts/angular-app/security-manager/Users.js"></script>
   <script src="/javascripts/angular-app/security-manager/UserController.js"></script>
   <script src="/javascripts/angular-app/security-manager/list-users/UserListController.js"></script>
@@ -32,11 +33,7 @@
 
   <script src="/javascripts/angular-app/app.js"></script>
 </head>
-<script>
-//    $(document).ready(function () {
-//        $('.modal-trigger').leanModal();
-//    });
-</script>
+
 <body ng-controller="MainController">
   <!-- START LEFT NAVIGATION DRAWER-->
   <ul id="slide-out" class="side-nav full">

@@ -1,4 +1,4 @@
-var apiFactoryApp = angular.module("APIFactoryWeb", ["ngRoute", "Shared", "Main", "Entities", "Users"]);
+var apiFactoryApp = angular.module("APIFactoryWeb", ["ngRoute", "Shared", "Main", "Entities", "Users", "angular-loading-bar"]);
 
 apiFactoryApp.config(['$routeProvider',
     function($routeProvider) {
