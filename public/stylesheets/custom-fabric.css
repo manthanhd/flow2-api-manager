@@ -1,4 +1,12 @@
 /*Index CSS*/
+html {
+    height: 100%;
+}
+
+body {
+    color: #444444;
+    height: 100%;
+}
 
 .side-nav-toggle {
     padding-left: 10px;
@@ -37,11 +45,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .main-container {
-    /*padding-top: 104px;*/
-    position: absolute;
-    top: 196px;
-    right: 0px;
-    left: 0px;
+    height: 80%;
+}
+
+.banner {
+    height: 16%;
 }
 
 .medium-text {
@@ -52,30 +60,55 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 24pt;
 }
 
+.major-body-list-header {
+    height: 7%;
+}
+
+.major-body-list-body {
+    height: 93%;
+    overflow-y: auto;
+}
+
 .property-panel {
-    height: 470px;
-    overflow: auto;
+    height: 64.8%;
+    overflow: auto !important;
+}
+
+.property-panel-header {
+    height: 12%;
+}
+
+.property-panel-body {
+    height: 88%;
+    overflow-y: auto;
 }
 
 .instance-list-panel {
     /*height: 205px;*/
-    height: 255px;
+    height: 34.2%;
 }
 
 .instance-list-textarea {
-    margin-top: -76px;
     overflow: auto !important;
     position: absolute;
-    height: 200px !important;
-    width: 622px !important;
+    bottom: 0px !important;
+    top: 73%;
+    height: 23% !important;
+    right: 0px;
+    left: 67%;
+    width: 32.25% !important;
 }
 
 .full-height {
     height: 100%;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
 }
 
 .no-border-bottom {
-    border-bottom: none;
+    border-bottom: none !important;
 }
 
 .instance-list-button {
@@ -99,10 +132,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .action-card {
     float: right !important;
-    position: absolute;
-    top: 200px !important;
-    right: 41px;
+    position: relative !important;
+    right: -26px;
     padding: 12px 0px 0px 17px;
+    top: -287px !important;
+    max-height: 320px;
 }
 
 .cancel-action-card-button {
@@ -119,11 +153,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table-header {
-    padding: 15px 5px !important;
+    padding: 15px 0px !important;
     display: table-cell;
     text-align: left;
     vertical-align: middle;
-    font-weight: bold;
+    color: #989898;
+}
+
+.bottom-bordered {
     border-style: none none solid;
     border-width: thin;
 }
@@ -152,8 +189,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table-header-row {
-    padding: 15px;
+    /*padding: 15px;*/
     margin: 0px !important;
+}
+
+.shift-25px-right {
+    padding-left: 25px !important;
+}
+
+.shift-14px-right {
+    padding-left: 14px !important;
+}
+
+.shift-7px-right {
+    padding-left: 7px !important;
 }
 
 .clr{
@@ -171,6 +220,7 @@ h1, h2, h3, h4, h5, h6 {
 
 a, .link{
     cursor: pointer;
+    color: #444444;
 }
 
 .text-align-center {
@@ -200,12 +250,15 @@ a, .link{
 
 .border-bottom-1px {
     border-bottom-style: solid !important;
-    border-width: thin;
+    border-bottom-width: 2px !important;
+    padding-bottom: 10px !important;
+    padding-left: 0px !important;
+    margin-left: -12px !important;
 }
 
-.window-height {
-    overflow: auto;
-    height: 77.7vh;
+.shift-15px-down {
+    overflow-y: auto;
+    margin-top: 15px !important;
 }
 
 .modal-large {
@@ -218,4 +271,62 @@ a, .link{
     padding-top: 24px !important;
     padding-left: 27px !important;
     padding-bottom: 22px !important;
+}
+
+.nopadding {
+    padding: 0px !important;
+}
+
+.round-icon {
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    padding: 10px;
+    border-color: white;
+    background-color: #989898;
+    color: white;
+}
+
+/* CSS for styling .milky-placeholder placeholders  */
+.milky-placeholder::-webkit-input-placeholder { /* WebKit browsers */
+    color: white;
+    opacity: 0.5;
+}
+.milky-placeholder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: white;
+    opacity: 0.5;
+}
+.milky-placeholder::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: white;
+    opacity: 0.5;
+}
+.milky-placeholder:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: white;
+    opacity: 0.5;
+}
+
+.major {
+    height: 20%;
+    margin: 0px !important;
+}
+
+.fill-height {
+    height: 100% !important;
+}
+
+.major-header {
+    height: 100%;
+}
+
+.minor-header {
+    height: 100%;
+}
+
+.major-body {
+    height: 100%;
+    background-color: #f9f9f9;
+}
+
+.text-disabled {
+    opacity: 0.5;
 }

@@ -1,36 +1,27 @@
-<section ng-controller="UserController">
+<section ng-controller="UserController" class="full-height">
   <!-- Header -->
-  <div class="row">
-    <div class="col s8 nav-part">
-      <nav>
-        <div class="nav-wrapper red darken-3 lines-3">
-          <!--<span>-->
+  <div class="row major">
+    <div class="col s8 nav-part fill-height z-depth-2">
+      <nav class="fill-height">
+        <div class="nav-wrapper red major-header">
               <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
-              <!--<span class="brand-logo padding-left-10px"></span></a>-->
-          <!--</span>-->
-          <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
           <ul class="right">
             <li ng-show="!newUser || enableUserSearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add user"><a ng-click="showAddUser()"><i class="large-btn mdi-content-add"></i></a></li>
             <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
-            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-            <!--<li ng-show="!newUser && User" ng-click="showUserDocumentationModal()"><a><i class="large-btn mdi-action-info"></i></a></li>-->
-            <!--<li><a href="#"><i class="large-btn mdi-navigation-more-vert"></i></a></li>-->
           </ul>
           <br/>
           <!--Major banner import-->
-          <div class="row">
+          <div class="row banner">
             <div class="col offset-s1 s11">
               <h3 ng-if="enableUserAdd == undefined && enableUserSearch == undefined">
                 Security
               </h3>
               <div ng-show="enableUserSearch != undefined">
                 <form class="row" ng-submit="saveUser()">
-                  <div class="input-field col s10">
-                    <input class="text-h3 validate border-bottom-1px" id="searchText" type="text" required ng-model="searchUserNameText" placeholder="Username to search...">
+                  <div class="input-field col s8">
+                    <input class="text-h3 validate border-bottom-1px milky-placeholder" id="searchText" type="text" required ng-model="searchUserNameText" placeholder="Username to search...">
                   </div>
-                  <div class="input-field col s2">
+                  <div class="input-field col s4">
                     <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
                       <i class="mdi-content-clear line-height-36"></i>
                     </a>
@@ -39,10 +30,10 @@
               </div>
               <div ng-if="enableUserAdd">
                 <form class="row" ng-submit="saveUser()">
-                     <div class="input-field col s10">
-                       <input class="text-h3 validate border-bottom-1px" id="newUserName" type="text" required ng-model="newUser.username" placeholder="New user name">
+                     <div class="input-field col s8">
+                       <input class="text-h3 validate border-bottom-1px milky-placeholder" id="newUserName" type="text" required ng-model="newUser.username" placeholder="New user name">
                      </div>
-                     <div class="input-field col s2">
+                     <div class="input-field col s4">
                        <a ng-click="hideAddUser()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
                          <i class="mdi-content-clear line-height-36"></i>
                        </a>
@@ -189,23 +180,11 @@
         </div>
       </nav>
     </div>
-
-    <div class="col s4 nav-part">
-      <nav>
-        <div class="nav-wrapper red accent-4 lines-3">
+    <div class="col s4 nav-part fill-height">
+      <nav class="fill-height">
+        <div class="nav-wrapper red darken-2 minor-header">
           <ul class="right">
-            <!--<li ng-show="newUser"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>-->
             <li>&nbsp;</li>
-            <!--<li ng-show="(user || newUser) && (user.isAdmin == false || newUser.isAdmin == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Make admin"><a href="#"><span class="large-btn mdi-action-accessibility"></span></a></li>-->
-            <!--<li ng-show="(user && (!user.hasBeenReset || user.hasBeenReset == false))" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Reset password"><a href="#"><span class="large-btn mdi-navigation-refresh"></span></a></li>-->
-            <!--<li ng-show="(user || newUser) && (user.isEnabled == false || newUser.isEnabled == false)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Enable user"><a href="#"><span class="large-btn mdi-action-lock-open"></span></a></li>-->
-            <!--<li ng-show="(user || newUser) && (user.isEnabled == true || newUser.isEnabled == true)" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Disable user"><a href="#"><span class="large-btn mdi-action-lock"></span></a></li>-->
-            <!--<li ng-show="user || newUser" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Delete"><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>-->
           </ul>
 
           <div class="row">
@@ -213,183 +192,176 @@
               <h5 class="instance-header" ng-hide="newUser">{{user.username}}</h5>
               <h5 class="instance-header" ng-show="newUser && newUser.username">{{newUser.username}}</h5>
 
-              <span class="instance-tagline" ng-if="user && user.lastLoginDate">Last accessed {{user.lastLoginDate | date: 'medium'}}.</span>
-              <span class="instance-tagline" ng-if="user && !user.lastLoginDate">Last accessed <em>never</em>.</span>
+              <span class="instance-tagline" ng-show="user && user.lastLoginDate">Last accessed {{user.lastLoginDate | date: 'medium'}}.</span>
+              <span class="instance-tagline" ng-show="user && !user.lastLoginDate">Last accessed <em>never</em>.</span>
             </div>
           </div>
         </div>
       </nav>
     </div>
   </div>
-
   <!-- Content Body -->
   <div class="main-container">
-    <div class="row">
-      <div class="col s8 table-div window-height" ng-controller="UserListController">
-        <div class="row table-header-row">
-          <div class="col s1 table-header">&nbsp;</div>
-          <div class="col s4 table-header">Username</div>
-          <div class="col s2 table-header text-align-center">To be reset?</div>
-          <div class="col s2 table-header text-align-center">Is Admin?</div>
-          <div class="col s2 table-header text-align-center">Is Enabled?</div>
-          <div class="col s1 table-header">&nbsp;</div>
+    <div class="row full-height">
+      <div class="col s8 table-div nopadding major-body z-depth-1" ng-controller="UserListController">
+        <div class="major-body-list-header">
+          <div class="row table-header-row">
+            <div class="col s1 table-header">&nbsp;</div>
+            <div class="col s4 table-header bottom-bordered shift-25px-right">Username</div>
+            <div class="col s2 table-header text-align-center bottom-bordered shift-14px-right">To be reset?</div>
+            <div class="col s2 table-header text-align-center bottom-bordered shift-7px-right">Is Admin?</div>
+            <div class="col s2 table-header text-align-center bottom-bordered">Is Enabled?</div>
+            <div class="col s1 table-header bottom-bordered">&nbsp;</div>
+          </div>
         </div>
-
-        <div class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
-          <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text"></span></div>
-          <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
-          <div class="col s2 table-cell center" ng-click="view(user)">
-            <div class="center">
-              <span ng-if="user.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
-              <span ng-if="user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+        <div class="major-body-list-body">
+          <div ng-click="view(user)" class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
+            <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text round-icon"></span></div>
+            <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
+            <div class="col s2 table-cell center" ng-click="view(user)">
+              <div class="center">
+                <span ng-if="user.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+              </div>
             </div>
-            <!--<span ng-if="!entity.createdOn">N/A</span>-->
-            <!-- September 21, 2014 -->
-          </div>
-          <div class="col s2 table-cell" ng-click="view(user)">
-            <div class="center">
-              <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
-              <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
+            <div class="col s2 table-cell" ng-click="view(user)">
+              <div class="center">
+                <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
+              </div>
             </div>
-            <!--<span ng-if="!entity.username">Unknown</span>-->
-            <!--Manthan "The Duke" Dave-->
-          </div>
-          <div class="col s2 table-cell" ng-click="view(user)">
-            <div class="center">
-              <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
-              <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
+            <div class="col s2 table-cell" ng-click="view(user)">
+              <div class="center">
+                <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
+              </div>
             </div>
-          </div>
-          <div class="col s1 table-cell">
-            <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
-            <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-              <li><a ng-click="view(user)">View</a></li>
-              <li class="divider"></li>
-              <li><a ng-show="user.isEnabled==true" ng-click="disableUser(user)">Disable</a></li>
-              <li><a ng-show="user.isEnabled==false" ng-click="enableUser(user)">Enable</a></li>
-              <li><a ng-show="user.hasBeenReset==false" ng-click="resetPassword(user)">Reset password</a></li>
-              <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
-              <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
-              <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
-              <li><a ng-click="deleteUser(user)">Delete</a></li>
-            </ul>
+            <div class="col s1 table-cell">
+              <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+              <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+                <li><a ng-click="view(user)">View</a></li>
+                <li class="divider"></li>
+                <li><a ng-show="user.isEnabled==true" ng-click="disableUser(user)">Disable</a></li>
+                <li><a ng-show="user.isEnabled==false" ng-click="enableUser(user)">Enable</a></li>
+                <li><a ng-show="user.hasBeenReset==false" ng-click="resetPassword(user)">Reset password</a></li>
+                <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
+                <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
+                <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
+                <li><a ng-click="deleteUser(user)">Delete</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col s4" ng-controller="UserPropertyController">
+      <div class="col s4 nopadding" ng-controller="UserPropertyController">
         <div class="property-panel">
-          <div class="row table-header-row">
-            <div class="col s5 table-header">Property</div>
-            <div class="col s7 table-header">Type</div>
-          </div>
-
-          <div ng-if="$parent.newUser">
-            <!--<div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">-->
-              <!--<div class="col s5 table-cell">-->
-                <!--Username-->
-              <!--</div>-->
-              <!--<div class="col s7 table-cell">-->
-                <!--<input type="text" placeholder="Username" ng-model="newUser.username" required/>-->
-              <!--</div>-->
-            <!--</div>-->
-
-            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-              <div class="col s5 table-cell">
-                Password
-              </div>
-              <div class="col s7 table-cell">
-                <input class="tooltipped" data-position="bottom" data-tooltip="Default password is change1t." type="password" placeholder="Password" ng-model="newUser.password" required/>
-                <script>
-                  $('.tooltipped').tooltip({delay: 50});
-                </script>
-              </div>
-            </div>
-
-            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-              <div class="col s5 table-cell">
-                Reset password on create?
-              </div>
-              <div class="col s7 table-cell">
-                <p>
-                  <input id="hasBeenResetCheckbox" type="checkbox" ng-model="newUser.hasBeenReset"/>
-                  <label for="hasBeenResetCheckbox"></label>
-                </p>
-              </div>
-            </div>
-
-            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-              <div class="col s5 table-cell">
-                Is admin?
-              </div>
-              <div class="col s7 table-cell">
-                <p>
-                  <input id="isAdminCheckbox" type="checkbox" ng-model="newUser.isAdmin"/>
-                  <label for="isAdminCheckbox"></label>
-                </p>
-              </div>
-            </div>
-
-            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-              <div class="col s5 table-cell">
-                Is enabled?
-              </div>
-              <div class="col s7 table-cell">
-                <p>
-                  <input id="isEnabledCheckbox" type="checkbox" ng-model="newUser.isEnabled"/>
-                  <label for="isEnabledCheckbox"></label>
-                </p>
-              </div>
+          <div class="property-panel-header">
+            <div class="row table-header-row">
+              <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
+              <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
             </div>
           </div>
-
-          <div ng-if="!$parent.newUser && user">
-            <div>
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Username</div>
-                <div class="col s5 table-cell">{{user.username}}</div>
-                <div class="col s2 table-cell"></div>
-              </div>
-
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Scheduled to reset?</div>
+          <div class="property-panel-body">
+            <div ng-if="$parent.newUser">
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
                 <div class="col s5 table-cell">
-                  <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
-                  <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+                  Password
+                </div>
+                <div class="col s7 table-cell">
+                  <input class="tooltipped" data-position="bottom" data-tooltip="Default password is change1t." type="password" placeholder="Password" ng-model="newUser.password" required/>
+                  <script>
+                    $('.tooltipped').tooltip({delay: 50});
+                  </script>
+                </div>
+              </div>
+
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+                <div class="col s5 table-cell">
+                  Reset password on create?
+                </div>
+                <div class="col s7 table-cell">
+                  <p>
+                    <input id="hasBeenResetCheckbox" type="checkbox" ng-model="newUser.hasBeenReset"/>
+                    <label for="hasBeenResetCheckbox"></label>
+                  </p>
+                </div>
+              </div>
+
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+                <div class="col s5 table-cell">
+                  Is admin?
+                </div>
+                <div class="col s7 table-cell">
+                  <p>
+                    <input id="isAdminCheckbox" type="checkbox" ng-model="newUser.isAdmin"/>
+                    <label for="isAdminCheckbox"></label>
+                  </p>
+                </div>
+              </div>
+
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+                <div class="col s5 table-cell">
+                  Is enabled?
+                </div>
+                <div class="col s7 table-cell">
+                  <p>
+                    <input id="isEnabledCheckbox" type="checkbox" ng-model="newUser.isEnabled"/>
+                    <label for="isEnabledCheckbox"></label>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div ng-if="!$parent.newUser && user">
+              <div>
+                <div class="row table-row valign-wrapper">
+                  <div class="col s5 table-cell">Username</div>
+                  <div class="col s5 table-cell">{{user.username}}</div>
+                  <div class="col s2 table-cell"></div>
+                </div>
+
+                <div class="row table-row valign-wrapper">
+                  <div class="col s5 table-cell">Scheduled to reset?</div>
+                  <div class="col s5 table-cell">
+                    <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
+                    <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+                  </div>
+                  <div class="col s2 table-cell"></div>
+                </div>
+
+                <div class="row table-row valign-wrapper">
+                  <div class="col s5 table-cell">Is admin?</div>
+                  <div class="col s5 table-cell">
+                    <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
+                    <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
+                  </div>
+                  <div class="col s2 table-cell"></div>
+                </div>
+              </div>
+
+              <div class="row table-row valign-wrapper">
+                <div class="col s5 table-cell">Is enabled?</div>
+                <div class="col s5 table-cell">
+                  <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
+                  <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
                 </div>
                 <div class="col s2 table-cell"></div>
               </div>
 
               <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Is admin?</div>
-                <div class="col s5 table-cell">
-                  <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
-                  <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
-                </div>
+                <div class="col s5 table-cell">Created by</div>
+                <div class="col s5 table-cell" ng-if="user.createdBy">{{user.createdBy}}</div>
+                <div class="col s5 table-cell" ng-if="!user.createdBy"><strong>default</strong></div>
                 <div class="col s2 table-cell"></div>
               </div>
             </div>
-
-            <div class="row table-row valign-wrapper">
-              <div class="col s5 table-cell">Is enabled?</div>
-              <div class="col s5 table-cell">
-                <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
-                <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
-              </div>
-              <div class="col s2 table-cell"></div>
-            </div>
-
-            <div class="row table-row valign-wrapper">
-              <div class="col s5 table-cell">Created by</div>
-              <div class="col s5 table-cell" ng-if="user.createdBy">{{user.createdBy}}</div>
-              <div class="col s5 table-cell" ng-if="!user.createdBy"><strong>default</strong></div>
-              <div class="col s2 table-cell"></div>
-            </div>
+            <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
           </div>
-          <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
         </div>
-        <div ng-hide="true" class="instance-list-panel" ng-controller="RoleListController">
+        <div ng-if="!true" class="instance-list-panel minor-body-bottom" ng-controller="RoleListController">
           <hr/>
+          <a ng-show="user" href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
               <span class="action-label">Delete role</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-delete no-line-height"></i></a>
@@ -407,7 +379,6 @@
               <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red modal-close"><i class="mdi-content-clear modal-close"></i></a>
             </div>
           </div>
-          <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{roleString}}</textarea>
         </div>
       </div>

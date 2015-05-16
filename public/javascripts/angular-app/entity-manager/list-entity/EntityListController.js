@@ -92,21 +92,3 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
         return false;
     }
 });
-
-//entitiesModule.filter('entitySearchFilter', function() {
-//    return function(entity, scope) {
-//        console.log("filtering..");
-//        if(!scope.$parent.searchEntityNameText) {
-//            return true;
-//        }
-//
-//        var lEntityName = entity.name.toLowerCase();
-//        var lSearchString = $scope.$parent.searchEntityNameText.toLowerCase();
-//        var regex = new RegExp(lSearchString);
-//        if(regex.test(lEntityName) == true) {
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//})

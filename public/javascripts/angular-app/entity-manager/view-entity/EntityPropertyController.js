@@ -15,9 +15,6 @@ propertiesModule.controller("EntityPropertyController", function($scope, $timeou
         $('select').material_select();
     };
 
-    //$scope.$evalAsync(function() {
-    //    $('select').material_select();
-    //});
     $scope.i = 0;
 
     $scope.$on("AddProperty", function() {
@@ -26,11 +23,6 @@ propertiesModule.controller("EntityPropertyController", function($scope, $timeou
             type: "string",
             required: true
         });
-
-        //$timeout(function() {   // Runs after DOM has been rendered.
-        //    console.log($scope.i++);
-        //    $('select').material_select();
-        //});
 
         toast("New property added!", 1000);
     });
@@ -50,9 +42,6 @@ propertiesModule.controller("EntityPropertyController", function($scope, $timeou
             if(statusCode == 200) {
                 $scope.supportedTypes = data.typeList;
             }
-            console.log($scope.supportedTypes);
-
-            //$scope.resetNewEntity();
         });
     }
 

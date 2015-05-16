@@ -1,48 +1,39 @@
-<section ng-controller="EntityController">
+<section ng-controller="EntityController" class="full-height">
   <!-- Header -->
-  <div class="row">
-    <div class="col s8 nav-part">
-      <nav>
-        <div class="nav-wrapper red darken-3 lines-3">
-          <!--<span>-->
+  <div class="row major">
+    <div class="col s8 nav-part fill-height z-depth-2">
+      <nav class="fill-height">
+        <div class="nav-wrapper red major-header">
               <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
-              <!--<span class="brand-logo padding-left-10px"></span></a>-->
-          <!--</span>-->
-          <!--<a href="#" class="brand-logo" data-activates="slide-out"><i class="mdi-navigation-menu"></i> Logo</a>-->
           <ul class="right">
             <li ng-show="!newEntity || enableEntitySearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add entity"><a ng-click="showAddEntity()"><i class="large-btn mdi-content-add"></i></a></li>
             <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
-            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-
-            <!--<li><a href="#"><i class="large-btn mdi-navigation-more-vert"></i></a></li>-->
           </ul>
           <br/>
           <!--Major banner import-->
-          <div class="row">
+          <div class="row banner">
             <div class="col offset-s1 s11">
               <h3 ng-if="enableEntityAdd == undefined && enableEntitySearch == undefined">
                 Entities
               </h3>
               <div ng-show="enableEntitySearch != undefined">
                 <form class="row" ng-submit="saveEntity()">
-                  <div class="input-field col s10">
-                    <input class="text-h3 validate border-bottom-1px" id="searchText" type="text" required ng-model="searchEntityNameText" placeholder="Entity name to search...">
+                  <div class="input-field col s8">
+                    <input class="text-h3 validate border-bottom-1px milky-placeholder" id="searchText" type="text" required ng-model="searchEntityNameText" placeholder="Entity name to search...">
                   </div>
-                  <div class="input-field col s2">
+                  <div class="input-field col s4">
                     <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
                       <i class="mdi-content-clear line-height-36"></i>
                     </a>
                   </div>
                 </form>
               </div>
-              <div ng-if="enableEntityAdd">
+              <div ng-show="enableEntityAdd">
                 <form class="row" ng-submit="saveEntity()">
-                     <div class="input-field col s10">
-                       <input class="text-h3 validate border-bottom-1px" id="newEntityName" type="text" required ng-model="newEntity.entityName" placeholder="New entity name">
+                     <div class="input-field col s8">
+                       <input class="text-h3 validate border-bottom-1px milky-placeholder" id="newEntityName" type="text" required ng-model="newEntity.entityName" placeholder="New entity name">
                      </div>
-                     <div class="input-field col s2">
+                     <div class="input-field col s4">
                        <a ng-click="hideAddEntity()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
                          <i class="mdi-content-clear line-height-36"></i>
                        </a>
@@ -139,18 +130,12 @@
       </nav>
     </div>
 
-    <div class="col s4 nav-part">
-      <nav>
-        <div class="nav-wrapper red accent-4 lines-3">
+    <div class="col s4 nav-part fill-height">
+      <nav class="fill-height">
+        <div class="nav-wrapper red darken-2 minor-header">
           <ul class="right">
             <li ng-show="newEntity" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add property"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>
             <li>&nbsp</li>
-            <!--<li ng-show="entity || newEntity" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a href="#"><span class="large-btn mdi-action-search"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-content-sort"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-content-create"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-delete"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-action-info"></span></a></li>-->
-            <!--<li><a href="#"><span class="large-btn mdi-navigation-more-vert"></span></a></li>-->
           </ul>
 
           <div class="row">
@@ -158,7 +143,7 @@
               <h5 class="instance-header" ng-hide="newEntity">{{entity.name}}</h5>
               <h5 class="instance-header" ng-show="newEntity && newEntity.name">{{newEntity.name}}</h5>
 
-              <span class="instance-tagline" ng-if="!newEntity && entity.lastAccessDate">Last accessed on {{entity.lastAccessDate}}</span>
+              <span class="instance-tagline" ng-show="!newEntity && entity.lastAccessDate">Last accessed on {{entity.lastAccessDate}}</span>
               <span class="instance-tagline" ng-show="newEntity && newEntity.createdOn">Created on {{newEntity.createdOn}}</span>
             </div>
           </div>
@@ -169,91 +154,89 @@
 
   <!-- Content Body -->
   <div class="main-container">
-    <div class="row">
-      <div class="col s8 table-div window-height" ng-controller="EntityListController">
-        <div class="row table-header-row">
-          <div class="col s1 table-header">&nbsp;</div>
-          <div class="col s3 table-header">Name</div>
-          <div class="col s3 table-header">Created on</div>
-          <div class="col s3 table-header">Created by</div>
-          <div class="col s1 table-header">Active?</div>
-          <div class="col s1 table-header">&nbsp;</div>
-        </div>
-
-        <div class="row table-row valign-wrapper link" ng-repeat="entity in entityList | filter:entitySearchFilter">
-          <div class="col s1 table-cell" ng-click="view(entity)"><span class="mdi-action-assignment large-text"></span></div>
-          <div class="col s3 table-cell" ng-click="view(entity)">{{entity.name}}</div>
-          <div class="col s3 table-cell" ng-click="view(entity)">
-            <span ng-if="entity.createdOn">{{entity.createdOn}}</span>
-            <span ng-if="!entity.createdOn">N/A</span>
-            <!-- September 21, 2014 -->
-          </div>
-          <div class="col s3 table-cell" ng-click="view(entity)">
-            <span ng-if="entity.username">{{entity.username}}</span>
-            <span ng-if="!entity.username">Unknown</span>
-            <!--Manthan "The Duke" Dave-->
-          </div>
-          <div class="col s1 table-cell text-center" ng-click="view(entity)">
-            <div>
-              <span ng-if="entity.active" class="mdi-action-done medium-text green-text"></span>
-              <span ng-if="!entity.active" class="mdi-navigation-close medium-text red-text"></span>
-            </div>
-          </div>
-          <div class="col s1 table-cell">
-            <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
-            <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-              <li><a ng-show="entity.active == true" ng-click="deactivate(entity)">Deactivate</a></li>
-              <li><a ng-show="entity.active == false" ng-click="activate(entity)">Activate</a></li>
-              <li class="divider"></li>
-              <li><a ng-click="view(entity)">View</a></li>
-              <li><a ng-click="deleteEntity(entity)">Delete Entity</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="col s4" ng-controller="EntityPropertyController">
-        <div class="property-panel">
+    <div class="row full-height">
+      <div class="col s8 table-div nopadding major-body z-depth-1" ng-controller="EntityListController">
+        <div class="major-body-list-header">
           <div class="row table-header-row">
-            <div class="col s6 table-header">Property</div>
-            <div class="col s4 table-header">Type</div>
-            <div class="col s2 table-header">
-              <!--<a ng-if="$parent.newEntity" class="no-line-height" ng-click="addProperty()"><i class="mdi-content-add small"></i></a>-->
-              &nbsp;
-            </div>
+            <div class="col s1 table-header">&nbsp;</div>
+              <div class="col s3 table-header bottom-bordered shift-25px-right">Name</div>
+              <div class="col s3 table-header bottom-bordered shift-14px-right">Created on</div>
+              <div class="col s3 table-header bottom-bordered shift-7px-right">Created by</div>
+              <div class="col s1 table-header bottom-bordered">Active?</div>
+              <div class="col s1 table-header bottom-bordered">&nbsp;</div>
           </div>
-
-          <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties" on-finish-render="initializeMaterialSelect">
-            <div class="col s6 table-cell">
-              <input type="text" placeholder="Property name" ng-model="property.name" required/>
+        </div>
+        <div class="major-body-list-body">
+          <div ng-click="view(entity)" class="row table-row valign-wrapper link" ng-repeat="entity in entityList | filter:entitySearchFilter">
+            <div class="col s1 table-cell" ng-click="view(entity)"><span class="mdi-action-assignment large-text round-icon"></span></div>
+            <div class="col s3 table-cell" ng-click="view(entity)">{{entity.name}}</div>
+            <div class="col s3 table-cell" ng-click="view(entity)">
+              <span ng-if="entity.createdOn">{{entity.createdOn}}</span>
+              <span ng-if="!entity.createdOn">N/A</span>
             </div>
-            <div class="col s4 table-cell">
-              <!--<input type="text" placeholder="Property name" ng-model="property.type" required/>-->
-              <select ng-model="property.type" ng-init="property.type = supportedTypes[0]" ng-options="typeString as typeString for typeString in supportedTypes"></select>
+            <div class="col s3 table-cell" ng-click="view(entity)">
+              <span ng-if="entity.username">{{entity.username}}</span>
+              <span ng-if="!entity.username">Unknown</span>
             </div>
-            <div class="col s2 table-cell">
+            <div class="col s1 table-cell text-center" ng-click="view(entity)">
+              <div>
+                <span ng-if="entity.active" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="!entity.active" class="mdi-navigation-close medium-text red-text"></span>
+              </div>
+            </div>
+            <div class="col s1 table-cell">
               <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
               <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-                <li><a ng-click="removePropertyAt($index)">Remove</a></li>
+                <li><a ng-show="entity.active == true" ng-click="deactivate(entity)">Deactivate</a></li>
+                <li><a ng-show="entity.active == false" ng-click="activate(entity)">Activate</a></li>
+                <li class="divider"></li>
+                <li><a ng-click="view(entity)">View</a></li>
+                <li><a ng-click="deleteEntity(entity)">Delete Entity</a></li>
               </ul>
             </div>
           </div>
-          <p class="text-align-center italics" ng-if="entity == undefined && $parent.newEntity.properties.length == 0">Click the add button to add properties.</p>
-
-          <div class="row table-row valign-wrapper" ng-if="!$parent.newEntity" ng-repeat="property in $parent.entity.properties">
-            <div class="col s6 table-cell">{{property.name}}</div>
-            <div class="col s4 table-cell">{{property.type}}</div>
-            <div class="col s2 table-cell">
-              <!--<a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>-->
-              <!--<ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>-->
-                <!--<li><a href="#">Remove</a></li>-->
-              <!--</ul>-->
+        </div>
+      </div>
+      <div class="col s4 nopadding minor-body-top full-height" ng-controller="EntityPropertyController">
+        <div class="property-panel">
+          <div class="property-panel-header">
+            <div class="row table-header-row">
+              <div class="col s6 table-header bottom-bordered shift-25px-right">Property</div>
+              <div class="col s4 table-header bottom-bordered shift-7px-right">Type</div>
+              <div class="col s2 table-header bottom-bordered">
+                &nbsp;
+              </div>
             </div>
           </div>
-          <p class="text-align-center italics" ng-if="entity == undefined && !$parent.newEntity">No entity selected.</p>
+          <div class="property-panel-body">
+            <div class="row table-row valign-wrapper" ng-if="$parent.newEntity" ng-repeat="property in $parent.newEntity.properties" on-finish-render="initializeMaterialSelect">
+              <div class="col s6 table-cell">
+                <input type="text" placeholder="Property name" ng-model="property.name" required/>
+              </div>
+              <div class="col s4 table-cell">
+                <select ng-model="property.type" ng-init="property.type = supportedTypes[0]" ng-options="typeString as typeString for typeString in supportedTypes"></select>
+              </div>
+              <div class="col s2 table-cell">
+                <a ng-if="$parent.newEntity.properties.length > 1" material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                <ul ng-if="$parent.newEntity.properties.length > 1" ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+                  <li><a ng-click="removePropertyAt($index)">Remove</a></li>
+                </ul>
+              </div>
+            </div>
+            <p class="text-align-center italics" ng-if="entity == undefined && $parent.newEntity.properties.length == 0">Click the add button to add properties.</p>
+
+            <div class="row table-row valign-wrapper" ng-if="!$parent.newEntity" ng-repeat="property in $parent.entity.properties">
+              <div class="col s6 table-cell">{{property.name}}</div>
+              <div class="col s4 table-cell">{{property.type}}</div>
+              <div class="col s2 table-cell">
+              </div>
+            </div>
+            <p class="text-align-center italics" ng-if="entity == undefined && !$parent.newEntity">No entity selected.</p>
+          </div>
         </div>
-        <div class="instance-list-panel" ng-controller="InstanceListController">
+        <div class="instance-list-panel minor-body-bottom" ng-controller="InstanceListController">
           <hr/>
+          <a ng-show="entity" href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <div class="card action-card dropdown-content" id="modal1">
             <div class="valign-wrapper">
               <span class="action-label">Delete instance</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large btn-floating-small waves-effect waves-light pink darken-3 modal-close"><i class="mdi-action-delete no-line-height"></i></a>
@@ -271,13 +254,10 @@
               <span class="action-dismiss-label">Close</span> &nbsp;&nbsp; <a href="#" class="btn-floating btn-large waves-effect waves-light red modal-close"><i class="mdi-content-clear modal-close"></i></a>
             </div>
           </div>
-          <a href="#modal1" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{instanceString}}</textarea>
           <div class="modal black-text modal-fixed-footer" id="addInstanceModal">
             <div class="modal-content">
               <h4>Add <em>{{entity.name}}</em> instance</h4>
-              <!--<p>Do you want to discard all the changes to the following entity?</p>-->
-              <!--<h5></h5>-->
               <h6 ng-if="!entity">No entity selected.</h6>
               <h6 ng-if="entity.properties.length == 0">This entity has no properties.</h6>
               <div class="row">
@@ -308,8 +288,6 @@
           <div class="modal black-text modal-fixed-footer" id="findInstanceModal">
             <div class="modal-content">
               <h4>Find <em>{{entity.name}}</em> instance(s)</h4>
-              <!--<p>Do you want to discard all the changes to the following entity?</p>-->
-              <!--<h5></h5>-->
               <h6 ng-if="!entity">No entity selected.</h6>
               <h6 ng-if="entity.properties.length == 0">This entity has no properties.</h6>
               <div class="row">
@@ -357,6 +335,7 @@
           closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
         }
       );
+      $('.tooltipped').tooltip({delay: 50});
     });
 
     $(document).mouseup(function(e) {

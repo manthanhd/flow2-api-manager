@@ -45,7 +45,11 @@ var router = express.Router();
 
 router.get('/material', function (req, res) {
     res.render('material-app');
-})
+});
+
+router.get('/index', function (req, res) {
+    res.render('index');
+});
 
 /* GET home page. */
 router.get('/', function (req, res) {
