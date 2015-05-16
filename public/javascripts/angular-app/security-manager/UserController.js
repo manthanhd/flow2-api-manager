@@ -5,10 +5,6 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
         $scope.user = user;
     });
 
-    //$scope.showEntityDocumentationModal = function() {
-    //    $("#entityDocumentationModal").openModal();
-    //}
-
     $scope.showAddUser = function(force) {
         $scope.cancelSearchBar();
         if($scope.newUser) {  // This will happen if the user flicks to the search screen and then decides to head back to the add screen.
@@ -17,7 +13,6 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
         }
 
         if($scope.newUser && !force) {
-            //toast("<span>Reset</span><a class='btn-flat yellow-text' href='#'>Confirm<a>", 5000)
             $('#confirmResetUser').openModal();
             return;
         }
@@ -76,21 +71,6 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
             return;
         }
 
-        //// Thorough property validation.
-        //for(var i = 0; i < $scope.newEntity.properties.length; i++) {
-        //    var property = $scope.newEntity.properties[i];
-        //    console.log("'" + property.name + "'");
-        //    if(property.name == "") {
-        //        toast("Property name of property " + (i + 1) + " cannot be blank.", 2000);
-        //        return;
-        //    } else if(alphaNumericUnderscoreRegex.test(property.name) != true) {
-        //        toast(property.name + " is an invalid property name.", 2000);
-        //        return;
-        //    } else if(property.type != "string" && property.type != "number" && property.type != "date") {
-        //        toast(property.type + " is an invalid property value.", 2000);
-        //        return;
-        //    }
-        //}
         if(!force) {
             $("#confirmAddModal").openModal();
         } else {
@@ -124,10 +104,4 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
             $scope.retryCount++;
         }
     };
-
-    //$scope.broadcastAddProperty = function() {
-    //    if($scope.newUser) {
-    //        $scope.$parent.$broadcast("AddProperty");
-    //    }
-    //}
 });
