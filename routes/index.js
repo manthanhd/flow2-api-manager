@@ -42,6 +42,15 @@ properties.parse("db.properties", {
 var reservedKeys = Object.keys(mongoose.Schema.reserved);
 reservedKeys.push("_id","__v","admin");
 
+var isReserved = function(value) {
+    var trimmedValue = value.trim();
+    if(reservedKeys.indexOf(trimmedValue) === -1) {
+        return false;
+    }
+
+    return true;
+};
+
 modelCollection.add("GenericEntityModel", SavedGenericEntity);
 
 var router = express.Router();
