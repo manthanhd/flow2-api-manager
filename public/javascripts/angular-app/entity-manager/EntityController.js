@@ -51,13 +51,27 @@ entitiesModule.controller("EntityController", function($scope, $http, RequestSer
         $scope.enableEntityAdd = true;
     };
 
+    $scope.isEntityBlank = function(entity) {
+        if(!entity.entityName || entity.entityName.length == 0) {
+            for(var i = 0; i < entity.properties.length; i++) {
+                if(entity.properties[i].name.length > 0) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     $scope.hideAddEntity = function(force) {
         if($scope.enableEntitySearch) {
             $scope.enableEntityAdd = undefined;
             return;
         }
 
-        if($scope.newEntity && !force) {
+        if(!force && $scope.newEntity && $scope.isEntityBlank($scope.newEntity) === false) {
             $("#confirmCancelEntityCreation").openModal();
             return;
         }
@@ -108,7 +122,7 @@ entitiesModule.controller("EntityController", function($scope, $http, RequestSer
                 return toast("Property " + property.name + " cannot be used as it is a reserved word.", 2000);
             }
         }
-        
+
         if(!force) {
             $("#confirmAddModal").openModal();
         } else {
