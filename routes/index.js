@@ -349,19 +349,25 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
         return;
     }
     var entityName = req.body.entityName;
+    if(isReserved(entityName) === true) {
+        return res.status(400).send({entity: entityName});
+    }
+
     var entity = new GenericEntity(req.body.entityName);
 
     checkEntityNameExists(account.accountId, entityName, function () {
-        
+
         for (var i = 0; i < req.body.properties.length; i++) {
             var property = req.body.properties[i];
             if (GenericEntityProperty.isValidType(property.type) == false) {
-                res.status(422).send({
+                return res.status(422).send({
                     name: property.name,
                     type: property.type
                 });
-                return;
+            } else if (isReserved(property.name) === true) {
+                return res.status(400).send(property);
             }
+
             var prop = new GenericEntityProperty(property.name, "", property.type, property.required);
             entity.addProperty(prop);
         }
@@ -371,7 +377,7 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
         dbGenericEntity.name = entity.name;
         dbGenericEntity.active = true;
         dbGenericEntity.properties = entity.properties;
-        dbGenericEntity.save();
+        dbGenericEntity.save(); // two phase save so that we can get the entity _id.
         dbGenericEntity.instanceClassName = entity.name + dbGenericEntity._id;
         dbGenericEntity.save();
 
