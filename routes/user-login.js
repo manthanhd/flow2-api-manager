@@ -44,43 +44,44 @@ router.post('/register', function (req, res) {
     var confirmEmailAddress = req.body.confirmEmailAddress.trim();
 
     if(emailAddress.length <= 3) {
-        res.redirect("/user/register?errorMessage=Invalid email address.");
+        return res.redirect("/user/register?errorMessage=Invalid email address.");
+    }
+
+    if(domainName.length <= 3) {
+        return res.redirect("/user/register?errorMessage=Domain name is invalid.");
     }
 
     if(validateEmail(emailAddress) != true){
-        res.redirect("/user/register?errorMessage=Email address must be valid.");
+        return res.redirect("/user/register?errorMessage=Email address must be valid.");
     }
 
     if(emailAddress.length != confirmEmailAddress.length || emailAddress != confirmEmailAddress) {
-        res.redirect("/user/register?errorMessage=Email addresses must match.");
+        return res.redirect("/user/register?errorMessage=Email addresses must match.");
     }
 
     if(!domainName || domainName == "" || !firstName || firstName == "" || !lastName || lastName == "") {
-        res.redirect("/user/register?errorMessage=Domain name, first name and last name are required fields.");
-        return;
+        return res.redirect("/user/register?errorMessage=Domain name, first name and last name are required fields.");
     }
 
     var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
     if(alphaNumericUnderscoreRegex.test(domainName) != true) {
-        res.redirect("/user/register?errorMessage=Domain name can only contain alpha-numeric characters.");
-        return;
+        return res.redirect("/user/register?errorMessage=Domain name can only contain alpha-numeric characters.");
     }
 
     var alphaRegex = new RegExp("^[A-Za-z]+$");
     if(alphaRegex.test(firstName) != true || alphaRegex.test(lastName) != true) {
-        res.redirect("/user/register?errorMessage=First name and last name can only contain alphabets.");
-        return;
+        return res.redirect("/user/register?errorMessage=First name and last name can only contain alphabets.");
     }
 
     var successCallback = function (account) {
         UserAccountManager.createDefaultAdminAccount(account.accountId, function(user) {
             sendEmail(account, user);
-            res.redirect("/user/login");
+            return res.redirect("/user/login");
         });
     }
 
     var failureCallback = function () {
-        res.redirect("/user/register?errorMessage=Domain is already in use.");
+        return res.redirect("/user/register?errorMessage=Domain is already in use.");
     }
 
     AccountManager.createAccount(domainName, firstName, lastName, emailAddress, successCallback, failureCallback);

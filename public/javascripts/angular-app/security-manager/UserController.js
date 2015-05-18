@@ -34,7 +34,7 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
             return;
         }
 
-        if($scope.newUser && !force) {
+        if($scope.newUser && !force && $scope.newUser.username && $scope.newUser.username.length > 0) {
             $("#confirmCancelUserCreation").openModal();
             return;
         }
@@ -95,6 +95,14 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
         }
 
         function onFailure(data, statusCode) {
+            if(statusCode == 409) {
+                toast("Save failed. User already exists!", 2000);
+                return $("#confirmAddModal").closeModal();
+            } else if(statusCode == 401) {
+                toast("Save failed. " + data.error, 2000);
+                return $("#confirmAddModal").closeModal();
+            }
+
             if($scope.retryCount == 5) {
                 toast("We failed 5th time. Something's really wrong.", 2000);
                 return;

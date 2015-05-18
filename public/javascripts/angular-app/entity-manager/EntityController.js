@@ -1,6 +1,25 @@
 var entitiesModule = angular.module("Entities");
 
-entitiesModule.controller("EntityController", function($scope, RequestService) {
+entitiesModule.controller("EntityController", function($scope, $http, RequestService) {
+
+    var getReservedList = function() {
+        $http.get('/entity/metadata/reserved').success(function(data, statusCode) {
+            if(statusCode == 200) {
+                $scope.reservedList = data.reservedList;
+            }
+        });
+    };
+
+    getReservedList();
+
+    $scope.isReserved = function(value) {
+        if($scope.reservedList.indexOf(value) === -1) {
+            return false;
+        }
+
+        return true;
+    };
+
     $scope.$on("ViewEntity", function(event, entity) {
         $scope.entity = entity;
     });
@@ -32,13 +51,27 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         $scope.enableEntityAdd = true;
     };
 
+    $scope.isEntityBlank = function(entity) {
+        if(!entity.entityName || entity.entityName.length == 0) {
+            for(var i = 0; i < entity.properties.length; i++) {
+                if(entity.properties[i].name.length > 0) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     $scope.hideAddEntity = function(force) {
         if($scope.enableEntitySearch) {
             $scope.enableEntityAdd = undefined;
             return;
         }
 
-        if($scope.newEntity && !force) {
+        if(!force && $scope.newEntity && $scope.isEntityBlank($scope.newEntity) === false) {
             $("#confirmCancelEntityCreation").openModal();
             return;
         }
@@ -68,28 +101,28 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
     $scope.saveEntity = function(force) {
         var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
         if(alphaNumericUnderscoreRegex.test($scope.newEntity.entityName) != true) {
-            toast("Entity name cannot contain spaces or special characters. A-Z, a-z, 0-9 and _ allowed.", 2000);
-            return;
+            return toast("Entity name cannot contain spaces or special characters. A-Z, a-z, 0-9 and _ allowed.", 2000);
         } else if($scope.newEntity.properties.length == 0) {
-            toast("An entity must have at least 1 property.", 2000);
-            return;
+            return toast("An entity must have at least 1 property.", 2000);
+        } else if($scope.isReserved($scope.newEntity.entityName) === true) {
+            return toast("Entity name cannot be used as it is a reserved word.", 2000);
         }
 
         // Thorough property validation.
         for(var i = 0; i < $scope.newEntity.properties.length; i++) {
             var property = $scope.newEntity.properties[i];
-            console.log("'" + property.name + "'");
+
             if(property.name == "") {
-                toast("Property name of property " + (i + 1) + " cannot be blank.", 2000);
-                return;
+                return toast("Property name of property " + (i + 1) + " cannot be blank.", 2000);
             } else if(alphaNumericUnderscoreRegex.test(property.name) != true) {
-                toast(property.name + " is an invalid property name.", 2000);
-                return;
+                return toast(property.name + " is an invalid property name.", 2000);
             } else if(property.type != "string" && property.type != "number" && property.type != "date") {
-                toast(property.type + " is an invalid property value.", 2000);
-                return;
+                return toast(property.type + " is an invalid property value.", 2000);
+            } else if($scope.isReserved(property.name) === true) {
+                return toast("Property " + property.name + " cannot be used as it is a reserved word.", 2000);
             }
         }
+
         if(!force) {
             $("#confirmAddModal").openModal();
         } else {
@@ -114,9 +147,20 @@ entitiesModule.controller("EntityController", function($scope, RequestService) {
         }
 
         function onFailure(data, statusCode) {
+            if(statusCode == 400) {
+                if(data.entity) {
+                    return toast("Entity name cannot be used as it is a reserved word.", 2000);
+                } else if (data.name) {
+                    return toast("Property " + data.name + " cannot be used as it is a reserved word.", 2000);
+                }
+            } else if (statusCode == 422) {
+                if(data.name) {
+                    return toast("Property " + data.name + " has an invalid type " + data.type + ".");
+                }
+            }
+
             if($scope.retryCount == 5) {
-                toast("We failed 5th time. Something's really wrong.", 2000);
-                return;
+                return toast("We failed 5th time. Something's really wrong.", 2000);
             }
             toast("Oops... Something went wrong. We'll try again in a moment.", 2000);
             setTimeout($scope.confirmSave, 2000);
