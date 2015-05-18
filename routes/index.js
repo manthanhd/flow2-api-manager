@@ -39,6 +39,9 @@ properties.parse("db.properties", {
     });
 });
 
+var reservedKeys = Object.keys(mongoose.Schema.reserved);
+reservedKeys.push("_id","__v","admin");
+
 modelCollection.add("GenericEntityModel", SavedGenericEntity);
 
 var router = express.Router();
@@ -73,6 +76,38 @@ router.get('/EAG', function (req, res) {
     }
     res.cookie("XSRF-TOKEN", req.session.csrfToken);
     res.render("eag_home", {csrfToken: req.session.csrfToken});
+});
+
+router.get('/entity/metadata/reserved', function (req, res) {
+    var account = req.session.account;
+    if (!account) {
+        res.status(403).send({error: "LoginRequired", errorCode: 403});
+        return;
+    }
+
+    var userFoundCallback = function (user) {
+        var hasRoleCallback = function (user, userRole, role) {
+            if (userRole || (user && user.isAdmin == true)) {
+                res.send({reservedList: reservedKeys});
+            } else {
+                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                return;
+            }
+        }
+        var doesNotHaveRoleCallback = function () {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+        }
+
+        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+    }
+
+    var userNotFoundCallback = function () {
+        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+        return;
+    }
+
+    UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
 router.get('/entity/metadata/types', function (req, res) {
