@@ -352,24 +352,18 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
     var entity = new GenericEntity(req.body.entityName);
 
     checkEntityNameExists(account.accountId, entityName, function () {
-        if (req.property1_name != undefined) { // Probably a generic  form post
-            for (var i = 1; i < Object.keys(req.body).length / 2; i++) {
-                var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type'], req.body['property' + i + '_required']);
-                entity.addProperty(prop);
+        
+        for (var i = 0; i < req.body.properties.length; i++) {
+            var property = req.body.properties[i];
+            if (GenericEntityProperty.isValidType(property.type) == false) {
+                res.status(422).send({
+                    name: property.name,
+                    type: property.type
+                });
+                return;
             }
-        } else { // It must be an AJAX post
-            for (var i = 0; i < req.body.properties.length; i++) {
-                var property = req.body.properties[i];
-                if (GenericEntityProperty.isValidType(property.type) == false) {
-                    res.status(422).send({
-                        name: property.name,
-                        type: property.type
-                    });
-                    return;
-                }
-                var prop = new GenericEntityProperty(property.name, "", property.type, property.required);
-                entity.addProperty(prop);
-            }
+            var prop = new GenericEntityProperty(property.name, "", property.type, property.required);
+            entity.addProperty(prop);
         }
 
         var dbGenericEntity = new SavedGenericEntity();
