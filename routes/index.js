@@ -39,6 +39,18 @@ properties.parse("db.properties", {
     });
 });
 
+var reservedKeys = Object.keys(mongoose.Schema.reserved);
+reservedKeys.push("_id","__v","admin");
+
+var isReserved = function(value) {
+    var trimmedValue = value.trim();
+    if(reservedKeys.indexOf(trimmedValue) === -1) {
+        return false;
+    }
+
+    return true;
+};
+
 modelCollection.add("GenericEntityModel", SavedGenericEntity);
 
 var router = express.Router();
@@ -73,6 +85,38 @@ router.get('/EAG', function (req, res) {
     }
     res.cookie("XSRF-TOKEN", req.session.csrfToken);
     res.render("eag_home", {csrfToken: req.session.csrfToken});
+});
+
+router.get('/entity/metadata/reserved', function (req, res) {
+    var account = req.session.account;
+    if (!account) {
+        res.status(403).send({error: "LoginRequired", errorCode: 403});
+        return;
+    }
+
+    var userFoundCallback = function (user) {
+        var hasRoleCallback = function (user, userRole, role) {
+            if (userRole || (user && user.isAdmin == true)) {
+                res.send({reservedList: reservedKeys});
+            } else {
+                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                return;
+            }
+        }
+        var doesNotHaveRoleCallback = function () {
+            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+            return;
+        }
+
+        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+    }
+
+    var userNotFoundCallback = function () {
+        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+        return;
+    }
+
+    UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
 
 router.get('/entity/metadata/types', function (req, res) {
@@ -305,27 +349,27 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
         return;
     }
     var entityName = req.body.entityName;
+    if(isReserved(entityName) === true) {
+        return res.status(400).send({entity: entityName});
+    }
+
     var entity = new GenericEntity(req.body.entityName);
 
     checkEntityNameExists(account.accountId, entityName, function () {
-        if (req.property1_name != undefined) { // Probably a generic  form post
-            for (var i = 1; i < Object.keys(req.body).length / 2; i++) {
-                var prop = new GenericEntityProperty(req.body['property' + i + '_name'], "", req.body['property' + i + '_type'], req.body['property' + i + '_required']);
-                entity.addProperty(prop);
+
+        for (var i = 0; i < req.body.properties.length; i++) {
+            var property = req.body.properties[i];
+            if (GenericEntityProperty.isValidType(property.type) == false) {
+                return res.status(422).send({
+                    name: property.name,
+                    type: property.type
+                });
+            } else if (isReserved(property.name) === true) {
+                return res.status(400).send(property);
             }
-        } else { // It must be an AJAX post
-            for (var i = 0; i < req.body.properties.length; i++) {
-                var property = req.body.properties[i];
-                if (GenericEntityProperty.isValidType(property.type) == false) {
-                    res.status(422).send({
-                        name: property.name,
-                        type: property.type
-                    });
-                    return;
-                }
-                var prop = new GenericEntityProperty(property.name, "", property.type, property.required);
-                entity.addProperty(prop);
-            }
+
+            var prop = new GenericEntityProperty(property.name, "", property.type, property.required);
+            entity.addProperty(prop);
         }
 
         var dbGenericEntity = new SavedGenericEntity();
@@ -333,7 +377,7 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
         dbGenericEntity.name = entity.name;
         dbGenericEntity.active = true;
         dbGenericEntity.properties = entity.properties;
-        dbGenericEntity.save();
+        dbGenericEntity.save(); // two phase save so that we can get the entity _id.
         dbGenericEntity.instanceClassName = entity.name + dbGenericEntity._id;
         dbGenericEntity.save();
 

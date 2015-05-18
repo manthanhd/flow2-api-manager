@@ -43,7 +43,7 @@ propertiesModule.controller("EntityPropertyController", function($scope, $timeou
                 $scope.supportedTypes = data.typeList;
             }
         });
-    }
+    };
 
     $scope.getTypes();
 });
