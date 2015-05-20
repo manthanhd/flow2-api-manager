@@ -67,11 +67,11 @@ h1, h2, h3, h4, h5, h6 {
 .major-body-list-body {
     height: 93%;
     overflow-y: auto;
+    width: 100%;
 }
 
 .property-panel {
     height: 64.8%;
-    overflow: auto !important;
 }
 
 .property-panel-header {
@@ -81,22 +81,24 @@ h1, h2, h3, h4, h5, h6 {
 .property-panel-body {
     height: 88%;
     overflow-y: auto;
+    width: 100%;
 }
 
 .instance-list-panel {
-    /*height: 205px;*/
     height: 34.2%;
+    padding: 5px !important;
 }
 
 .instance-list-textarea {
     overflow: auto !important;
     position: absolute;
     bottom: 0px !important;
-    top: 73%;
+    top: 73.5%;
     height: 23% !important;
     right: 0px;
     left: 67%;
-    width: 32.25% !important;
+    width: 32.95% !important;
+    background-color: white !important;
 }
 
 .full-height {
@@ -189,7 +191,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table-header-row {
-    /*padding: 15px;*/
     margin: 0px !important;
 }
 
@@ -208,10 +209,6 @@ h1, h2, h3, h4, h5, h6 {
 .clr{
     clear:both;
     font-size:0;
-}
-
-.table-div {
-    overflow: auto;
 }
 
 .inline-block {
