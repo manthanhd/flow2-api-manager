@@ -66,7 +66,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .major-body-list-body {
     height: 93%;
-    overflow-y: auto;
     width: 100%;
 }
 
@@ -94,7 +93,7 @@ h1, h2, h3, h4, h5, h6 {
     position: absolute;
     bottom: 0px !important;
     top: 73.5%;
-    height: 23% !important;
+    height: 26% !important;
     right: 0px;
     left: 67%;
     width: 32.95% !important;
@@ -218,6 +217,10 @@ h1, h2, h3, h4, h5, h6 {
 a, .link{
     cursor: pointer;
     color: #444444;
+}
+
+.nolink {
+    cursor: not-allowed;
 }
 
 .text-align-center {
