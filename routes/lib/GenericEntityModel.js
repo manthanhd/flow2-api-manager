@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 var entitySchema = mongoose.Schema({
-    accountId: {type: mongoose.Schema.Types.ObjectId, required: true},
+    accountId: {type: mongoose.Schema.Types.ObjectId, required: true, index: true},
     name: String,
     instanceClassName: String,
     active: {type: Boolean, default: true},
