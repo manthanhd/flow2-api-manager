@@ -1,4 +1,4 @@
-var apiFactoryApp = angular.module("APIFactoryWeb", ["ngRoute", "Shared", "Main", "Entities", "Users", "angular-loading-bar"]);
+var apiFactoryApp = angular.module("APIFactoryWeb", ["ngRoute", "Shared", "Main", "Entities", "Users", "Account", "angular-loading-bar"]);
 
 apiFactoryApp.config(['$routeProvider',
     function($routeProvider) {
@@ -10,6 +10,10 @@ apiFactoryApp.config(['$routeProvider',
             when('/security', {
                 templateUrl: 'partials/security.partial.html',
                 controller: 'UserController'
+            }).
+            when('/account', {
+                templateUrl: 'partials/account.partial.html',
+                controller: 'AccountController'
             }).
             otherwise({
                 redirectTo: '/entities'

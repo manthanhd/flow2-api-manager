@@ -1,0 +1,170 @@
+<div class="full-height">
+  <!-- Header -->
+  <div class="row major">
+    <div class="col s8 nav-part fill-height">
+      <nav class="fill-height">
+        <div class="nav-wrapper red major-header">
+              <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
+          <ul class="right">
+            <!--<li ng-show="!newEntity || enableEntitySearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add entity"><a ng-click="showAddEntity()"><i class="large-btn mdi-content-add"></i></a></li>-->
+            <!--<li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>-->
+          </ul>
+          <br/>
+          <!--Major banner import-->
+          <div class="row banner">
+            <div class="col offset-s1 s11">
+              <h3 ng-if="enableEntityAdd == undefined && enableEntitySearch == undefined">
+                Account
+              </h3>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="col s4 nav-part fill-height">
+      <nav class="fill-height">
+        <div class="nav-wrapper red darken-2 minor-header">
+          <ul class="right">
+            <!--<li ng-show="newEntity" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add property"><a ng-click="broadcastAddProperty()"><span class="large-btn mdi-content-add"></span></a></li>-->
+            <!--<li>&nbsp</li>-->
+          </ul>
+
+          <div class="row">
+            <div class="col offset-s1 s11">
+              <!--<h5 class="instance-header" ng-hide="newEntity">{{entity.name}}</h5>-->
+              <!--<h5 class="instance-header" ng-show="newEntity && newEntity.name">{{newEntity.name}}</h5>-->
+
+              <!--<span class="instance-tagline" ng-show="!newEntity && entity.lastAccessDate">Last accessed on {{entity.lastAccessDate}}</span>-->
+              <!--<span class="instance-tagline" ng-show="newEntity && newEntity.createdOn">Created on {{newEntity.createdOn}}</span>-->
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Content Body -->
+  <div class="main-container">
+    <div class="row fill-height padding-bottom-20px">
+      <div class="col s8 offset-s2 fill-height">
+        <div class="card fill-height">
+          <div class="row fill-height">
+            <div class="col s6 border-right-1px fill-height">
+              <div class="card-content border-bottom-1px-darkgray">
+                <span class="card-title black-text">Status</span>
+                <p>
+                  Registered on 21st January 2015.
+                  <span class="pull-right">Account is in <span class="green-text">GOOD</span> standing.</span>
+                </p>
+              </div>
+
+              <div class="card-content border-bottom-1px-darkgray">
+                <span class="card-title black-text">Plan</span>
+                <p>
+                  Current plan: <span>Free (alpha contributor)</span>&nbsp;<a>Change plan</a>
+                </p>
+              </div>
+
+              <div class="card-content">
+                <span class="card-title black-text">Usage stats</span>
+                <p>
+                  Entities: <span>5</span>
+                </p>
+                <p>
+                  Objects: <span>454</span>
+                </p>
+                <p>
+                  Users: <span>3</span>
+                </p>
+                <p>
+                  Total space used: <span>323.56 MB</span>
+                </p>
+              </div>
+            </div>
+            <div class="col s6">
+              <div class="card-content">
+                <span class="card-title black-text">Payment History</span>
+                <table class="striped">
+                  <thead>
+                    <th>Date</th>
+                    <th class="right-align">Amount paid</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        27/05/2015
+                      </td>
+                      <td class="right-align">
+                        &pound;3.12
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        27/04/2015
+                      </td>
+                      <td class="right-align">
+                        &pound;5.45
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        27/03/2015
+                      </td>
+                      <td class="right-align">
+                        &pound;23.01
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        27/02/2015
+                      </td>
+                      <td class="right-align">
+                        &pound;36.11
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        27/01/2015
+                      </td>
+                      <td class="right-align">
+                        &pound;40.20
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Must always be placed at the end of the script.
+    $(document).unbind('ready');
+    $(document).ready(function() {
+      $('.modal-trigger').leanModal();
+      $('.side-nav-toggle').sideNav({
+          menuWidth: 300, // Default is 240
+          edge: 'left', // Choose the horizontal origin
+          closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        }
+      );
+      $('.tooltipped').tooltip({delay: 50});
+    });
+
+    $(document).mouseup(function(e) {
+      var dropdown = $("ul.dropdown-content[visible=visible]");
+      if(dropdown){
+        dropdown.animate({
+          'opacity': '0'
+        });
+        dropdown.hide();
+        dropdown.removeAttr("visible");
+      }
+    });
+
+
+  </script>
+</div>

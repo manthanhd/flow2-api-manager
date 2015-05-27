@@ -258,6 +258,22 @@ a, .link{
     margin-left: -12px !important;
 }
 
+.border-bottom-1px-darkgray {
+    border-bottom-style: solid !important;
+    border-bottom-width: 1px !important;
+    border-bottom-color: darkgray;
+}
+
+.border-right-1px {
+    border-right-style: solid !important;
+    border-right-width: 1px !important;
+    border-right-color: darkgray;
+}
+
+.padding-bottom-20px {
+    padding-bottom: 20px !important;
+}
+
 .shift-15px-down {
     overflow-y: auto;
     margin-top: 15px !important;
