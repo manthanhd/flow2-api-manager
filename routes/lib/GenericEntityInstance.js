@@ -18,20 +18,15 @@ GenericEntityInstance.getInstanceModelFromCache = function (entity) {
         return;
     }
 
-    console.log("Finding instance model for " + entityName);
     var instanceModel = GenericEntityInstance.instanceModelCache[entityName];
     if (instanceModel != undefined) {
-        console.log("Found it!");
         return instanceModel;
     }
 
-    console.log("Couldn't find it. Defining it.");
     var mongooseSchemaObject = {};
     for (var i = 0; i < entity.properties.length; i++) {
         mongooseSchemaObject[entity.properties[i].name] = GenericEntityProperty.getMongooseType(entity.properties[i].type);
     }
-
-    console.log("Mongoose schema object created for " + entityName + ".");
 
     var entitySchema = mongoose.Schema(mongooseSchemaObject);
     var EntityObject = mongoose.model(entityName, entitySchema, entityName);
@@ -45,14 +40,12 @@ GenericEntityInstance.getInstanceModelFromCache = function (entity) {
  * findInstanceById: Find an instance by using it's ID.
  */
 GenericEntityInstance.findInstanceById = function (id, entity, foundCallback, notFoundCallback) {
-    console.log("Fetching instance model...");
     var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
     if (InstanceModel == undefined) {
-        console.log("Couldn't find it. :(");
         notFoundCallback();
         return;
     }
-    console.log("Found it!");
+
     InstanceModel.findOne({
         _id: id
     }, function (err, instance) {
@@ -71,7 +64,6 @@ GenericEntityInstance.findInstanceById = function (id, entity, foundCallback, no
  */
 GenericEntityInstance.findInstanceByProperty = function (entity, propertyName, propertyValue, foundCallback, notFoundCallback) {
     var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
-    console.log("Finding instance model.");
     if (InstanceModel == undefined) {
         notFoundCallback();
         return;
@@ -115,20 +107,16 @@ GenericEntityInstance.listAll = function (entity, foundCallback, notFoundCallbac
  * create: Allows creation of a new instance belonging to an Entity.
  */
 GenericEntityInstance.create = function (entity, instance) {
-    console.log("Creating... Getting instance model.");
     var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
-    console.log("Got the model. Checking...");
     if (InstanceModel == undefined) {
         return undefined;
     }
-    console.log("Model validated. Proceeding...");
 
     var newInstance = new InstanceModel();
 
     for (var i = 0; i < entity.properties.length; i++) {
         newInstance[entity.properties[i].name] = instance[entity.properties[i].name];
     }
-    console.log("Saving...");
     newInstance.save();
     return newInstance;
 };
