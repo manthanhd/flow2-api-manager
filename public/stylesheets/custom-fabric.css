@@ -46,6 +46,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .main-container {
     height: 80%;
+    overflow: hidden;
 }
 
 .banner {
@@ -67,6 +68,7 @@ h1, h2, h3, h4, h5, h6 {
 .major-body-list-body {
     height: 93%;
     width: 100%;
+    overflow: auto;
 }
 
 .property-panel {
