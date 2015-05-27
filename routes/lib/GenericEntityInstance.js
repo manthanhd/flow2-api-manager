@@ -13,6 +13,11 @@ GenericEntityInstance.instanceModelCache = {};
 GenericEntityInstance.getInstanceModelFromCache = function (entity) {
     //var entityName = entity.name || entity;
     var entityName = entity.instanceClassName;
+
+    if (!entityName) {
+        return;
+    }
+
     console.log("Finding instance model for " + entityName);
     var instanceModel = GenericEntityInstance.instanceModelCache[entityName];
     if (instanceModel != undefined) {
@@ -20,9 +25,6 @@ GenericEntityInstance.getInstanceModelFromCache = function (entity) {
         return instanceModel;
     }
 
-    if (!entityName) {
-        return;
-    }
     console.log("Couldn't find it. Defining it.");
     var mongooseSchemaObject = {};
     for (var i = 0; i < entity.properties.length; i++) {

@@ -3,8 +3,8 @@ var bcrypt = require('bcrypt'),
     SALT_WORK_FACTOR = 10;
 
 var userSchema = mongoose.Schema({
-    accountId: {type: mongoose.Schema.Types.ObjectId, required: true},
-    username: {type: String, required: true},
+    accountId: {type: mongoose.Schema.Types.ObjectId, required: true, index: true},
+    username: {type: String, required: true, index: true},
     password: {type: String, required: true},
     hasBeenReset: {type: Boolean, default: true},
     isAdmin: Boolean,

@@ -5,7 +5,8 @@ var accountSchema = mongoose.Schema({
     domainName: {type: String, index: {unique: true}},
     firstName: {type: String},
     lastName: {type: String},
-    emailAddress: {type: String}
+    emailAddress: {type: String, index: true},
+    registrationDate: {type: Date, default: Date.now}
 });
 
 var accountDBName = "FLOW2_Accounts";
