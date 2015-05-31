@@ -47,7 +47,6 @@ UserAccountManager.createDefaultAdminAccount = function (accountId, callback) {
             process.exit(2);
         }
 
-        console.log("Admin user for account Id " + accountId + ": " + savedDefaultAdmin.username + " was saved successfully.");
         savedDefaultAdmin.originalPassword = password;
         callback(savedDefaultAdmin);
     });

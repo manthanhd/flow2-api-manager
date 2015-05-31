@@ -243,7 +243,7 @@ router.get('/entity', function (req, res) { // Renamed from listEntities
                     console.log(err);
                     res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
                 }
-                console.log("has " + result.length + " for " + account.accountId);
+
                 if (userRole) {
                     var entityList = [];
                     for (var i = 0; i < result.length; i++) {
@@ -666,14 +666,12 @@ router.delete("/entity/:entityId", function (req, res) {  // renamed from delete
                     } finally {
                         GenericEntityInstance.instanceModelCache[entityName] = undefined;
                         entity.remove();
-                        console.log("Entity deleted.");
                         res.send({
                             status: "OK",
                             description: "Entity deleted."
                         });
                     }
                 } else {
-                    console.log("cant match.");
                     res.status(403).send({error: "AccessDeniedError", errorCode: 403});
                     return;
                 }
@@ -827,8 +825,6 @@ router.post('/instance/:entityName', function (req, res) {
         }
 
         for (var i = 0; i < entity.properties.length; i++) {
-            console.log("Validating properties:");
-            console.log(entity.properties);
             if (req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true) {
                 res.status(401).send({
                     error: entity.properties[i].name + " field is a required field.",
@@ -1182,8 +1178,6 @@ router.put("/instance/:entityName", function (req, res) {
     }
     var instance = req.body;
     if (instance == undefined || instance._id == undefined) {
-        console.log("Rejected instance. Missing _id.");
-        console.log(instance);
         res.status(401).send({
             error: "MissingArgumentException",
             errorCode: 401

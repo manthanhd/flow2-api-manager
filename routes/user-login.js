@@ -828,9 +828,8 @@ router.delete('/:userId/:roleAssignmentId', function (req, res) {
 
         var removeAt = undefined;
         for (var i = 0; i < user.roles.length; i++) {
-            console.log("Comparing " + user.roles[i]._id + " with " + roleAssignmentId);
+
             if (user.roles[i]._id == roleAssignmentId) {
-                console.log("FOUND IT!!");
                 user.roles.splice(i, 1);
                 break;
             }
@@ -841,8 +840,8 @@ router.delete('/:userId/:roleAssignmentId', function (req, res) {
         //
         //  console.log("Spliced at " + removeAt);
         //}
-        console.log("After:" + user.roles.length);
-        console.log(user.roles);
+        //console.log("After:" + user.roles.length);
+        //console.log(user.roles);
 
         user.save(function (err, savedUser) {
             if (err) {
