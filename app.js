@@ -129,7 +129,6 @@ app.all('/instance/*', function(req, res, next) { // Instance operations
 
     var userFoundCallback = function(user) {
         req.session.account = user; // Update session.
-        console.log(req.method);
         var allowsOperation = '';
         if(req.method == 'GET') {
             allowsOperation = 'r';
@@ -143,7 +142,7 @@ app.all('/instance/*', function(req, res, next) { // Instance operations
             res.status(403).send({error: "AccessDeniedError", errorCode: 403});
             return;
         }
-        console.log(allowsOperation);
+
         var hasRoleCallback = function(user, userRole, role) {
             var regex = /\/instance\/([A-Za-z_0-9]+)\//i;
             var regex2 = /\/instance\/([A-Za-z_0-9]+)/i;

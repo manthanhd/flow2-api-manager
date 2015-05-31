@@ -582,7 +582,6 @@ router.put('/:userId', function (req, res) {
 
         var foundCallback = function (user) {
 
-            console.log(req.body);
             if(req.body.isAdmin) {
                 if(user.createdBy == undefined) {
                     return res.status(403).send({error: "AccessDeniedError", errorCode: 403});

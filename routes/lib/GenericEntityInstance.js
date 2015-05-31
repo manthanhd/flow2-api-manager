@@ -32,7 +32,7 @@ GenericEntityInstance.getInstanceModelFromCache = function (entity) {
     var EntityObject = mongoose.model(entityName, entitySchema, entityName);
 
     GenericEntityInstance.instanceModelCache[entityName] = EntityObject;
-    console.log(GenericEntityInstance.instanceModelCache);
+
     return EntityObject;
 };
 
