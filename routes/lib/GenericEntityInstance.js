@@ -106,7 +106,7 @@ GenericEntityInstance.listAll = function (entity, foundCallback, notFoundCallbac
 /**
  * create: Allows creation of a new instance belonging to an Entity.
  */
-GenericEntityInstance.create = function (entity, instance) {
+GenericEntityInstance.create = function (entity, instance, callback) {
     var InstanceModel = GenericEntityInstance.getInstanceModelFromCache(entity);
     if (InstanceModel == undefined) {
         return undefined;
@@ -117,8 +117,17 @@ GenericEntityInstance.create = function (entity, instance) {
     for (var i = 0; i < entity.properties.length; i++) {
         newInstance[entity.properties[i].name] = instance[entity.properties[i].name];
     }
-    newInstance.save();
-    return newInstance;
+
+    newInstance.save(function(err, savedInstance) {
+        if(err) {
+            console.log("InstanceCreateError");
+            console.log(err);
+            callback();
+            return;
+        }
+
+        callback(savedInstance);
+    });
 };
 
 /**
@@ -149,8 +158,17 @@ GenericEntityInstance.update = function (instance, entity, successCallback, erro
             var property = entity.properties[i];
             existingInstance[property.name] = instance[property.name]; // Make properties same.
         }
-        existingInstance.save();
-        successCallback(existingInstance);
+
+        existingInstance.save(function(err, updatedInstance) {
+            if(err) {
+                console.log("InstanceUpdateError");
+                console.log(err);
+                errorCallback();
+                return;
+            }
+
+            successCallback(updatedInstance);
+        });
     }
 
     var notFoundCallback = function () {

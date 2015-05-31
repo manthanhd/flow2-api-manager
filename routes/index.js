@@ -377,11 +377,26 @@ router.post("/entity", function (req, res) {  // Protected at app.js level. Rena
         dbGenericEntity.name = entity.name;
         dbGenericEntity.active = true;
         dbGenericEntity.properties = entity.properties;
-        dbGenericEntity.save(); // two phase save so that we can get the entity _id.
-        dbGenericEntity.instanceClassName = entity.name + dbGenericEntity._id;
-        dbGenericEntity.save();
 
-        res.send(entity);
+        dbGenericEntity.save(function(err, savedEntity) {   // two phase save so that we can get the entity _id.
+            if(err) {
+                console.log("Error in phase 1 of 2 phase save.")
+                console.log(err);
+                return res.status(500).send();
+            }
+
+            savedEntity.instanceClassName = savedEntity.name + savedEntity._id;
+
+            savedEntity.save(function(err, doublySavedEntity) {
+                if(err) {
+                    console.log("Error in phase 2 of 2 phase save.")
+                    console.log(err);
+                    return res.status(500).send();
+                }
+
+                res.send(doublySavedEntity);
+            });
+        });
     }, function () {
         res.status(409).send(ErrorObject.create("EntityExistsError", 409));
     })
@@ -578,8 +593,15 @@ router.put("/entity/:entityId", function (req, res) {  // Protected at app.js le
                         entity.active = false;
                     }
 
-                    entity.save();
-                    res.send(entity);
+                    entity.save(function(err, savedEntity) {
+                        if(err) {
+                            console.log("Error occurred while updating entity.");
+                            console.log(err);
+                            return res.status(500).send();
+                        }
+
+                        res.send(savedEntity);
+                    });
                 } else {
                     res.status(403).send({error: "AccessDeniedError", errorCode: 403});
                     return;
@@ -839,15 +861,16 @@ router.post('/instance/:entityName', function (req, res) {
             newObject[entity.properties[i].name] = req.body[entity.properties[i].name];
         }
 
-        var savedInstance = GenericEntityInstance.create(entity, newObject);
-        if (savedInstance == undefined) {
-            res.status(500).send({
-                error: "InstanceSaveFailedError",
-                errorCode: 500
-            });
-        } else {
-            res.send(savedInstance);
-        }
+        GenericEntityInstance.create(entity, newObject, function(savedInstance) {
+            if (savedInstance == undefined) {
+                res.status(500).send({
+                    error: "InstanceSaveFailedError",
+                    errorCode: 500
+                });
+            } else {
+                res.send(savedInstance);
+            }
+        });
     });
 });
 
