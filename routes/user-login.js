@@ -7,6 +7,11 @@ var UserAccountManager = require("./lib/sec/UserAccountManager");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
 var RoleManager = require('./lib/sec/RoleManager');
 
+router.get('/authenticate', function(req, res) {
+    var sessionId = req.cookies['connect.sid'];
+    res.send({authToken: sessionId});
+})
+
 function validateEmail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     return re.test(email);
@@ -851,6 +856,6 @@ router.delete('/:userId/:roleAssignmentId', function (req, res) {
             res.send(savedUser);
         });
     });
-})
+});
 
 module.exports = router;
