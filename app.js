@@ -120,7 +120,7 @@ function authenticate(req, res, next) {
 
 app.all("/*", authenticate);
 
-app.all('/instance/*', function(req, res, next) { // Instance operations
+/*app.all('/instance', function(req, res, next) { // Instance operations Replace /instance with /instance\/* *ignore backslash
     var account = req.session.account;
     if(!account) {
         res.status(403).send({error: "LoginRequired", errorCode: 403});
@@ -214,7 +214,7 @@ app.all('/createEntity*', function(req, res, next) { // Instance operations
     }
 
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
-});
+});*/
 
 // Read Entity auth is handled separately.
 app.use('/', routes);
