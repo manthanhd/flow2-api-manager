@@ -6,6 +6,7 @@ var AccountManager = require('./lib/sec/AccountManager');
 var UserAccountManager = require("./lib/sec/UserAccountManager");
 var UserAccountModel = require('./lib/sec/UserAccountModel');
 var RoleManager = require('./lib/sec/RoleManager');
+var ApiKeyManager = require('./lib/sec/ApiKeyManager');
 
 router.get('/authenticate', function(req, res) {
     var sessionId = req.cookies['connect.sid'];
@@ -417,6 +418,165 @@ router.get('/:userId', function (req, res) {
         res.status(403).send({error: "AccessDeniedError", errorCode: 403});
         return;
     }
+
+    RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+});
+
+router.get('/:userId/key', function (req, res) {
+    var account = req.session.account;
+    if (!account) {
+        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+        return;
+    }
+    var hasRoleCallback = function (user, userRole, role) {
+
+        ApiKeyManager.getAllKeysForUser(user._id, function(keys) {
+            if(!keys) {
+                return res.status(404).send();
+            }
+
+            return res.send(keys);
+        });
+
+        /*UserAccountModel.findOne({accountId: account.accountId, _id: userId}, function (err, user) {
+            if (err || !user) {
+                res.status(500).send({error: "UserListError", errorCode: 500});
+                return;
+            }
+
+            // Strip out the password
+            user.password = undefined;
+
+            if(userRole) {
+                if (RegExp(userRole.affects).test(user.username) == true) {
+                    res.send(user);
+                    return;
+                } else {
+                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+                    return;
+                }
+            } else {
+                // We've allowed because this is an admin account
+                res.send(user);
+                return;
+            }
+        });*/
+    };
+
+    var doesNotHaveRoleCallback = function () {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+    }
+
+    RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+});
+
+router.post('/:userId/key', function (req, res) {
+    var account = req.session.account;
+    if (!account) {
+        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+        return;
+    }
+
+    var permissions = req.body.permissions;
+    if(!permissions || !permissions.length || permissions.length == 0) {
+        return res.status(400).send({error: "BadPermissions", errorCode: 400});
+    }
+
+    var hasRoleCallback = function (user, userRole, role) {
+
+        ApiKeyManager.registerKey(user._id, permissions, function(registeredKey) {
+            if(!registeredKey) {
+                return res.status(500).send();
+            }
+
+            return res.send(registeredKey);
+        });
+
+        /*UserAccountModel.findOne({accountId: account.accountId, _id: userId}, function (err, user) {
+         if (err || !user) {
+         res.status(500).send({error: "UserListError", errorCode: 500});
+         return;
+         }
+
+         // Strip out the password
+         user.password = undefined;
+
+         if(userRole) {
+         if (RegExp(userRole.affects).test(user.username) == true) {
+         res.send(user);
+         return;
+         } else {
+         res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+         return;
+         }
+         } else {
+         // We've allowed because this is an admin account
+         res.send(user);
+         return;
+         }
+         });*/
+    };
+
+    var doesNotHaveRoleCallback = function () {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+    };
+
+    RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+});
+
+router.delete('/:userId/key/:apiKey', function (req, res) {
+    var account = req.session.account;
+    if (!account) {
+        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+        return;
+    }
+
+    var apiKey = req.params.apiKey;
+    if(!apiKey) {
+        return res.status(404).send({error: "InvalidApiKeyError", errorCode: 400});
+    }
+
+    var hasRoleCallback = function (user, userRole, role) {
+
+        ApiKeyManager.deleteKey(user._id, apiKey, function(deleteStatus) {
+            if(!deleteStatus) {
+                return res.status(500).send();
+            }
+
+            return res.status(200).send();
+        });
+
+        /*UserAccountModel.findOne({accountId: account.accountId, _id: userId}, function (err, user) {
+         if (err || !user) {
+         res.status(500).send({error: "UserListError", errorCode: 500});
+         return;
+         }
+
+         // Strip out the password
+         user.password = undefined;
+
+         if(userRole) {
+         if (RegExp(userRole.affects).test(user.username) == true) {
+         res.send(user);
+         return;
+         } else {
+         res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+         return;
+         }
+         } else {
+         // We've allowed because this is an admin account
+         res.send(user);
+         return;
+         }
+         });*/
+    };
+
+    var doesNotHaveRoleCallback = function () {
+        res.status(403).send({error: "AccessDeniedError", errorCode: 403});
+        return;
+    };
 
     RoleManager.hasRole(account.accountId, "user", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
 });
