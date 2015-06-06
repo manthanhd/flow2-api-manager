@@ -124,6 +124,7 @@ function authenticate(req, res, next) {
     };
 
     switch(req.path) {
+        case "/":
         case "/index":
         case "/apidocs":
         case "/user/login":
