@@ -62,6 +62,13 @@ app.use(logger('dev'));
 app.use(session(
   {secret: uuid.v4(), resave: false, saveUninitialized: true} // Generate random secret.
 ));
+app.use(function(req, res, next) {
+    if(req.get('X-Auth-Token')) {
+        req.cookies['connect.sid'] = req.get('X-Auth-Token');
+    }
+
+    next();
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -83,39 +90,50 @@ app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
 
 var basicAuth = require('basic-auth');
 function authenticate(req, res, next) {
-    if(req.path == "/index" || req.path == "/apidocs" || req.path == "/" || req.path == "/user/login" || req.path == "/user/register" || req.path == "/user/logout") {   // Exclude these from authentication
-        return next();
-    }
 
     if(req.session.account) {
         return next();
     }
 
     var blockAccess = function(req, res) {
-        return res.status(403).send({error: "LoginRequired", errorCode: 403});
+        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+    };
+
+    var authenticateUsingHttpBasicAuth = function(req, res) {
+        var domainName = req.get('X-Authorization-Domain');
+        if (!domainName || domainName == '') {
+            return blockAccess(req, res);
+        }
+
+        var user = basicAuth(req);
+
+        if (!user || !user.name || !user.pass) {
+            return blockAccess(req, res);
+        }
+
+        var userFoundCallback = function (user) {
+            req.session.account = user; // Update session.
+            return next();
+        };
+
+        var userNotFoundCallback = function () {
+            return blockAccess(req, res);
+        };
+
+        UserAccountManager.validate(domainName, user.name, user.pass, userFoundCallback, userNotFoundCallback);
+    };
+
+    switch(req.path) {
+        case "/index":
+        case "/apidocs":
+        case "/user/login":
+        case "/user/register":
+        case "/user/logout":
+            return next();
+        case "/user/authenticate":
+            return authenticateUsingHttpBasicAuth(req, res);
+        default: return blockAccess(req, res);
     }
-
-    var domainName = req.get('X-Authorization-Domain');
-    if(!domainName || domainName == '') {
-        return blockAccess(req, res);
-    }
-
-    var user = basicAuth(req);
-
-    if(!user || !user.name || !user.pass) {
-        return blockAccess(req, res);
-    }
-
-    var userFoundCallback = function(user) {
-        req.session.account = user; // Update session.
-        return next();
-    }
-
-    var userNotFoundCallback = function() {
-        return blockAccess(req, res);
-    }
-
-    UserAccountManager.validate(domainName, user.name, user.pass, userFoundCallback, userNotFoundCallback);
 };
 
 app.all("/*", authenticate);
