@@ -69,4 +69,43 @@ ApiKeyManager.deleteKey = function(userId, apiKey, callback) {
     }
 };
 
+ApiKeyManager.hasActionPermissionsInRealm = function(apiKey, action, realm, callback) {
+    ApiKeyModel.findOne({apiKey: apiKey}, function(err, apiKeyObject) {
+        if(err) {
+            console.log(err);
+            return callback(undefined);
+        }
+
+        var permissions = apiKeyObject.permissions;
+        for(var i = 0; i < permissions.length; i++) {
+            var permission = permissions[i];
+            if(permission.action == action && permission.realm == realm) {
+                return callback(true, permission, apiKeyObject);
+            }
+        }
+
+        return callback(false);
+    });
+};
+
+
+//ApiKeyManager.hasPermissions = function(apiKey, action, realm, actionableObject, callback) {
+//    ApiKeyModel.findOne({apiKey: apiKey}, function(err, apiKeyObject) {
+//        if(err) {
+//            console.log(err);
+//            return callback(undefined);
+//        }
+//
+//        var permissions = apiKeyObject.permissions;
+//        for(var i = 0; i < permissions.length; i++) {
+//            var permission = permissions[i];
+//            if(permission.action == action && permission.actionableObject == actionableObject && permission.realm == realm) {
+//                return callback(true);
+//            }
+//        }
+//
+//        return callback(false);
+//    });
+//};
+
 module.exports = ApiKeyManager;

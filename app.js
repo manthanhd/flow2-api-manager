@@ -16,6 +16,7 @@ var roleRoute = require('./routes/role');
 
 var UserAccountManager = require('./routes/lib/sec/UserAccountManager');
 var RoleManager = require('./routes/lib/sec/RoleManager');
+var ApiKeyManager = require('./routes/lib/sec/ApiKeyManager');
 //var SavedGenericEntity = require('./lib/GenericEntityModel')
 
 var mailer = require('express-mailer');
@@ -62,13 +63,6 @@ app.use(logger('dev'));
 app.use(session(
   {secret: uuid.v4(), resave: false, saveUninitialized: true} // Generate random secret.
 ));
-app.use(function(req, res, next) {
-    if(req.get('X-Auth-Token')) {
-        req.cookies['connect.sid'] = req.get('X-Auth-Token');
-    }
-
-    next();
-});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -91,13 +85,49 @@ app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
 var basicAuth = require('basic-auth');
 function authenticate(req, res, next) {
 
-    if(req.session.account) {
-        return next();
+    switch(req.path) {
+        case "/":
+        case "/index":
+        case "/apidocs":
+        case "/user/login":
+        case "/user/reset":
+        case "/user/register":
+        case "/user/logout":
+            return next();
     }
 
     var blockAccess = function(req, res) {
         return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
     };
+
+    if(req.session.account) {
+
+        var foundCallback = function(user) {
+            req.session.account = user;
+
+            if(user.isAdmin == true) {
+                return next();
+            }
+
+            var action = getActionFromHttpMethod(req.method);
+            var realm = getRealmFromUrl(req.path);
+
+            for(var i = 0; i < user.basePermissions.length; i++) {
+                var basePermission = user.basePermissions[i];
+                if(basePermission.action == action && basePermission.realm == realm) {
+                    return next();
+                }
+            }
+
+            return blockAccess(req, res);
+        };
+
+        var notFoundCallback = function() {
+            return blockAccess(req, res);
+        };
+
+        return UserAccountManager.doesUserIdExist(req.session.account.accountId, req.session.account._id, foundCallback, notFoundCallback);
+    }
 
     var authenticateUsingHttpBasicAuth = function(req, res) {
         var domainName = req.get('X-Authorization-Domain');
@@ -123,17 +153,68 @@ function authenticate(req, res, next) {
         UserAccountManager.validate(domainName, user.name, user.pass, userFoundCallback, userNotFoundCallback);
     };
 
-    switch(req.path) {
-        case "/":
-        case "/index":
-        case "/apidocs":
-        case "/user/login":
-        case "/user/register":
-        case "/user/logout":
-            return next();
-        case "/user/authenticate":
-            return authenticateUsingHttpBasicAuth(req, res);
-        default: return blockAccess(req, res);
+    function getActionFromHttpMethod(method) {
+        var action = undefined;
+        switch(method) {
+            case "GET": action = "read"; break;
+            case "POST": action = "create"; break;
+            case "PUT": action = "edit"; break;
+            case "DELETE": action = "delete"; break;
+            default: return undefined;
+        }
+
+        return action;
+    }
+
+    function getRealmFromUrl(url) {
+        var realm = undefined;
+        if(url.indexOf("/entity") == 0) {
+            realm = "entity";
+        } else if (url.indexOf("/instance") == 0) {
+            realm = "instance";
+        } else if (url.indexOf("/user") == 0) {
+            realm = "user";
+        }
+
+        return realm;
+    }
+
+    var authenticateApiKey = function(req, res, next) {
+        var apiKey = req.get("X-Api-Key");
+        if(apiKey) {
+
+            // First get the action
+            var action = getActionFromHttpMethod(req.method);
+            var realm = getRealmFromUrl(req.path);
+
+            if(!action || !realm) {
+                return res.status(401).send()
+            }
+
+            return ApiKeyManager.hasActionPermissionsInRealm(apiKey, action, realm, function(result, permission, apiKeyObject) {
+                if(!result || result == false) {
+                    return blockAccess(req, res);
+                }
+
+                // granted
+                req.permission = permission;
+
+                return UserAccountManager.getAccountFromUserId(apiKeyObject.userId, function(user) {
+                    if(!user) {
+                        return blockAccess(req, res);
+                    }
+
+                    req.account = user;
+                    return next();
+                });
+            });
+        } else {
+            return blockAccess(req, res);
+        }
+    };
+
+    if(req.path.indexOf('/entity') == 0 || req.path.indexOf('/instance') == 0 || req.path.indexOf('/user') == 0) {
+        return authenticateApiKey(req, res, next);
     }
 };
 

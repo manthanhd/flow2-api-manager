@@ -11,7 +11,8 @@ var userSchema = mongoose.Schema({
     lastLoginDate: Date,
     isEnabled: {type: Boolean, default: true},
     createdBy: String,
-    roles: [{roleId: String, affects: String}]
+    basePermissions: [{action: String, realm: String}]
+    /*roles: [{roleId: String, affects: String}]*/
 });
 
 // Stolen from http://stackoverflow.com/questions/14588032/mongoose-password-hashing

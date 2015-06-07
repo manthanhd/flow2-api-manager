@@ -40,6 +40,6 @@ AccountManager.findAccountByAccountId = function(accountId, foundCallback, notFo
 
         foundCallback(account)
     })
-}
+};
 
 module.exports = AccountManager;

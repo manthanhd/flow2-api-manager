@@ -88,27 +88,18 @@ router.get('/EAG', function (req, res) {
 });
 
 router.get('/entity/metadata/reserved', function (req, res) {
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account) {
         res.status(403).send({error: "LoginRequired", errorCode: 403});
         return;
     }
 
     var userFoundCallback = function (user) {
-        var hasRoleCallback = function (user, userRole, role) {
-            if (userRole || (user && user.isAdmin == true)) {
-                res.send({reservedList: reservedKeys});
-            } else {
-                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                return;
-            }
-        }
-        var doesNotHaveRoleCallback = function () {
-            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-            return;
+        if(req.session.account) {
+            req.session.account = user;
         }
 
-        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        res.send({reservedList: reservedKeys});
     }
 
     var userNotFoundCallback = function () {
@@ -120,27 +111,19 @@ router.get('/entity/metadata/reserved', function (req, res) {
 });
 
 router.get('/entity/metadata/types', function (req, res) {
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account) {
         res.status(403).send({error: "LoginRequired", errorCode: 403});
         return;
     }
 
     var userFoundCallback = function (user) {
-        var hasRoleCallback = function (user, userRole, role) {
-            if (userRole || (user && user.isAdmin == true)) {
-                res.send({typeList: GenericEntityProperty.supportedTypes});
-            } else {
-                res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                return;
-            }
-        }
-        var doesNotHaveRoleCallback = function () {
-            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-            return;
+        if(req.session.account) {
+            req.session.account = user;
         }
 
-        RoleManager.hasRole(account.accountId, "entity", "c", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        res.send({typeList: GenericEntityProperty.supportedTypes});
+
     }
 
     var userNotFoundCallback = function () {
@@ -229,61 +212,34 @@ router.get('/entity/metadata/types', function (req, res) {
  *
  */
 router.get('/entity', function (req, res) { // Renamed from listEntities
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account) {
         res.status(403).send({error: "LoginRequired", errorCode: 403});
         return;
     }
 
     var userFoundCallback = function (user) {
-        var hasRoleCallback = function (user, userRole, role) {
-            SavedGenericEntity.find({accountId: account.accountId}, function (err, result) {
-                if (err) {
-                    console.log("An error occurred while listing entity definitions.");
-                    console.log(err);
-                    res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
-                }
-
-                if (userRole) {
-                    var entityList = [];
-                    for (var i = 0; i < result.length; i++) {
-                        if (RegExp(userRole.affects).test(result[i].name) == true) {
-                            entityList.push(result[i]);
-                        }
-                    }
-                    res.send({entityList: entityList});
-                } else if (user && user.isAdmin == true) {
-                    res.send({entityList: result});
-                } else {
-                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                    return;
-                }
-            });
-
-        }
-        var doesNotHaveRoleCallback = function () {
-            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-            return;
+        if(req.session.account) {
+            req.session.account = user;
         }
 
-        RoleManager.hasRole(account.accountId, "entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
+        SavedGenericEntity.find({accountId: account.accountId}, function (err, result) {
+            if (err) {
+                console.log("An error occurred while listing entity definitions.");
+                console.log(err);
+                return res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
+            }
+
+            res.send({entityList: result});
+        });
     }
 
     var userNotFoundCallback = function () {
-        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
-        return;
+        return res.status(404).send({error: "UserNotFoundError", errorCode: 404});
     }
 
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
-
-// Not required.
-// router.get('/createEntity', function (req, res) {
-//   res.render('create_entity', {
-//     title: 'Express',
-//     layout: 'layouts/layout'
-//   });
-// });
 
 var checkEntityNameExists = function (accountId, entityName, doesNotExist, exists) {
     SavedGenericEntity.findOne({
@@ -343,7 +299,7 @@ var checkEntityNameExists = function (accountId, entityName, doesNotExist, exist
  *
  */
 router.post("/entity", function (req, res) {  // Protected at app.js level. Renamed from createEntity
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
         res.sendStatus(403);
         return;
@@ -417,8 +373,7 @@ var findEntityDefinitionById = function (accountId, entityId, found, notFound) {
             return;
         }
 
-        found(entity);
-        return;
+        return found(entity);
     });
 };
 
@@ -468,61 +423,34 @@ var findEntityDefinitionById = function (accountId, entityId, found, notFound) {
  *
  */
 router.get("/entity/:entityId", function (req, res) { // renamed from readEntity/:entityId
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account) {
-        res.status(403).send({error: "LoginRequired", errorCode: 403});
+        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
         return;
     }
 
     var userFoundCallback = function (user) {
 
-        var hasRoleCallback = function (user, userRole, role) {
-            var entityId = req.params.entityId;
-
-            var entityFoundCallback = function (entity) {
-                if (userRole) { // User is not an Admin.
-
-                    if (entity != undefined) {
-                        var entityName = entity.name;
-                        if (RegExp(userRole.affects).test(entityName) == true || user.isAdmin == true) {
-                            res.send(entity);
-                        } else {
-                            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                            return;
-                        }
-
-                    } else {
-                        res.status(500).send({error: "Internal Server Error", errorCode: 500});
-                    }
-
-                } else if (user && user.isAdmin == true) {
-                    res.send(entity);
-                    return;
-                } else {
-                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                    return;
-                }
-            }
-
-            var entityNotFoundCallback = function () {
-                res.status(404).send({error: "EntityNotFoundException", errorCode: 404});
-                return;
-            }
-
-            findEntityDefinitionById(account.accountId, entityId, entityFoundCallback, entityNotFoundCallback);
-        }
-        var doesNotHaveRoleCallback = function () {
-            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-            return;
+        if(req.session.account) {
+            req.session.account = user;
         }
 
-        RoleManager.hasRole(account.accountId, "entity", "r", account._id, hasRoleCallback, doesNotHaveRoleCallback);
-    }
+        var entityId = req.params.entityId;
+
+        var entityFoundCallback = function (entity) {
+            return res.send(entity);
+        };
+
+        var entityNotFoundCallback = function () {
+            return res.status(404).send({error: "EntityNotFoundException", errorCode: 404});
+        };
+
+        findEntityDefinitionById(account.accountId, entityId, entityFoundCallback, entityNotFoundCallback);
+    };
 
     var userNotFoundCallback = function () {
-        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
-        return;
-    }
+        return res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    };
 
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
@@ -563,64 +491,51 @@ router.get("/entity/:entityId", function (req, res) { // renamed from readEntity
  *
  */
 router.put("/entity/:entityId", function (req, res) {  // Protected at app.js level. Renamed from createEntity
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account) {
-        res.status(403).send({error: "LoginRequired", errorCode: 403});
+        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
         return;
     }
+
+    var entityId = req.params.entityId;
 
     var userFoundCallback = function (user) {
+        if(req.session.account) {
+            req.session.account = user;
+        }
 
-        var hasRoleCallback = function (user, userRole, role) {
-            var entityId = req.params.entityId;
+        SavedGenericEntity.findOne({accountId: account.accountId, _id: entityId}, function (err, entity) {
+            if (err) {
+                console.log(err);
+                res.send(ErrorObject.create("EntityDefinitionListError", 30));
+            }
 
-            SavedGenericEntity.findOne({accountId: account.accountId, _id: entityId}, function (err, entity) {
-                if (err) {
+            if (entity == undefined) {
+                res.send({});
+                return;
+            }
+
+            if(req.body.active == true || req.body.active == "true") {
+                entity.active = true;
+            } else if (req.body.active == false || req.body.active == "false") {
+                entity.active = false;
+            }
+
+            entity.save(function(err, savedEntity) {
+                if(err) {
+                    console.log("Error occurred while updating entity.");
                     console.log(err);
-                    res.send(ErrorObject.create("EntityDefinitionListError", 30));
+                    return res.status(500).send();
                 }
 
-                if (entity == undefined) {
-                    res.send({});
-                    return;
-                }
-
-                if ((userRole && RegExp(userRole.affects).test(entity.name) == true) || user.isAdmin == true) {
-
-                    if(req.body.active == true || req.body.active == "true") {
-                        entity.active = true;
-                    } else if (req.body.active == false || req.body.active == "false") {
-                        entity.active = false;
-                    }
-
-                    entity.save(function(err, savedEntity) {
-                        if(err) {
-                            console.log("Error occurred while updating entity.");
-                            console.log(err);
-                            return res.status(500).send();
-                        }
-
-                        res.send(savedEntity);
-                    });
-                } else {
-                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                    return;
-                }
+                return res.send(savedEntity);
             });
-
-        }
-        var doesNotHaveRoleCallback = function () {
-            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-            return;
-        }
-
-        RoleManager.hasRole(account.accountId, "entity", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
-    }
+        });
+    };
 
     var userNotFoundCallback = function () {
-        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
-        return;
-    }
+        return res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    };
 
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
@@ -651,67 +566,54 @@ router.put("/entity/:entityId", function (req, res) {  // Protected at app.js le
  *
  */
 router.delete("/entity/:entityId", function (req, res) {  // renamed from deleteEntity/:entityId
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account) {
-        res.status(403).send({error: "LoginRequired", errorCode: 403});
-        return;
+        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
     }
+
+    var entityId = req.params.entityId;
 
     var userFoundCallback = function (user) {
+        if(req.session.account) {
+            req.session.account = user;
+        }
 
-        var hasRoleCallback = function (user, userRole, role) {
-            var entityId = req.params.entityId;
+        SavedGenericEntity.findOne({accountId: account.accountId, _id: entityId}, function (err, entity) {
+            if (err) {
+                console.log(err);
+                res.send(ErrorObject.create("EntityDefinitionListError", 30));
+            }
 
-            SavedGenericEntity.findOne({accountId: account.accountId, _id: entityId}, function (err, entity) {
-                if (err) {
-                    console.log(err);
-                    res.send(ErrorObject.create("EntityDefinitionListError", 30));
-                }
+            if (entity == undefined) {
+                res.send({});
+                return;
+            }
+            var entityName = entity.name;
+            //var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
 
-                if (entity == undefined) {
-                    res.send({});
-                    return;
-                }
-                var entityName = entity.name;
-                if ((userRole && RegExp(userRole.affects).test(entity.name) == true) || user.isAdmin == true) {
-                    var EntityObject = GenericEntityInstance.getInstanceModelFromCache(entityName);
-
-                    //mongoose.connection.collections[entity.name].drop( function(err) {
-                    try {
-                        mongoose.connection.db.dropCollection(entityName, function (err) {
-                            if (err) {
-                                console.log(err);
-                            }
-                        });
-                    } catch (err) {
+            //mongoose.connection.collections[entity.name].drop( function(err) {
+            try {
+                mongoose.connection.db.dropCollection(entityName, function (err) {
+                    if (err) {
                         console.log(err);
-                    } finally {
-                        GenericEntityInstance.instanceModelCache[entityName] = undefined;
-                        entity.remove();
-                        res.send({
-                            status: "OK",
-                            description: "Entity deleted."
-                        });
                     }
-                } else {
-                    res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-                    return;
-                }
-            });
-
-        }
-        var doesNotHaveRoleCallback = function () {
-            res.status(403).send({error: "AccessDeniedError", errorCode: 403});
-            return;
-        }
-
-        RoleManager.hasRole(account.accountId, "entity", "d", account._id, hasRoleCallback, doesNotHaveRoleCallback);
-    }
+                });
+            } catch (err) {
+                console.log(err);
+            } finally {
+                GenericEntityInstance.instanceModelCache[entityName] = undefined;
+                entity.remove();
+                res.send({
+                    status: "OK",
+                    description: "Entity deleted."
+                });
+            }
+        });
+    };
 
     var userNotFoundCallback = function () {
-        res.status(404).send({error: "UserNotFoundError", errorCode: 404});
-        return;
-    }
+        return res.status(404).send({error: "UserNotFoundError", errorCode: 404});
+    };
 
     UserAccountManager.doesUserExist(account.accountId, account.username, userFoundCallback, userNotFoundCallback);
 });
@@ -752,10 +654,9 @@ router.delete("/entity/:entityId", function (req, res) {  // renamed from delete
  */
 router.get('/instance/:entityName', function (req, res) {
     var entityName = req.params.entityName;
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
-        res.sendStatus(403);
-        return;
+        return res.sendStatus(403);
     }
 
     SavedGenericEntity.findOne({
@@ -764,28 +665,25 @@ router.get('/instance/:entityName', function (req, res) {
     }, function (err, entity) {
         if (err) {
             console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-            return;
+            return res.send(ErrorObject.create("EntityDefinitionListError", 30));
         }
 
         if (entity == undefined) {
-            res.status(401).send("EntityDoesNotExistError");
-            return;
+            return res.status(401).send("EntityDoesNotExistError");
         }
 
         if(entity.active == false) {
-            res.status(403).send("EntityNotActiveError");
-            return;
+            return res.status(403).send("EntityNotActiveError");
         }
 
         var foundCallback = function (instances) {
-            res.send({
+            return res.send({
                 instanceList: instances
             });
         };
 
         var notFoundCallback = function () {
-            res.status(401).send("EntityDoesNotExistError");
+            return res.status(401).send("EntityDoesNotExistError");
         };
 
         GenericEntityInstance.listAll(entity, foundCallback, notFoundCallback);
@@ -818,41 +716,37 @@ router.get('/instance/:entityName', function (req, res) {
  */
 router.post('/instance/:entityName', function (req, res) {
     var entityName = req.params.entityName;
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
-        res.sendStatus(403);
-        return;
+        return res.sendStatus(403);
     }
+
     SavedGenericEntity.findOne({
         accountId: account.accountId,
         name: entityName
     }, function (err, entity) {
         if (err) {
             console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-            return;
+            return res.send(ErrorObject.create("EntityDefinitionListError", 30));
         }
 
         if (entity == undefined) {
-            res.status(401).send({
+            return res.status(401).send({
                 error: "EntityDoesNotExistError",
                 errorCode: 401
             });
-            return;
         }
 
         if(entity.active == false) {
-            res.status(403).send("EntityNotActiveError");
-            return;
+            return res.status(403).send("EntityNotActiveError");
         }
 
         for (var i = 0; i < entity.properties.length; i++) {
             if (req.body[entity.properties[i].name] == undefined && entity.properties[i].required == true) {
-                res.status(401).send({
+                return res.status(401).send({
                     error: entity.properties[i].name + " field is a required field.",
                     errorCode: 401
                 });
-                return;
             }
         }
 
@@ -903,18 +797,16 @@ router.delete('/instance/:entityName/:instanceId', function (req, res) {
     var entityName = req.params.entityName;
     var instanceId = req.params.instanceId;
 
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
-        res.sendStatus(403);
-        return;
+        return res.sendStatus(403);
     }
 
     if (instanceId == undefined || instanceId == "") {
-        res.status(401).send({
+        return res.status(401).send({
             error: "MissingArgumentException",
             errorCode: 401
         });
-        return;
     }
 
     SavedGenericEntity.findOne({
@@ -923,21 +815,18 @@ router.delete('/instance/:entityName/:instanceId', function (req, res) {
     }, function (err, entity) {
         if (err) {
             console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-            return;
+            return res.send(ErrorObject.create("EntityDefinitionListError", 30));
         }
 
         if (entity == undefined) {
-            res.status(401).send({
+            return res.status(401).send({
                 error: "EntityDoesNotExistError",
                 errorCode: 401
             });
-            return;
         }
 
         if(entity.active == false) {
-            res.status(403).send("EntityNotActiveError");
-            return;
+            return res.status(403).send("EntityNotActiveError");
         }
 
         var foundCallback = function (instance) {
@@ -997,18 +886,16 @@ router.delete("/instance/:entityName/:propertyName/:propertyValue", function (re
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
 
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
-        res.sendStatus(403);
-        return;
+        return res.sendStatus(403);
     }
 
     if (entityName == undefined || entityName == "" || propertyName == undefined || propertyName == "" || propertyValue == undefined || propertyValue == "") {
-        res.status(401).send({
+        return res.status(401).send({
             error: "MissingArgumentException",
             errorCode: 401
         });
-        return;
     }
 
     SavedGenericEntity.findOne({
@@ -1017,21 +904,18 @@ router.delete("/instance/:entityName/:propertyName/:propertyValue", function (re
     }, function (err, entity) {
         if (err) {
             console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-            return;
+            return res.send(ErrorObject.create("EntityDefinitionListError", 30));
         }
 
         if (entity == undefined) {
-            res.status(401).send({
+            return res.status(401).send({
                 error: "EntityDoesNotExistError",
                 errorCode: 401
             });
-            return;
         }
 
         if(entity.active == false) {
-            res.status(403).send("EntityNotActiveError");
-            return;
+            return res.status(403).send("EntityNotActiveError");
         }
 
         var foundCallback = function (instances) {
@@ -1098,10 +982,9 @@ router.delete("/instance/:entityName/:propertyName/:propertyValue", function (re
  */
 router.get('/instance/:entityName/:propertyName/:propertyValue', function (req, res) {
     var entityName = req.params.entityName;
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
-        res.sendStatus(403);
-        return;
+        return res.sendStatus(403);
     }
     var propertyName = req.params.propertyName;
     var propertyValue = req.params.propertyValue;
@@ -1111,21 +994,18 @@ router.get('/instance/:entityName/:propertyName/:propertyValue', function (req, 
     }, function (err, entity) {
         if (err) {
             console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-            return;
+            return res.send(ErrorObject.create("EntityDefinitionListError", 30));
         }
 
         if (entity == undefined) {
-            res.status(401).send({
+            return res.status(401).send({
                 error: "EntityDoesNotExistError",
                 errorCode: 401
             });
-            return;
         }
 
         if(entity.active == false) {
-            res.status(403).send("EntityNotActiveError");
-            return;
+            return res.status(403).send("EntityNotActiveError");
         }
 
         // Validate the property
@@ -1141,10 +1021,9 @@ router.get('/instance/:entityName/:propertyName/:propertyValue', function (req, 
         isValidProperty = (!isValidProperty) ? (propertyName == "_id") : isValidProperty; // If invalid, check if it's _id. Else, leave it alone.
 
         if (!isValidProperty) {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "InvalidPropertyError"
             });
-            return;
         }
 
         // It's valid now. Define the callbacks and execute the final call.
@@ -1194,18 +1073,16 @@ router.get('/instance/:entityName/:propertyName/:propertyValue', function (req, 
  */
 router.put("/instance/:entityName", function (req, res) {
     var entityName = req.params.entityName;
-    var account = req.session.account;
+    var account = req.session.account || req.account;
     if (!account || !account.accountId) {
-        res.sendStatus(403);
-        return;
+        return res.sendStatus(403);
     }
     var instance = req.body;
     if (instance == undefined || instance._id == undefined) {
-        res.status(401).send({
+        return res.status(401).send({
             error: "MissingArgumentException",
             errorCode: 401
         });
-        return;
     }
 
     SavedGenericEntity.findOne({
@@ -1213,38 +1090,33 @@ router.put("/instance/:entityName", function (req, res) {
     }, function (err, entity) {
         if (err) {
             console.log(err);
-            res.send(ErrorObject.create("EntityDefinitionListError", 30));
-            return;
+            return res.send(ErrorObject.create("EntityDefinitionListError", 30));
         }
 
         if (entity == undefined) {
-            res.status(401).send({
+            return res.status(401).send({
                 error: "EntityDoesNotExistError",
                 errorCode: 401
             });
-            return;
         }
 
         if(entity.active == false) {
-            res.status(403).send("EntityNotActiveError");
-            return;
+            return res.status(403).send("EntityNotActiveError");
         }
 
         // Validate if all required fields are present.
         for (var i = 0; i < entity.properties.length; i++) {
             var property = entity.properties[i];
             if (property.required == true && instance[property.name] == undefined) {
-                res.status(401).send({
+                return res.status(401).send({
                     error: property.name + " is a required property.",
                     errorCode: 401
                 });
-                return;
             }
         }
 
         var successCallback = function (updatedInstance) {
-            res.send(updatedInstance);
-            return;
+            return res.send(updatedInstance);
         }
 
         var errorCallback = function () {

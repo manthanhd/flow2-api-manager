@@ -126,6 +126,17 @@ UserAccountManager.doesUserIdExist = function (accountId, id, foundCallback, not
 
         foundCallback(user);
     })
-}
+};
+
+UserAccountManager.getAccountFromUserId = function (userId, callback) {
+    UserAccountModel.findOne({_id: userId}, function(err, user) {
+        if(err) {
+            console.log(err);
+            return callback(undefined);
+        }
+
+        callback(user);
+    })
+};
 
 module.exports = UserAccountManager;
