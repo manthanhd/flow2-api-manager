@@ -1,11 +1,13 @@
 /*Index CSS*/
 html {
     height: 100%;
+    overflow: hidden;
 }
 
 body {
     color: #444444;
     height: 100%;
+    overflow: hidden;
 }
 
 .side-nav-toggle {
@@ -82,6 +84,7 @@ h1, h2, h3, h4, h5, h6 {
 .property-panel-body {
     height: 88%;
     overflow-y: auto;
+    overflow-x: hidden;
     width: 100%;
 }
 
@@ -178,6 +181,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .table-row:hover {
     background-color: #e0e0e0;
+}
+
+.no-hover:hover {
+    background-color: transparent;
 }
 
 .table-row {
@@ -331,4 +338,17 @@ a, .link{
 
 .text-disabled {
     opacity: 0.5;
+}
+
+@keyframes shake {
+    0% {transform: translateX(0);}
+    12.5% {transform: translateX(-6px) rotateY(-5deg)}
+    37.5% {transform: translateX(5px) rotateY(4deg)}
+    62.5% {transform: translateX(-3px) rotateY(-2deg)}
+    87.5% {transform: translateX(2px) rotateY(1deg)}
+    100% {transform: translateX(0)}
+}
+
+.shake {
+    animation: shake 400ms ease-in-out;
 }

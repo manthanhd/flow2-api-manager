@@ -22,7 +22,7 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
             hasBeenReset: true,
             isAdmin: false,
             isEnabled: true,
-            roles: []
+            basePermissions: [{action: "read", realm: "instance"}]
         };
         $scope.user = undefined;
         $scope.enableUserAdd = true;
@@ -112,4 +112,10 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
             $scope.retryCount++;
         }
     };
+
+    $scope.broadcastAddPermission = function() {
+        if($scope.newUser) {
+            $scope.$parent.$broadcast("AddPermission");
+        }
+    }
 });
