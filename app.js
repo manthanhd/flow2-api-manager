@@ -82,7 +82,6 @@ app.use(function (err, req, res, next) {
 
 app.use('/apidocs', express.static(__dirname + '/public/documentation/apidoc'));
 
-var basicAuth = require('basic-auth');
 function authenticate(req, res, next) {
 
     switch(req.path) {
