@@ -139,4 +139,21 @@ UserAccountManager.getAccountFromUserId = function (userId, callback) {
     })
 };
 
+UserAccountManager.hasBasePermission = function(userObject, expectedBasePermission, callback) {
+    if(!userObject || !expectedBasePermission || !expectedBasePermission.action || !expectedBasePermission.realm) {
+        return callback(undefined);
+    }
+
+    if(userObject.basePermissions) {
+        for(var i = 0; i < userObject.basePermissions.length; i++) {
+            var basePermission = userObject.basePermissions[i];
+            if(basePermission.action == expectedBasePermission.action && basePermission.realm == expectedBasePermission.realm) {
+                return callback(basePermission);
+            }
+        }
+    }
+
+    return callback(undefined);
+};
+
 module.exports = UserAccountManager;
