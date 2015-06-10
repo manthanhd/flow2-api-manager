@@ -213,10 +213,6 @@ router.get('/entity/metadata/types', function (req, res) {
  */
 router.get('/entity', function (req, res) { // Renamed from listEntities
     var account = req.session.account || req.account;
-    if (!account) {
-        res.status(403).send({error: "LoginRequired", errorCode: 403});
-        return;
-    }
 
     var userFoundCallback = function (user) {
         if(req.session.account) {
@@ -227,7 +223,7 @@ router.get('/entity', function (req, res) { // Renamed from listEntities
             if (err) {
                 console.log("An error occurred while listing entity definitions.");
                 console.log(err);
-                return res.status(30).send(ErrorObject.create("EntityDefinitionListError", 30));
+                return res.status(404).send(ErrorObject.create("EntityDefinitionListError", 404));
             }
 
             res.send({entityList: result});
