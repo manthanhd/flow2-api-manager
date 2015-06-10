@@ -8,11 +8,15 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
 
     function onEntityListSuccess(data, statusCode) {
         $scope.entityList = data.entityList;
-    };
+    }
 
     function onEntityListFailure(data, statusCode) {
-        toast("Failed to load entities.", 2000);
-    };
+        if(statusCode == 403) {
+            toast("User is not authorised to view entities.", 2000);
+        } else {
+            toast("Failed to load entities.", 2000);
+        }
+    }
 
     $scope.$on("RefreshEntityList", function(event) {
         RequestService.getEntityList(onEntityListSuccess, onEntityListFailure);
@@ -24,7 +28,7 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
         } else {
             toast("Cannot view entity while a new entity is being created.", 2000);
         }
-    };
+    }
 
     function activate(entity) {
         console.log(entity._id);
@@ -35,6 +39,8 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
             }, function(data, statusCode) {
                 if(statusCode == 404) {
                     toast("Lost server uplink. Please try again.", 2000);
+                } else if (statusCode == 403) {
+                    toast("User is not authorised to modify entity states.", 2000);
                 } else {
                     toast("Experiencing technical difficulties at the moment. Please try again later.", 2000);
                 }
@@ -42,7 +48,7 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
         } else {
             toast("Entity is already active.", 2000);
         }
-    };
+    }
 
     function deactivate(entity) {
         if(entity.active == true) {
@@ -52,6 +58,8 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
             }, function(data, statusCode) {
                 if(statusCode == 404) {
                     toast("Lost server uplink. Please try again.", 2000);
+                } else if (statusCode == 403) {
+                    toast("User is not authorised to modify entity states.", 2000);
                 } else {
                     toast("Experiencing technical difficulties at the moment. Please try again later.", 2000);
                 }
@@ -59,7 +67,7 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
         } else {
             toast("Entity is already deactive.", 2000);
         }
-    };
+    }
 
     function deleteEntity(entity) {
         if(entity != undefined) {
@@ -69,6 +77,8 @@ entitiesModule.controller("EntityListController", function($scope, $http, Reques
             }, function(data, statusCode) {
                 if(statusCode == 404) {
                     toast("Lost server uplink. Please try again.", 2000);
+                } else if(statusCode == 403) {
+                    toast("User is not authorised to delete entity.", 2000);
                 } else {
                     toast("Experiencing technical difficulties at the moment. Please try again later.", 2000);
                 }

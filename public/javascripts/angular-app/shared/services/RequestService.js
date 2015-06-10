@@ -10,7 +10,7 @@ sharedModule.service("RequestService", function($http) {
         $http.get("/entity").success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -22,7 +22,7 @@ sharedModule.service("RequestService", function($http) {
         $http.get("/instance/" + entityName).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -34,7 +34,7 @@ sharedModule.service("RequestService", function($http) {
         $http.post("/entity", entity).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -46,7 +46,7 @@ sharedModule.service("RequestService", function($http) {
         $http.get("/user").success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -58,7 +58,7 @@ sharedModule.service("RequestService", function($http) {
         $http.post("/user", user).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -70,7 +70,7 @@ sharedModule.service("RequestService", function($http) {
         $http.post("/instance/" + entityName, instanceObject).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -82,7 +82,7 @@ sharedModule.service("RequestService", function($http) {
         $http.put("/entity/" + entityId, updateAttributeObject).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -94,7 +94,7 @@ sharedModule.service("RequestService", function($http) {
         $http.delete("/entity/" + entityId).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -106,7 +106,7 @@ sharedModule.service("RequestService", function($http) {
         $http.put("/user/" + userId, updateAttributeObject).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);
@@ -118,7 +118,7 @@ sharedModule.service("RequestService", function($http) {
         $http.delete("/user/" + userId).success(function(data, statusCode) {
             onSuccess(data, statusCode);
         }).error(function(data, statusCode) {
-            if(statusCode == 403 && data && data.errorCode == 403 && data.error == "AuthenticationRequired") {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
                 window.location.href = "/user/login";
             } else {
                 onFailure(data, statusCode);

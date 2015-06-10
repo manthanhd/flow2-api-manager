@@ -321,12 +321,6 @@
             </div>
 
             <div ng-if="newUser.isAdmin == false && permissionsPanel == true">
-              <!--<div class="row table-row no-hover valign-wrapper">
-                <div class="col s12 table-cell">
-                  <h5>User permissions</h5>
-                </div>
-              </div>-->
-
               <div class="property-panel-header">
                 <div class="row table-header-row">
                   <div class="col s5 table-header bottom-bordered shift-25px-right">Action</div>
@@ -357,9 +351,8 @@
                 </div>
               </div>
             </div>
-          </div>
 
-            <div ng-show="!$parent.newUser && user">
+            <div ng-show="!$parent.newUser && user && !permissionsPanel">
               <div class="property-panel-header">
                 <div class="row table-header-row">
                   <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
@@ -405,10 +398,51 @@
                 <div class="col s5 table-cell" ng-if="!user.createdBy"><strong>default</strong></div>
                 <div class="col s2 table-cell"></div>
               </div>
+
+              <div ng-if="user.isAdmin == false" class="row table-row valign-wrapper link no-hover" ng-click="showPermissionsPanel()">
+                <div class="col s12 table-cell light-blue-text">
+                  Manage user permissions ({{user.basePermissions.length}} assigned)
+                </div>
+              </div>
+
             </div>
-            <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
+
+            <div ng-show="!newUser && !user">
+              <div class="property-panel-header">
+                <div class="row table-header-row">
+                  <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
+                  <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
+                </div>
+              </div>
+              <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
+            </div>
+
+            <div ng-show="!$parent.newUser && user && permissionsPanel == true">
+              <div class="property-panel-header">
+                <div class="row table-header-row">
+                  <div class="col s6 table-header bottom-bordered shift-25px-right">Action</div>
+                  <div class="col s6 table-header bottom-bordered shift-7px-right">Realm</div>
+                </div>
+              </div>
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="basePermission in user.basePermissions" ng-class="{'shake z-depth-4':basePermission.attention == true}">
+                <div class="col s6 table-cell">
+                  {{basePermission.action}}
+                </div>
+                <div class="col s6 table-cell">
+                  {{basePermission.realm}}
+                </div>
+              </div>
+
+              <div class="row table-row valign-wrapper link no-hover" ng-click="hidePermissionsPanel()">
+                <div class="col s12 table-cell light-blue-text">
+                  &#8592; Back
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+      </div>
         <div ng-if="!true" class="instance-list-panel minor-body-bottom" ng-controller="RoleListController">
           <hr/>
           <a ng-show="user" href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>

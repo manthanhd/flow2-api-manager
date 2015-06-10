@@ -3,7 +3,6 @@ propertiesModule.controller("EntityPropertyController", function($scope, $timeou
 
     $scope.$on("NewEntityCreateStart", function(event) {
         $scope.entity = $scope.$parent.newEntity;
-        console.log("New entity!!")
         $scope.getTypes();
     })
 

@@ -12,19 +12,23 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
 
     function onUserListSuccess(data, statusCode) {
         $scope.userList = data.userList;
-    };
+    }
 
     function onUserListFailure(data, statusCode) {
-        toast("Failed to load users.", 2000);
-    };
+        if(statusCode == 403) {
+            toast("User is not authorised to view users.", 2000);
+        } else {
+            toast("Failed to load users.", 2000);
+        }
+    }
 
     $scope.$on("RefreshUserList", function(event) {
         RequestService.getUserList(onUserListSuccess, onUserListFailure);
     });
 
-    function view(entity) {
+    function view(user) {
         if(!$scope.$parent.newUser) {
-            $scope.$parent.$broadcast("ViewUser", entity);
+            $scope.$parent.$broadcast("ViewUser", user);
         } else {
             toast("Cannot view user while a new user is being created.", 2000);
         }
@@ -41,8 +45,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " has been disabled successfully.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }
@@ -60,8 +64,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " has been disabled successfully.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }
@@ -79,8 +83,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " is now an admin.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }
@@ -98,8 +102,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " is not admin anymore.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }
@@ -117,8 +121,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " has been successfully marked for password reset.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }
@@ -136,8 +140,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " will not be prompted for password reset.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }
@@ -149,8 +153,8 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
             $scope.$parent.$broadcast("RefreshUserList");
             toast("User " + user.username + " has been deleted successfully.", 2000);
         }, function(data, statusCode) {
-            if(statusCode == 403 || statusCode == 401) {
-                toast("Unable to make change. Access denied due to insufficient privileges.", 2000)
+            if(statusCode == 403) {
+                toast("User is not authorised to modify user.", 2000);
             } else {
                 toast("Experiencing technical difficulties at the moment. Please try again.", 2000);
             }

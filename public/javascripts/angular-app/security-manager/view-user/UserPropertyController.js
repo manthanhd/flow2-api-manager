@@ -5,10 +5,16 @@ propertiesModule.controller("UserPropertyController", function($scope, $timeout,
     $scope.allowedRealms = ["entity", "user", "instance"];
 
     $scope.$on("NewUserCreateStart", function(event) {
-        $scope.user = $scope.$parent.newUser;
-    })
+        $scope.hidePermissionsPanel();
+    });
+
+    $scope.$on("NewUserCreateEnd", function(event) {
+        $scope.hidePermissionsPanel();
+        $scope.user = undefined;
+    });
 
     $scope.$on("ViewUser", function(event, user) {
+        $scope.hidePermissionsPanel();
         $scope.user = user;
     });
 

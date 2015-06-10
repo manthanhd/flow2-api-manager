@@ -6,6 +6,8 @@ entitiesModule.controller("EntityController", function($scope, $http, RequestSer
         $http.get('/entity/metadata/reserved').success(function(data, statusCode) {
             if(statusCode == 200) {
                 $scope.reservedList = data.reservedList;
+            } else if (statusCode == 403) {
+                toast("User is not authorised to read entities.", 2000);
             }
         });
     };
@@ -138,6 +140,7 @@ entitiesModule.controller("EntityController", function($scope, $http, RequestSer
 
         function onSuccess(entity, statusCode) {
             if(statusCode == 200) {
+                $scope.retryCount = 0;
                 $scope.$broadcast("RefreshEntityList");
                 $scope.$broadcast("ViewEntity", entity);
                 $scope.hideAddEntity(true);
@@ -157,11 +160,15 @@ entitiesModule.controller("EntityController", function($scope, $http, RequestSer
                 if(data.name) {
                     return toast("Property " + data.name + " has an invalid type " + data.type + ".");
                 }
+            } else if (statusCode == 403) {
+                return toast("User is not authorised to save entity.", 2000);
             }
 
             if($scope.retryCount == 5) {
+                $scope.retryCount = 0;
                 return toast("We failed 5th time. Something's really wrong.", 2000);
             }
+
             toast("Oops... Something went wrong. We'll try again in a moment.", 2000);
             setTimeout($scope.confirmSave, 2000);
             $scope.retryCount++;

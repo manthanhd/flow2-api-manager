@@ -26,6 +26,7 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
         };
         $scope.user = undefined;
         $scope.enableUserAdd = true;
+        $scope.$parent.$broadcast("NewUserCreateStart");
     };
 
     $scope.hideAddUser = function(force) {
@@ -41,6 +42,7 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
 
         $scope.newUser = undefined;
         $scope.enableUserAdd = undefined;
+        $scope.$parent.$broadcast("NewUserCreateEnd");
     };
 
     $scope.showSearchBar = function() {
@@ -84,13 +86,14 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
         toast("Saving...", 1000);
         RequestService.createUser($scope.newUser, onSuccess, onFailure);
 
-        function onSuccess(entity, statusCode) {
+        function onSuccess(user, statusCode) {
             if(statusCode == 200) {
+                $scope.retryCount = 0;
                 $scope.$broadcast("RefreshUserList");
-                $scope.$broadcast("ViewUser", entity);
+                $scope.$broadcast("ViewUser", user);
                 $scope.hideAddUser(true);
                 toast("User saved!", 1000);
-                $("#confirmAddModal").closeModal();
+                return $("#confirmAddModal").closeModal();
             }
         }
 
@@ -98,12 +101,14 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
             if(statusCode == 409) {
                 toast("Save failed. User already exists!", 2000);
                 return $("#confirmAddModal").closeModal();
-            } else if(statusCode == 401) {
-                toast("Save failed. " + data.error, 2000);
+            } else if(statusCode == 403) {
+                toast("User is not authorised to save user.", 2000);
+                $scope.hideAddUser(true);
                 return $("#confirmAddModal").closeModal();
             }
 
             if($scope.retryCount == 5) {
+                $scope.retryCount = 0;
                 toast("We failed 5th time. Something's really wrong.", 2000);
                 return;
             }

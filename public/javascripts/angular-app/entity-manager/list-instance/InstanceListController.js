@@ -37,11 +37,15 @@ instanceListModule.controller("InstanceListController", function($scope, Request
 
         var onSuccess = function(data, statusCode) {
             toast("Instance added!", 2000);
-        }
+        };
 
-        var onFailure = function() {
-            toast("Failed to add new instance.", 2000);
-        }
+        var onFailure = function(data, statusCode) {
+            if(statusCode == 403) {
+                toast("User is not authorised to create instance.", 2000);
+            } else {
+                toast("Failed to add new instance.", 2000);
+            }
+        };
 
         RequestService.createInstance($scope.$parent.entity.name, $scope.newInstance, onSuccess, onFailure);
 
@@ -63,8 +67,12 @@ instanceListModule.controller("InstanceListController", function($scope, Request
     }
 
     function failureHandler(data, statusCode) {
-        if(statusCode == 403 && data == "EntityNotActiveError") {
+        if(statusCode == 404 && data == "EntityNotActiveError") {
             toast("Cannot display instances as entity has been deactivated.", 2000);
+        } else if (statusCode == 404 && data == "EntityDoesNotExistError") {
+            toast("Instances cannot be viewed as the entity of this instance has been deleted.", 2000);
+        } else if (statusCode == 403) {
+            toast("User is not authorised to view instances.", 2000);
         }
     }
 });
