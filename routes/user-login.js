@@ -431,8 +431,21 @@ router.post('/', function (req, res) {
         return res.status(400).send({error: "Password is invalid. Must be at least 6 characters."});
     }
 
-    if(req.body.isAdmin && req.body.isAdmin == false && (!req.body.basePermissions || req.body.basePermissions.length < 1 || req.body.basePermissions.length > 12)) {
+    if(req.body.isAdmin && req.body.isAdmin == false && (!req.body.basePermissions || !req.body.basePermissions.length || req.body.basePermissions.length < 1 || req.body.basePermissions.length > 12)) {
         return res.status(400).send({error: "Invalid permissions. Base permissions must be provided for non-admin users and must be between 1 and 12."});
+    }
+
+    if(req.body.basePermissions) {
+        for(var i = 0; i < req.body.basePermissions.length; i++) {
+            var basePermission = req.body.basePermissions[i];
+            if(!basePermission || !basePermission.action || basePermission.action == "" || !basePermission.realm || basePermission.realm == "") {
+                return res.status(400).send({error: "action and realm are mandatory attributes for each base permission."});
+            } else if (basePermission.action != "read" && basePermission.action != "create" && basePermission.action != "update" && basePermission.action != "delete"){
+                return res.status(400).send({error: "action attribute for base permission must be one of create/read/update/delete."});
+            } else if (basePermission.realm != "entity" && basePermission.realm != "instance" && basePermission.realm != "user") {
+                return res.status(400).send({error: "realm attribute for base permission must be one of entity/instance/user."});
+            }
+        }
     }
 
     var foundCallback = function (user) {
@@ -440,17 +453,6 @@ router.post('/', function (req, res) {
     };
 
     var notFoundCallback = function () {
-        /*if (user.isAdmin != true && req.body.isAdmin == true) {
-            return res.status(401).send({error: "Non-admins cannot create admins."});
-        }*/
-
-        // For now, only admins can assign roles.
-        /*if ((!req.body.isAdmin || req.body.isAdmin == false) && req.body.roles && req.body.roles.length > 0) {
-            return res.status(401).send({error: "Non-admins cannot assign roles."});
-        }*/
-
-        // Do a role check if user is allowed to assign roles or not.
-
         var newUser = new UserAccountModel();
         newUser.accountId = account.accountId;
         newUser.username = req.body.username;
@@ -459,7 +461,12 @@ router.post('/', function (req, res) {
         newUser.isAdmin = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.isAdmin : false;
         newUser.isEnabled = true; // All new users are enabled rightaway.
         newUser.createdBy = user.username;
-        newUser.basePermissions = (req.body.isAdmin == false) ? req.body.basePermissions : [];
+        var basePermissions = [];
+        for(var i = 0; i < req.body.basePermissions.length; i++) {
+            var basePermission = req.body.basePermissions[i];
+            basePermissions.push({action: basePermission.action, realm: basePermission.realm});
+        }
+        newUser.basePermissions = (req.body.isAdmin == false) ? basePermissions : [];
 
         newUser.save(function (err, savedUser) {
             if (err) {
