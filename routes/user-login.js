@@ -424,11 +424,15 @@ router.post('/', function (req, res) {
     var user = account;
 
     if (!req.body.username || req.body.username.length < 2) {
-        return res.status(401).send({error: "Username is invalid."});
+        return res.status(400).send({error: "Username is invalid."});
     }
 
     if (!req.body.password || req.body.password.length < 6) {
-        return res.status(401).send({error: "Password is invalid. Must be at least 6 characters."});
+        return res.status(400).send({error: "Password is invalid. Must be at least 6 characters."});
+    }
+
+    if(req.body.isAdmin && req.body.isAdmin == false && (!req.body.basePermissions || req.body.basePermissions.length < 1 || req.body.basePermissions.length > 12)) {
+        return res.status(400).send({error: "Invalid permissions. Base permissions must be provided for non-admin users and must be between 1 and 12."});
     }
 
     var foundCallback = function (user) {
@@ -455,8 +459,7 @@ router.post('/', function (req, res) {
         newUser.isAdmin = (req.body.isAdmin && req.body.isAdmin == true) ? req.body.isAdmin : false;
         newUser.isEnabled = true; // All new users are enabled rightaway.
         newUser.createdBy = user.username;
-
-        // TODO: DO SOMETHING ABOUT FETCHING PERMISSIONS FROM REQUEST BODY HERE.
+        newUser.basePermissions = (req.body.isAdmin == false) ? req.body.basePermissions : [];
 
         newUser.save(function (err, savedUser) {
             if (err) {
@@ -465,11 +468,11 @@ router.post('/', function (req, res) {
                 return res.status(500).send({error: "UserSaveError", errorCode: 500});
             }
 
-            res.send(savedUser);
+            return res.send(savedUser);
         });
     };
 
-    UserAccountManager.doesUserExist(account.accountId, req.body.username, foundCallback, notFoundCallback);
+    return UserAccountManager.doesUserExist(account.accountId, req.body.username, foundCallback, notFoundCallback);
 
 });
 

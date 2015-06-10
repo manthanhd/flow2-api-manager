@@ -669,11 +669,11 @@ router.get('/instance/:entityName', function (req, res) {
         }
 
         if (entity == undefined) {
-            return res.status(401).send("EntityDoesNotExistError");
+            return res.status(404).send("EntityDoesNotExistError");
         }
 
         if(entity.active == false) {
-            return res.status(403).send("EntityNotActiveError");
+            return res.status(404).send("EntityNotActiveError");
         }
 
         var foundCallback = function (instances) {
@@ -683,7 +683,7 @@ router.get('/instance/:entityName', function (req, res) {
         };
 
         var notFoundCallback = function () {
-            return res.status(401).send("EntityDoesNotExistError");
+            return res.status(404).send("EntityDoesNotExistError");
         };
 
         GenericEntityInstance.listAll(entity, foundCallback, notFoundCallback);
