@@ -96,9 +96,13 @@ function authenticate(req, res, next) {
             return next();
     }
 
-    var blockAccess = function(req, res) {
-        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
-    };
+    function notAuthenticated(req, res) {
+        return res.status(401).send({error: "AuthenticationRequired", errorCode: 401});
+    }
+
+    function forbidAccess(req, res) {
+        return res.status(403).send({error: "AuthorisationRequired", errorCode: 403});
+    }
 
     if(req.session.account) {
 
@@ -112,46 +116,24 @@ function authenticate(req, res, next) {
             var action = getActionFromHttpMethod(req.method);
             var realm = getRealmFromUrl(req.path);
 
-            for(var i = 0; i < user.basePermissions.length; i++) {
-                var basePermission = user.basePermissions[i];
-                if(basePermission.action == action && basePermission.realm == realm) {
-                    return next();
+            var hasRequiredPermissionsCallback = function(basePermission) {
+                if(!basePermission) {
+                    return forbidAccess(req, res);
                 }
-            }
 
-            return blockAccess(req, res);
+                return next();
+            };
+
+            UserAccountManager.hasBasePermission(user, {action: action, realm: realm}, hasRequiredPermissionsCallback);
+
         };
 
         var notFoundCallback = function() {
-            return blockAccess(req, res);
+            return notAuthenticated(req, res);
         };
 
         return UserAccountManager.doesUserIdExist(req.session.account.accountId, req.session.account._id, foundCallback, notFoundCallback);
     }
-
-    var authenticateUsingHttpBasicAuth = function(req, res) {
-        var domainName = req.get('X-Authorization-Domain');
-        if (!domainName || domainName == '') {
-            return blockAccess(req, res);
-        }
-
-        var user = basicAuth(req);
-
-        if (!user || !user.name || !user.pass) {
-            return blockAccess(req, res);
-        }
-
-        var userFoundCallback = function (user) {
-            req.session.account = user; // Update session.
-            return next();
-        };
-
-        var userNotFoundCallback = function () {
-            return blockAccess(req, res);
-        };
-
-        UserAccountManager.validate(domainName, user.name, user.pass, userFoundCallback, userNotFoundCallback);
-    };
 
     function getActionFromHttpMethod(method) {
         var action = undefined;
@@ -193,7 +175,7 @@ function authenticate(req, res, next) {
 
             return ApiKeyManager.hasActionPermissionsInRealm(apiKey, action, realm, function(result, permission, apiKeyObject) {
                 if(!result || result == false) {
-                    return blockAccess(req, res);
+                    return forbidAccess(req, res);
                 }
 
                 // granted
@@ -201,7 +183,7 @@ function authenticate(req, res, next) {
 
                 return UserAccountManager.getAccountFromUserId(apiKeyObject.userId, function(user) {
                     if(!user) {
-                        return blockAccess(req, res);
+                        return forbidAccess(req, res);
                     }
 
                     req.account = user;
@@ -209,7 +191,7 @@ function authenticate(req, res, next) {
                 });
             });
         } else {
-            return blockAccess(req, res);
+            return notAuthenticated(req, res);
         }
     };
 
