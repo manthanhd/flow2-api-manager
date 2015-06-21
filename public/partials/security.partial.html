@@ -184,7 +184,7 @@
       <nav class="fill-height">
         <div class="nav-wrapper red darken-2 minor-header">
           <ul class="right">
-            <li ng-show="newUser && permissionsPanel == true" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add permission"><a ng-click="broadcastAddPermission()"><span class="large-btn mdi-content-add"></span></a></li>
+            <li ng-show="(newUser || editUser == true) && permissionsPanel == true" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add permission"><a ng-click="broadcastAddPermission()"><span class="large-btn mdi-content-add"></span></a></li>
             <li>&nbsp;</li>
           </ul>
 
@@ -248,6 +248,8 @@
                 <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
                 <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
                 <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
+                <li><a ng-show="user.isAdmin == false" ng-click="managePermissions(user)">Manage Permissions</a></li>
+                <li class="divider"></li>
                 <li><a ng-click="deleteUser(user)">Delete</a></li>
               </ul>
             </div>
@@ -401,7 +403,7 @@
 
               <div ng-if="user.isAdmin == false" class="row table-row valign-wrapper link no-hover" ng-click="showPermissionsPanel()">
                 <div class="col s12 table-cell light-blue-text">
-                  Manage user permissions ({{user.basePermissions.length}} assigned)
+                  View user permissions ({{user.basePermissions.length}} assigned)
                 </div>
               </div>
 
@@ -417,7 +419,7 @@
               <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
             </div>
 
-            <div ng-show="!$parent.newUser && user && permissionsPanel == true">
+            <div ng-show="!$parent.newUser && user && permissionsPanel == true && !editUser">
               <div class="property-panel-header">
                 <div class="row table-header-row">
                   <div class="col s6 table-header bottom-bordered shift-25px-right">Action</div>
@@ -436,6 +438,41 @@
               <div class="row table-row valign-wrapper link no-hover" ng-click="hidePermissionsPanel()">
                 <div class="col s12 table-cell light-blue-text">
                   &#8592; Back
+                </div>
+              </div>
+            </div>
+
+            <div ng-if="user.isAdmin == false && permissionsPanel == true && editUser == true">
+              <div class="property-panel-header">
+                <div class="row table-header-row">
+                  <div class="col s5 table-header bottom-bordered shift-25px-right">Action</div>
+                  <div class="col s5 table-header bottom-bordered shift-7px-right">Realm</div>
+                  <div class="col s2 table-header bottom-bordered shift-7px-right">&nbsp;</div>
+                </div>
+              </div>
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="basePermission in user.basePermissions" ng-class="{'shake z-depth-4':basePermission.attention == true}">
+                <div class="col s5 table-cell">
+                  <select ng-model="basePermission.action" ng-options="action1 as action1 for action1 in allowedActions"></select>
+                </div>
+                <div class="col s5 table-cell">
+                  <span>
+                    <select ng-model="basePermission.realm" ng-options="realm1 as realm1 for realm1 in allowedRealms"></select>
+                  </span>
+                </div>
+                <div class="col s2 table-cell">
+                  <a ng-if="user.basePermissions.length > 1" material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                  <ul ng-if="user.basePermissions.length > 1" ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+                    <li><a ng-click="removePropertyAt($index)">Remove</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="row table-row valign-wrapper link no-hover">
+                <div class="col s6 table-cell light-blue-text" ng-click="cancelManagePermissions(user)">
+                  <span class="pull-right">&#8592; Cancel</span>
+                </div>
+                <div class="col s6 table-cell light-blue-text" ng-click="updateUserPermissions(user)">
+                  Save
                 </div>
               </div>
             </div>

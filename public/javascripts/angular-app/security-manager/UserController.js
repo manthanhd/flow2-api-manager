@@ -119,8 +119,6 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
     };
 
     $scope.broadcastAddPermission = function() {
-        if($scope.newUser) {
-            $scope.$parent.$broadcast("AddPermission");
-        }
+        $scope.$parent.$broadcast("AddPermission");
     }
 });

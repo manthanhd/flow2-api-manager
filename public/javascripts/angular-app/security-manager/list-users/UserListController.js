@@ -9,6 +9,16 @@ entitiesModule.controller("UserListController", function($scope, $http, RequestS
     $scope.resetPassword = resetPassword;
     $scope.cancelResetPassword = cancelResetPassword;
     $scope.deleteUser = deleteUser;
+    $scope.managePermissions = managePermissions;
+
+    function managePermissions(user) {
+        if($scope.$parent.newUser != undefined) {
+            return toast("Cannot edit permissions of a user while creating a new one.", 2000);
+        }
+        $scope.$parent.permissionsPanel = true;
+        $scope.$parent.editUser = true;
+        $scope.$parent.$broadcast("ViewUser", user);
+    }
 
     function onUserListSuccess(data, statusCode) {
         $scope.userList = data.userList;
