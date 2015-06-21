@@ -156,4 +156,21 @@ UserAccountManager.hasBasePermission = function(userObject, expectedBasePermissi
     return callback(undefined);
 };
 
+UserAccountManager.sanitiseBasePermissions = function(basePermissions) {
+    if(!basePermissions.length || basePermissions.length == 0 || basePermissions.length > 12) {
+        return undefined;
+    }
+
+    var sanitisedBasePermissions = [];
+
+    for(var i = 0; i < basePermissions.length; i++) {
+        var basePermission = basePermissions[i];
+        if(basePermission.action && basePermission.realm) {
+            sanitisedBasePermissions.push({action: basePermission.action, realm: basePermission.realm});
+        }
+    }
+
+    return sanitisedBasePermissions;
+};
+
 module.exports = UserAccountManager;
