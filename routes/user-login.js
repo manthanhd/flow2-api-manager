@@ -563,9 +563,18 @@ router.put('/:userId', function (req, res) {
             }
         }
 
+        if(req.body.basePermissions) {
+            var sanitisedBasePermissions = UserAccountManager.sanitiseBasePermissions(req.body.basePermissions);
+            if(!sanitisedBasePermissions) {
+                return res.status(400).send({error: "NewBasePermissionsAreInvalid", errorCode: 400});
+            }
+
+            user.basePermissions = sanitisedBasePermissions;
+        }
+
         user.save(function(err, savedUser) {
             savedUser.password = undefined;
-            res.send(savedUser);
+            return res.send(savedUser);
         });
 
     }
