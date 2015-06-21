@@ -28,7 +28,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.createEntity = function(entity, onSuccess, onFailure) {
         $http.post("/entity", entity).success(function(data, statusCode) {
@@ -40,7 +40,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.getUserList = function(onSuccess, onFailure) {
         $http.get("/user").success(function(data, statusCode) {
@@ -64,7 +64,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.createInstance = function(entityName, instanceObject, onSuccess, onFailure) {
         $http.post("/instance/" + entityName, instanceObject).success(function(data, statusCode) {
@@ -76,7 +76,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.updateEntity = function(entityId, updateAttributeObject, onSuccess, onFailure) {
         $http.put("/entity/" + entityId, updateAttributeObject).success(function(data, statusCode) {
@@ -88,7 +88,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.deleteEntity = function(entityId, onSuccess, onFailure) {
         $http.delete("/entity/" + entityId).success(function(data, statusCode) {
@@ -100,7 +100,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.updateUser = function(userId, updateAttributeObject, onSuccess, onFailure) {
         $http.put("/user/" + userId, updateAttributeObject).success(function(data, statusCode) {
@@ -112,7 +112,7 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
     this.deleteUser = function(userId, onSuccess, onFailure) {
         $http.delete("/user/" + userId).success(function(data, statusCode) {
@@ -124,6 +124,6 @@ sharedModule.service("RequestService", function($http) {
                 onFailure(data, statusCode);
             }
         });
-    }
+    };
 
 });
