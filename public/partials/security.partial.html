@@ -8,6 +8,7 @@
           <ul class="right">
             <li ng-show="!newUser || enableUserSearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add user"><a ng-click="showAddUser()"><i class="large-btn mdi-content-add"></i></a></li>
             <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
+            <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="API Keys"><a ng-click="showApiKeys()"><i class="large-btn material-icons">vpn_key</i></a></li>
           </ul>
           <br/>
           <!--Major banner import-->
@@ -28,6 +29,43 @@
                   </div>
                 </form>
               </div>
+              <div class="modal black-text modal-fixed-footer" id="showApiKeysModal">
+                <div class="modal-content">
+                  <h4>API Keys</h4>
+                  <table class="hoverable">
+                    <thead>
+                      <tr>
+                        <th>Key name</th>
+                        <th>Key</th>
+                        <th>Created On</th>
+                        <th>Active?</th>
+                        <th>Permissions</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="key in apiKeys">
+                        <td>{{key.name}}</td>
+                        <td>{{key.apiKey}}</td>
+                        <td>{{key.createdOn | date: 'medium'}}</td>
+                        <td>{{key.active}}</td>
+                        <td>
+                          <a>{{key.permissions.length}} permissions</a>
+                        </td>
+                        <td><a class="valign-wrapper red-text"><i class="small material-icons">delete</i></a></td>
+                      </tr>
+                      <tr ng-if="apiKeys == undefined || apiKeys.length == 0">
+                        <td colspan="6" class="center"><em>No API keys exist for this user.</em></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <a href="#" class="waves-effect waves-teal btn-flat modal-action modal-close">Close</a>
+                  <a class="waves-effect waves-green btn-flat modal-action" ng-click="" disabled="disabled">Save change(s)</a>
+                </div>
+              </div>
+
               <div ng-if="enableUserAdd">
                 <form class="row" ng-submit="saveUser()">
                      <div class="input-field col s8">
