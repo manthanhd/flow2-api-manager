@@ -563,21 +563,78 @@ router.put('/:userId', function (req, res) {
             }
         }
 
+        var isBasePermissionChange = false;
+
         if(req.body.basePermissions) {
             var sanitisedBasePermissions = UserAccountManager.sanitiseBasePermissions(req.body.basePermissions);
             if(!sanitisedBasePermissions) {
                 return res.status(400).send({error: "NewBasePermissionsAreInvalid", errorCode: 400});
             }
 
+            // Find out which permissions were removed...
+            var removedBasePermissions = [];
+            for(var i = 0; i < user.basePermissions.length; i++) {
+                var oldBasePermission = user.basePermissions[i];
+                var found = false;
+                for(var j = 0; j < sanitisedBasePermissions.length; j++) {
+                    var newBasePermission = sanitisedBasePermissions[j];
+                    if(oldBasePermission.action == newBasePermission.action && oldBasePermission.realm == newBasePermission.realm) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if(found == false) {
+                    removedBasePermissions.push(oldBasePermission);
+                }
+            }
+
+            isBasePermissionChange = true;
             user.basePermissions = sanitisedBasePermissions;
         }
 
         user.save(function(err, savedUser) {
             savedUser.password = undefined;
-            return res.send(savedUser);
+            if(isBasePermissionChange == true) {
+                return ApiKeyManager.getAllKeysForUser(savedUser._id, function(apiKeys) {
+                    if(!apiKeys || apiKeys.length == 0) {
+                        return res.send(savedUser);
+                    }
+
+                    console.log("Removing invalid ApiKeys... " + apiKeys.length + " total found. Checking validity...");
+
+                    // Could be optimised...
+                    for(var i = 0; i < apiKeys.length; i++) {
+                        var apiKey = apiKeys[i];
+                        if(apiKey.permissions) {
+
+                            for(var j = 0; j < apiKey.permissions.length; j++) {
+                                var apiKeyPermission = apiKey.permissions[j];
+
+                                for(var k = 0; k < removedBasePermissions.length; k++) {
+                                    var removedBasePermission = removedBasePermissions[k];
+
+                                    if(apiKeyPermission.action == removedBasePermission.action && apiKeyPermission.realm == removedBasePermission.realm) {
+                                        apiKey.remove(function(err) {
+                                            console.log("Removed api key with base permissions: " + removedBasePermission.action + " on " + removedBasePermission.realm);
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    console.log("Done.");
+
+                    return res.send(savedUser);
+                });
+
+            } else {
+                return res.send(savedUser);
+            }
         });
 
-    }
+    };
 
     var notFoundCallback = function () {
         return res.status(404).send({error: "UserNotFoundError", errorCode: 404});
