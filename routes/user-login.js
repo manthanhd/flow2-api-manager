@@ -231,6 +231,114 @@ router.get("/home", function (req, res) {
 
 // APIs
 //==========================================================================================================
+
+// New User Permissions API
+// TODO: This is currently not authenticated from the parent auth module. Everyone who can create a user can create keys to any extent.
+router.get('/key', function (req, res) {
+    var account = req.session.account || req.account;
+    if (!account) {
+        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+    }
+
+    //var userId = req.params.userId;
+
+    ApiKeyManager.getAllKeysForUser(account._id, function(keys) {
+        if(!keys) {
+            return res.status(404).send();
+        }
+
+        return res.send({apiKeys: keys});
+    });
+});
+
+router.post('/key', function (req, res) {
+    var account = req.session.account || req.account;
+    if (!account) {
+        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+    }
+
+    var userId = account._id;
+    var permissions = req.body.permissions;
+
+    if(!permissions || !permissions.length || permissions.length == 0) {
+        return res.status(400).send({error: "BadPermissions", errorCode: 400});
+    }
+
+    var allowedPermissions = [];
+
+    if(account.isAdmin != true) {
+        for (var i = 0; i < permissions.length; i++) {
+            var permission = permissions[i];
+            for (var j = 0; j < account.basePermissions.length; j++) {
+                var basePermission = account.basePermissions[j];
+                if (basePermission.action == permission.action && basePermission.realm == permission.realm) {
+                    allowedPermissions.push({action: basePermission.action, realm: basePermission.realm});
+                }
+            }
+        }
+    } else {
+        for(var i = 0; i < permissions.length; i++) {
+            var permission = permissions[i];
+            allowedPermissions.push({action: permission.action, realm: permission.realm});
+        }
+    }
+
+    if(allowedPermissions.length != permissions.length) {
+        return res.status(401).send({error: "PermissionGrantNotAuthorized", errorCode: 403});
+    }
+
+    var foundCallback = function(user) {
+
+        ApiKeyManager.registerKey(user._id, permissions, function (registeredKey) {
+            if (!registeredKey) {
+                return res.status(500).send();
+            }
+
+            return res.send(registeredKey);
+        });
+    };
+
+    var notFoundCallback = function() {
+        return res.status(404).send();
+    };
+
+    return UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
+});
+
+router.delete('/key/:apiKey', function (req, res) {
+    var account = req.session.account || req.account;
+    if (!account) {
+        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
+        return;
+    }
+
+    var apiKey = req.params.apiKey;
+    var userId = account._id;
+
+    if(!apiKey) {
+        return res.status(404).send({error: "InvalidApiKeyError", errorCode: 400});
+    }
+
+    var foundCallback = function(user) {
+        ApiKeyManager.deleteKey(user._id, apiKey, function(deleteStatus) {
+            if(!deleteStatus) {
+                return res.status(500).send();
+            } else if (deleteStatus == false) {
+                return res.status(403).send();
+            }
+
+            return res.status(200).send();
+        });
+    };
+
+    var notFoundCallback = function() {
+        return res.status(404).send();
+    };
+
+    UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
+});
+
+
 /**
  * @api {get} /user Get all users
  * @apiName Get all users
@@ -685,111 +793,7 @@ router.delete('/:id', function (req, res) {
     });
 });
 
-// New User Permissions API
-// TODO: This is currently not authenticated from the parent auth module. Everyone who can create a user can create keys to any extent.
-router.get('/:userId/key', function (req, res) {
-    var account = req.session.account || req.account;
-    if (!account) {
-        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
-    }
 
-    var userId = req.params.userId;
-
-    ApiKeyManager.getAllKeysForUser(userId, function(keys) {
-        if(!keys) {
-            return res.status(404).send();
-        }
-
-        return res.send(keys);
-    });
-});
-
-router.post('/:userId/key', function (req, res) {
-    var account = req.session.account || req.account;
-    if (!account) {
-        return res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
-    }
-
-    var userId = req.params.userId;
-    var permissions = req.body.permissions;
-
-    if(!permissions || !permissions.length || permissions.length == 0) {
-        return res.status(400).send({error: "BadPermissions", errorCode: 400});
-    }
-
-    var allowedPermissions = [];
-
-    if(account.isAdmin != true) {
-        for (var i = 0; i < permissions.length; i++) {
-            var permission = permissions[i];
-            for (var j = 0; j < account.basePermissions.length; j++) {
-                var basePermission = account.basePermissions[j];
-                if (basePermission.action == permission.action && basePermission.realm == permission.realm) {
-                    allowedPermissions.push({action: basePermission.action, realm: basePermission.realm});
-                }
-            }
-        }
-    } else {
-        for(var i = 0; i < permissions.length; i++) {
-            var permission = permissions[i];
-            allowedPermissions.push({action: permission.action, realm: permission.realm});
-        }
-    }
-
-    if(allowedPermissions.length != permissions.length) {
-        return res.status(401).send({error: "PermissionGrantNotAuthorized", errorCode: 403});
-    }
-
-    var foundCallback = function(user) {
-
-        ApiKeyManager.registerKey(user._id, permissions, function (registeredKey) {
-            if (!registeredKey) {
-                return res.status(500).send();
-            }
-
-            return res.send(registeredKey);
-        });
-    };
-
-    var notFoundCallback = function() {
-        return res.status(404).send();
-    };
-
-    return UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
-});
-
-router.delete('/:userId/key/:apiKey', function (req, res) {
-    var account = req.session.account || req.account;
-    if (!account) {
-        res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
-        return;
-    }
-
-    var apiKey = req.params.apiKey;
-    var userId = req.params.userId;
-
-    if(!apiKey) {
-        return res.status(404).send({error: "InvalidApiKeyError", errorCode: 400});
-    }
-
-    var foundCallback = function(user) {
-        ApiKeyManager.deleteKey(user._id, apiKey, function(deleteStatus) {
-            if(!deleteStatus) {
-                return res.status(500).send();
-            } else if (deleteStatus == false) {
-                return res.status(403).send();
-            }
-
-            return res.status(200).send();
-        });
-    };
-
-    var notFoundCallback = function() {
-        return res.status(404).send();
-    };
-
-    UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
-});
 
 /*router.post('/:userId', function (req, res) {
     // Adds role to user
