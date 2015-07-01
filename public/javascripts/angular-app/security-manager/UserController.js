@@ -121,17 +121,4 @@ entitiesModule.controller("UserController", function($scope, RequestService) {
     $scope.broadcastAddPermission = function() {
         $scope.$parent.$broadcast("AddPermission");
     };
-
-    $scope.showApiKeys = function() {
-        toast("Loading API keys...", 2000);
-        RequestService.getMyApiKeys(function(data, statusCode) {
-            $scope.apiKeys = data.apiKeys;
-            toast("API keys loaded.", 2000);
-
-            $("#showApiKeysModal").openModal();
-        }, function(data, statusCode) {
-            toast("Failed to load API keys.", 2000);
-            $("#showApiKeysModal").closeModal();
-        });
-    }
 });

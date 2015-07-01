@@ -33,6 +33,12 @@
   <script src="/javascripts/angular-app/security-manager/view-user/UserPropertyController.js"></script>
   <script src="/javascripts/angular-app/security-manager/list-roles/RoleListController.js"></script>
 
+  <script src="/javascripts/angular-app/apikeys-manager/APIKeys.js"></script>
+  <script src="/javascripts/angular-app/apikeys-manager/APIKeysController.js"></script>
+  <script src="/javascripts/angular-app/apikeys-manager/list-keys/APIKeysListController.js"></script>
+  <script src="/javascripts/angular-app/apikeys-manager/view-key/APIKeyPropertyController.js"></script>
+  <!--<script src="/javascripts/angular-app/security-manager/list-roles/RoleListController.js"></script>-->
+
   <script src="/javascripts/angular-app/app.js"></script>
 </head>
 
@@ -41,6 +47,7 @@
   <ul id="slide-out" class="side-nav full">
     <li class="link" ng-click="goto('entities')"><i class="mdi-action-view-module"></i> Entities</li>
     <li class="link" ng-click="goto('security')"><i class="mdi-action-lock"></i> Security</li>
+    <li class="link" ng-click="goto('apikeys')"><i class="tiny material-icons">vpn_key</i> API Keys</li>
     <li class="grey lighten-1 nolink"><a class="text-disabled nolink"><i class="mdi-device-storage"></i> Data Source Manager</a></li>
     <li class="grey lighten-1 nolink"><a class="text-disabled nolink"><i class="mdi-editor-insert-chart"></i> Analytics</a></li>
     <li class="link" ng-click="goto('account')"><i class="mdi-action-account-box"></i> My Account</li>

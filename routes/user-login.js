@@ -338,6 +338,22 @@ router.delete('/key/:apiKey', function (req, res) {
     UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
 });
 
+router.get('/whoami', function (req, res) {
+    var account = req.session.account || req.account;
+    if (!account) {
+        return res.status(403).send({error: "LoginRequired", errorCode: 403});
+    }
+
+    UserAccountModel.findOne({accountId: account.accountId, _id: account._id}, function (err, user) {
+        if (err || !user) {
+            return res.status(500).send({error: "UserListError", errorCode: 500});
+        }
+
+        // Strip out the password
+        user.password = undefined;
+        return res.send(user);
+    });
+});
 
 /**
  * @api {get} /user Get all users

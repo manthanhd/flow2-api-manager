@@ -138,4 +138,28 @@ sharedModule.service("RequestService", function($http) {
         });
     };
 
+    this.getMyUserObject = function(onSuccess, onFailure) {
+        $http.get("/user/whoami").success(function(data, statusCode) {
+            onSuccess(data, statusCode);
+        }).error(function(data, statusCode) {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
+                window.location.href = "/user/login";
+            } else {
+                onFailure(data, statusCode);
+            }
+        });
+    };
+
+    this.createAPIKey = function(key, onSuccess, onFailure) {
+        $http.post("/user/key", key).success(function(data, statusCode) {
+            onSuccess(data, statusCode);
+        }).error(function(data, statusCode) {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
+                window.location.href = "/user/login";
+            } else {
+                onFailure(data, statusCode);
+            }
+        });
+    };
+
 });

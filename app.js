@@ -92,6 +92,8 @@ function authenticate(req, res, next) {
         case "/user/reset":
         case "/user/register":
         case "/user/logout":
+        case "/user/whoami":
+        case "/user/key":
             return next();
     }
 
@@ -172,16 +174,16 @@ function authenticate(req, res, next) {
                 return res.status(401).send()
             }
 
-            return ApiKeyManager.hasActionPermissionsInRealm(apiKey, action, realm, function(result, permission, apiKeyObject) {
-                if(!result || result == false) {
+           return ApiKeyManager.hasActionPermissionsInRealm(apiKey, action, realm, function (result, permission, apiKeyObject) {
+                if (!result || result == false) {
                     return forbidAccess(req, res);
                 }
 
                 // granted
                 req.permission = permission;
 
-                return UserAccountManager.getAccountFromUserId(apiKeyObject.userId, function(user) {
-                    if(!user) {
+                return UserAccountManager.getAccountFromUserId(apiKeyObject.userId, function (user) {
+                    if (!user) {
                         return forbidAccess(req, res);
                     }
 
@@ -189,6 +191,7 @@ function authenticate(req, res, next) {
                     return next();
                 });
             });
+
         } else {
             return notAuthenticated(req, res);
         }

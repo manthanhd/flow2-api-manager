@@ -88,6 +88,19 @@ ApiKeyManager.hasActionPermissionsInRealm = function(apiKey, action, realm, call
     });
 };
 
+ApiKeyManager.getApiKeyObjectFromApiKey = function(apiKey, callback) {
+    ApiKeyModel.findOne({apiKey: apiKey}, function(err, apiKeyObject) {
+        if(err) {
+            console.log(err);
+            return callback(undefined);
+        }
+
+        return callback(apiKeyObject);
+    });
+};
+
+
+
 
 //ApiKeyManager.hasPermissions = function(apiKey, action, realm, actionableObject, callback) {
 //    ApiKeyModel.findOne({apiKey: apiKey}, function(err, apiKeyObject) {

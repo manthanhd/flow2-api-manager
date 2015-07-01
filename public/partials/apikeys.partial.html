@@ -1,4 +1,4 @@
-<div ng-controller="UserController" class="full-height">
+<div ng-controller="APIKeysController" class="full-height">
   <!-- Header -->
   <div class="row major">
     <div class="col s8 nav-part fill-height z-depth-2">
@@ -6,20 +6,20 @@
         <div class="nav-wrapper red major-header">
               <a href="#" data-activates="slide-out" class="side-nav-toggle"> <i class="mdi-navigation-menu"></i></a>
           <ul class="right">
-            <li ng-show="!newUser || enableUserSearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add user"><a ng-click="showAddUser()"><i class="large-btn mdi-content-add"></i></a></li>
+            <li ng-show="!newKey || enableKeySearch" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add key"><a ng-click="showAddKey()"><i class="large-btn mdi-content-add"></i></a></li>
             <li class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Search"><a ng-click="showSearchBar()"><i class="large-btn mdi-action-search"></i></a></li>
           </ul>
           <br/>
           <!--Major banner import-->
           <div class="row banner">
             <div class="col offset-s1 s11">
-              <h3 ng-if="enableUserAdd == undefined && enableUserSearch == undefined">
-                Security
+              <h3 ng-if="enableKeyAdd == undefined && enableKeySearch == undefined">
+                API Keys
               </h3>
-              <div ng-show="enableUserSearch != undefined">
-                <form class="row" ng-submit="saveUser()">
+              <div ng-show="enableKeySearch != undefined">
+                <form class="row" ng-submit="saveKey()">
                   <div class="input-field col s8">
-                    <input class="text-h3 validate border-bottom-1px milky-placeholder" id="searchText" type="text" required ng-model="searchUserNameText" placeholder="Username to search...">
+                    <input class="text-h3 validate border-bottom-1px milky-placeholder" id="searchText" type="text" required ng-model="searchKeyNameText" placeholder="API key to search...">
                   </div>
                   <div class="input-field col s4">
                     <a ng-click="cancelSearchBar()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" type="reset">
@@ -29,25 +29,25 @@
                 </form>
               </div>
 
-              <div ng-if="enableUserAdd">
-                <form class="row" ng-submit="saveUser()">
+              <div ng-if="enableKeyAdd">
+                <form class="row" ng-submit="saveKey()">
                      <div class="input-field col s8">
-                       <input class="text-h3 validate border-bottom-1px milky-placeholder" id="newUserName" type="text" required ng-model="newUser.username" placeholder="New user name">
+                       <input class="text-h3 validate border-bottom-1px milky-placeholder" id="newAPIKeyName" type="text" required ng-model="newKey.name" placeholder="New API key name">
                      </div>
                      <div class="input-field col s4">
-                       <a ng-click="hideAddUser()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
+                       <a ng-click="hideAddKey()" class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text">
                          <i class="mdi-content-clear line-height-36"></i>
                        </a>
                        &nbsp;&nbsp;
-                       <a class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" ng-click="saveUser()">
+                       <a class="btn-flat waves-effect waves-red red darken-2 entity-name-ok-button white-text" ng-click="saveKey()">
                          <i class="mdi-action-done line-height-36"></i>
                        </a>
                      </div>
                     <div class="modal black-text modal-fixed-footer" id="confirmAddModal">
                       <div class="modal-content">
                         <h4>Are you sure?</h4>
-                        <p>You are about to save the following user:</p>
-                        <h5>{{newUser.username}}</h5>
+                        <p>You are about to save the following key:</p>
+                        <h5>{{newKey.name}}</h5>
                         <table class="hoverable">
                           <thead>
                             <tr>
@@ -55,7 +55,7 @@
                               <th>Value</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody><!--
                             <tr>
                               <td>Username</td>
                               <td>{{newUser.username}}</td>
@@ -76,7 +76,7 @@
                               <td>Has user been enabled?</td>
                               <td>{{newUser.isEnabled}}</td>
                             </tr>
-                          </tbody>
+                          </tbody>-->
                         </table>
                       </div>
                       <div class="modal-footer">
@@ -85,12 +85,12 @@
                       </div>
                     </div>
 
-                    <div class="modal black-text modal-fixed-footer" id="confirmResetUser">
+                    <div class="modal black-text modal-fixed-footer" id="confirmResetKey">
                       <div class="modal-content">
                         <h4>Are you sure?</h4>
-                        <p>Do you want to reset all fields of the current user that is being created?</p>
-                        <h5>{{newUser.username}}</h5>
-                        <div class="row">
+                        <p>Do you want to reset all fields of the current key that is being created?</p>
+                        <h5>{{newKey.name}}</h5>
+                        <!--<div class="row">
                         <table class="col s6">
                           <thead>
                             <tr>
@@ -122,20 +122,20 @@
                           </tbody>
                         </table>
                           <div class="col s6"></div>
-                        </div>
+                        </div>-->
                       </div>
                       <div class="modal-footer">
                         <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
-                        <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="showAddEntity(true)">Yes, Reset</a>
+                        <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="showAddKey(true)">Yes, Reset</a>
                       </div>
                     </div>
 
-                  <div class="modal black-text modal-fixed-footer" id="confirmCancelUserCreation">
+                  <div class="modal black-text modal-fixed-footer" id="confirmCancelKeyCreation">
                     <div class="modal-content">
                       <h4>Are you sure?</h4>
-                      <p>Do you want to discard all the changes to the following user?</p>
-                      <h5>{{newUser.username}}</h5>
-                      <div class="row">
+                      <p>Do you want to discard all the changes to the following key?</p>
+                      <h5>{{newKey.name}}</h5>
+                      <!--<div class="row">
                         <table class="col s6">
                           <thead>
                           <tr>
@@ -167,11 +167,11 @@
                           </tbody>
                         </table>
                         <div class="col s6"></div>
-                      </div>
+                      </div>-->
                     </div>
                     <div class="modal-footer">
                       <a href="#" class="waves-effect waves-green btn-flat modal-action modal-close">Cancel</a>
-                      <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="hideAddUser(true)">Yes, Discard</a>
+                      <a class="waves-effect waves-green btn-flat modal-action modal-close" ng-click="hideAddKey(true)">Yes, Discard</a>
                     </div>
                   </div>
                 </form>
@@ -185,17 +185,17 @@
       <nav class="fill-height">
         <div class="nav-wrapper red darken-2 minor-header">
           <ul class="right">
-            <li ng-show="(newUser || editUser == true) && permissionsPanel == true" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add permission"><a ng-click="broadcastAddPermission()"><span class="large-btn mdi-content-add"></span></a></li>
+            <!--<li ng-show="(newKey || editKey == true) && permissionsPanel == true" class="tooltipped" data-position="bottom" data-delay="500" data-tooltip="Add permission"><a ng-click="broadcastAddPermission()"><span class="large-btn mdi-content-add"></span></a></li>-->
             <li>&nbsp;</li>
           </ul>
 
           <div class="row">
             <div class="col offset-s1 s11">
-              <h5 class="instance-header" ng-hide="newUser">{{user.username}}</h5>
-              <h5 class="instance-header" ng-show="newUser && newUser.username">{{newUser.username}}</h5>
+              <h5 class="instance-header" ng-hide="newKey">{{key.name}}</h5>
+              <h5 class="instance-header" ng-show="newKey && newKey.name">{{newKey.name}}</h5>
 
-              <span class="instance-tagline" ng-show="user && user.lastLoginDate">Last accessed {{user.lastLoginDate | date: 'medium'}}.</span>
-              <span class="instance-tagline" ng-show="user && !user.lastLoginDate">Last accessed <em>never</em>.</span>
+              <span class="instance-tagline" ng-show="key && key.lastAccessDate">Last accessed {{key.lastAccessDate | date: 'medium'}}.</span>
+              <span class="instance-tagline" ng-show="key && !key.lastAccessDate">Last accessed <em>never</em>.</span>
             </div>
           </div>
         </div>
@@ -205,70 +205,65 @@
   <!-- Content Body -->
   <div class="main-container">
     <div class="row full-height">
-      <div class="col s8 table-div nopadding major-body z-depth-1" ng-controller="UserListController">
+      <div class="col s8 table-div nopadding major-body z-depth-1" ng-controller="APIKeysListController">
         <div class="major-body-list-header">
           <div class="row table-header-row">
             <div class="col s1 table-header">&nbsp;</div>
-            <div class="col s4 table-header bottom-bordered shift-25px-right">Username</div>
-            <div class="col s2 table-header text-align-center bottom-bordered shift-14px-right">To be reset?</div>
-            <div class="col s2 table-header text-align-center bottom-bordered shift-7px-right">Is Admin?</div>
-            <div class="col s2 table-header text-align-center bottom-bordered">Is Enabled?</div>
+            <div class="col s8 table-header bottom-bordered shift-25px-right">Name</div>
+            <!--<div class="col s2 table-header text-align-center bottom-bordered shift-14px-right">Created On</div>-->
+            <div class="col s2 table-header text-align-center bottom-bordered shift-7px-right">Is Active?</div>
+            <!--<div class="col s2 table-header text-align-center bottom-bordered"></div>-->
             <div class="col s1 table-header bottom-bordered">&nbsp;</div>
           </div>
         </div>
         <div class="major-body-list-body">
-          <div ng-click="view(user)" class="row table-row valign-wrapper link" ng-repeat="user in userList | filter:userSearchFilter">
-            <div class="col s1 table-cell" ng-click="view(user)"><span class="mdi-social-person large-text round-icon"></span></div>
-            <div class="col s4 table-cell" ng-click="view(user)">{{user.username}}</div>
-            <div class="col s2 table-cell center" ng-click="view(user)">
+          <div ng-click="view(key)" class="row table-row valign-wrapper link" ng-repeat="key in keyList | filter:keySearchFilter">
+            <div class="col s1 table-cell" ng-click="view(key)"><span class="mdi-social-person large-text round-icon"></span></div>
+            <div class="col s8 table-cell" ng-click="view(key)">{{key.name}}</div>
+            <!--<div class="col s2 table-cell center" ng-click="view(key)">
               <div class="center">
-                <span ng-if="user.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="key.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
                 <span ng-if="user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
               </div>
-            </div>
-            <div class="col s2 table-cell" ng-click="view(user)">
+            </div>-->
+            <div class="col s2 table-cell" ng-click="view(key)">
               <div class="center">
-                <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
-                <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
+                <span ng-if="key.active == true" class="mdi-action-done medium-text green-text"></span>
+                <span ng-if="!key.active || key.active == false" class="mdi-navigation-close medium-text red-text"></span>
               </div>
             </div>
-            <div class="col s2 table-cell" ng-click="view(user)">
+            <!--<div class="col s2 table-cell" ng-click="view(user)">
               <div class="center">
                 <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
                 <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
               </div>
-            </div>
+            </div>-->
             <div class="col s1 table-cell">
               <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
               <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-                <li><a ng-click="view(user)">View</a></li>
+                <li><a ng-click="view(key)">View</a></li>
                 <li class="divider"></li>
-                <li><a ng-show="user.isEnabled==true" ng-click="disableUser(user)">Disable</a></li>
-                <li><a ng-show="user.isEnabled==false" ng-click="enableUser(user)">Enable</a></li>
-                <li><a ng-show="user.hasBeenReset==false" ng-click="resetPassword(user)">Reset password</a></li>
-                <li><a ng-show="user.hasBeenReset==true" ng-click="cancelResetPassword(user)">Cancel password reset</a></li>
-                <li><a ng-show="user.isAdmin==false" ng-click="makeAdmin(user)">Make admin</a></li>
-                <li><a ng-show="user.isAdmin==true" ng-click="unmakeAdmin(user)">Strip admin privilege</a></li>
-                <li><a ng-show="user.isAdmin == false" ng-click="managePermissions(user)">Manage Permissions</a></li>
+                <li><a ng-show="user.isEnabled==true" ng-click="deactivateKey(key)">Disable</a></li>
+                <li><a ng-show="user.isEnabled==false" ng-click="activateKey(key)">Enable</a></li>
                 <li class="divider"></li>
-                <li><a ng-click="deleteUser(user)">Delete</a></li>
+                <li><a ng-click="deleteKey(key)">Delete</a></li>
               </ul>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="col s4 nopadding" ng-controller="UserPropertyController">
+      <div class="col s4 nopadding" ng-controller="APIKeyPropertyController">
         <div class="property-panel">
           <div class="property-panel-body">
-            <div ng-show="$parent.newUser && !permissionsPanel">
-              <div class="property-panel-header">
+            <div ng-show="$parent.newKey">
+              <!--<div class="property-panel-header">
                 <div class="row table-header-row">
                   <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
                   <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
                 </div>
-              </div>
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
+              </div>-->
+              <!--<div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
                 <div class="col s5 table-cell">
                   Password
                 </div>
@@ -323,7 +318,8 @@
               </div>
             </div>
 
-            <div ng-if="newUser.isAdmin == false && permissionsPanel == true">
+            -->
+            <!--<div>-->
               <div class="property-panel-header">
                 <div class="row table-header-row">
                   <div class="col s5 table-header bottom-bordered shift-25px-right">Action</div>
@@ -331,29 +327,30 @@
                   <div class="col s2 table-header bottom-bordered shift-7px-right">&nbsp;</div>
                 </div>
               </div>
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="basePermission in newUser.basePermissions" ng-class="{'shake z-depth-4':basePermission.attention == true}">
+              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="permission in newKey.permissions" ng-class="{'shake z-depth-4':permission.attention == true}">
                 <div class="col s5 table-cell">
-                  <select ng-model="basePermission.action" ng-options="action1 as action1 for action1 in allowedActions"></select>
+                  <select ng-model="permission.action" ng-options="action1 as action1 for action1 in allowedActions"></select>
                 </div>
                 <div class="col s5 table-cell">
                   <span>
-                    <select ng-model="basePermission.realm" ng-options="realm1 as realm1 for realm1 in allowedRealms"></select>
+                    <select ng-model="permission.realm" ng-options="realm1 as realm1 for realm1 in allowedRealms"></select>
                   </span>
                 </div>
                 <div class="col s2 table-cell">
-                  <a ng-if="newUser.basePermissions.length > 1" material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                  <ul ng-if="newUser.basePermissions.length > 1" ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
+                  <a ng-if="newKey.permissions.length > 1" material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
+                  <ul ng-if="newKey.permissions.length > 1" ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
                     <li><a ng-click="removePropertyAt($index)">Remove</a></li>
                   </ul>
                 </div>
               </div>
 
-              <div class="row table-row valign-wrapper link no-hover" ng-click="hidePermissionsPanel()">
+              <!--<div class="row table-row valign-wrapper link no-hover" ng-click="hidePermissionsPanel()">
                 <div class="col s12 table-cell light-blue-text">
                   &#8592; Back
                 </div>
-              </div>
-            </div>
+              </div>-->
+            <!--</div>-->
+              <!--
 
             <div ng-show="!$parent.newUser && user && !permissionsPanel">
               <div class="property-panel-header">
@@ -476,12 +473,12 @@
                   Save
                 </div>
               </div>
-            </div>
+            </div>-->
 
           </div>
         </div>
       </div>
-        <div ng-if="!true" class="instance-list-panel minor-body-bottom" ng-controller="RoleListController">
+        <!--<div ng-if="!true" class="instance-list-panel minor-body-bottom" ng-controller="RoleListController">
           <hr/>
           <a ng-show="user" href="#modal1" id="action-button" class="btn-floating btn-large waves-effect waves-light red instance-list-button pull-right medium-text modal-trigger">{ }</a>
           <div class="card action-card dropdown-content" id="modal1">
@@ -502,7 +499,7 @@
             </div>
           </div>
           <textarea class="materialize-textarea full-height no-border-bottom instance-list-textarea" disabled>{{roleString}}</textarea>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
