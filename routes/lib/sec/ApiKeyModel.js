@@ -8,6 +8,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var apiKeySchema = mongoose.Schema({
     userId: {type: ObjectId, index: true, required: true},
+    name: {type: String, index: true, required: true},
     apiKey: {type: String, index: {unique: true}, required: true, default: hat()},
     createdOn: {type: Date, default: Date.now},
     active: {type: Boolean, default: true},
