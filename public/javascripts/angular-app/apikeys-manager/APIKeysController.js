@@ -26,7 +26,7 @@ entitiesModule.controller("APIKeysController", function($scope, RequestService) 
 
         $scope.newKey = {
             name: "",
-            active: "change1t",
+            active: true,
             permissions: defaultPermissions
         };
 
