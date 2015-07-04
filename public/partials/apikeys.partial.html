@@ -209,8 +209,8 @@
         <div class="major-body-list-header">
           <div class="row table-header-row">
             <div class="col s1 table-header">&nbsp;</div>
-            <div class="col s8 table-header bottom-bordered shift-25px-right">Name</div>
-            <!--<div class="col s2 table-header text-align-center bottom-bordered shift-14px-right">Created On</div>-->
+            <div class="col s5 table-header bottom-bordered shift-25px-right">Name</div>
+            <div class="col s3 table-header text-align-center bottom-bordered shift-14px-right">API Key</div>
             <div class="col s2 table-header text-align-center bottom-bordered shift-7px-right">Is Active?</div>
             <!--<div class="col s2 table-header text-align-center bottom-bordered"></div>-->
             <div class="col s1 table-header bottom-bordered">&nbsp;</div>
@@ -219,13 +219,12 @@
         <div class="major-body-list-body">
           <div ng-click="view(key)" class="row table-row valign-wrapper link" ng-repeat="key in keyList | filter:keySearchFilter">
             <div class="col s1 table-cell" ng-click="view(key)"><span class="mdi-social-person large-text round-icon"></span></div>
-            <div class="col s8 table-cell" ng-click="view(key)">{{key.name}}</div>
-            <!--<div class="col s2 table-cell center" ng-click="view(key)">
-              <div class="center">
-                <span ng-if="key.hasBeenReset == true" class="mdi-action-done medium-text green-text"></span>
-                <span ng-if="user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
+            <div class="col s5 table-cell" ng-click="view(key)">{{key.name}}</div>
+            <div class="col s3 table-cell center" ng-click="view(key)">
+              <div class="right-align">
+                <button class="waves-effect waves-light btn btn-row" ng-click="copyToClipboard(key.apiKey)">Copy to clipboard</button>
               </div>
-            </div>-->
+            </div>
             <div class="col s2 table-cell" ng-click="view(key)">
               <div class="center">
                 <span ng-if="key.active == true" class="mdi-action-done medium-text green-text"></span>
@@ -241,11 +240,6 @@
             <div class="col s1 table-cell">
               <a material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
               <ul ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-                <li><a ng-click="view(key)">View</a></li>
-                <li class="divider"></li>
-                <li><a ng-show="user.isEnabled==true" ng-click="deactivateKey(key)">Disable</a></li>
-                <li><a ng-show="user.isEnabled==false" ng-click="activateKey(key)">Enable</a></li>
-                <li class="divider"></li>
                 <li><a ng-click="deleteKey(key)">Delete</a></li>
               </ul>
             </div>
@@ -257,69 +251,6 @@
         <div class="property-panel">
           <div class="property-panel-body">
             <div ng-show="$parent.newKey">
-              <!--<div class="property-panel-header">
-                <div class="row table-header-row">
-                  <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
-                  <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
-                </div>
-              </div>-->
-              <!--<div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-                <div class="col s5 table-cell">
-                  Password
-                </div>
-                <div class="col s7 table-cell">
-                  <input class="tooltipped" data-position="bottom" data-tooltip="Default password is change1t." type="password" placeholder="Password" ng-model="newUser.password" required/>
-                  <script>
-                    $('.tooltipped').tooltip({delay: 50});
-                  </script>
-                </div>
-              </div>
-
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-                <div class="col s5 table-cell">
-                  Reset password on create?
-                </div>
-                <div class="col s7 table-cell">
-                  <span>
-                    <input id="hasBeenResetCheckbox" type="checkbox" ng-model="newUser.hasBeenReset"/>
-                    <label for="hasBeenResetCheckbox"></label>
-                  </span>
-                </div>
-              </div>
-
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-                <div class="col s5 table-cell">
-                  Is admin?
-                </div>
-                <div class="col s7 table-cell">
-                  <span>
-                    <input id="isAdminCheckbox" type="checkbox" ng-model="newUser.isAdmin" checked="checked"/>
-                    <label for="isAdminCheckbox"></label>
-                  </span>
-                </div>
-              </div>
-
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect">
-                <div class="col s5 table-cell">
-                  Is enabled?
-                </div>
-                <div class="col s7 table-cell">
-                  <span>
-                    <input id="isEnabledCheckbox" type="checkbox" ng-model="newUser.isEnabled"/>
-                    <label for="isEnabledCheckbox"></label>
-                  </span>
-                </div>
-              </div>
-
-              <div ng-if="newUser.isAdmin == false" class="row table-row valign-wrapper link no-hover" ng-click="showPermissionsPanel()">
-                <div class="col s12 table-cell light-blue-text">
-                  Manage user permissions ({{newUser.basePermissions.length}} assigned)
-                </div>
-              </div>
-            </div>
-
-            -->
-            <!--<div>-->
               <div class="property-panel-header">
                 <div class="row table-header-row">
                   <div class="col s5 table-header bottom-bordered shift-25px-right">Action</div>
@@ -343,138 +274,22 @@
                   </ul>
                 </div>
               </div>
-
-              <!--<div class="row table-row valign-wrapper link no-hover" ng-click="hidePermissionsPanel()">
-                <div class="col s12 table-cell light-blue-text">
-                  &#8592; Back
-                </div>
-              </div>-->
-            <!--</div>-->
-              <!--
-
-            <div ng-show="!$parent.newUser && user && !permissionsPanel">
-              <div class="property-panel-header">
-                <div class="row table-header-row">
-                  <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
-                  <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
-                </div>
-              </div>
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Username</div>
-                <div class="col s5 table-cell">{{user.username}}</div>
-                <div class="col s2 table-cell"></div>
-              </div>
-
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Scheduled to reset?</div>
-                <div class="col s5 table-cell">
-                  <span ng-if="user.hasBeenReset" class="mdi-action-done medium-text green-text"></span>
-                  <span ng-if="!user.hasBeenReset || user.hasBeenReset == false" class="mdi-navigation-close medium-text red-text"></span>
-                </div>
-                <div class="col s2 table-cell"></div>
-              </div>
-
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Is admin?</div>
-                <div class="col s5 table-cell">
-                  <span ng-if="user.isAdmin" class="mdi-action-done medium-text green-text"></span>
-                  <span ng-if="!user.isAdmin || user.isAdmin == false" class="mdi-navigation-close medium-text red-text"></span>
-                </div>
-                <div class="col s2 table-cell"></div>
-              </div>
-
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Is enabled?</div>
-                <div class="col s5 table-cell">
-                  <span ng-if="user.isEnabled" class="mdi-action-done medium-text green-text"></span>
-                  <span ng-if="!user.isEnabled || user.isEnabled == false" class="mdi-navigation-close medium-text red-text"></span>
-                </div>
-                <div class="col s2 table-cell"></div>
-              </div>
-
-              <div class="row table-row valign-wrapper">
-                <div class="col s5 table-cell">Created by</div>
-                <div class="col s5 table-cell" ng-if="user.createdBy">{{user.createdBy}}</div>
-                <div class="col s5 table-cell" ng-if="!user.createdBy"><strong>default</strong></div>
-                <div class="col s2 table-cell"></div>
-              </div>
-
-              <div ng-if="user.isAdmin == false" class="row table-row valign-wrapper link no-hover" ng-click="showPermissionsPanel()">
-                <div class="col s12 table-cell light-blue-text">
-                  View user permissions ({{user.basePermissions.length}} assigned)
-                </div>
-              </div>
-
-            </div>
-
-            <div ng-show="!newUser && !user">
-              <div class="property-panel-header">
-                <div class="row table-header-row">
-                  <div class="col s5 table-header bottom-bordered shift-25px-right">Property</div>
-                  <div class="col s7 table-header bottom-bordered shift-7px-right">Type</div>
-                </div>
-              </div>
-              <p class="text-align-center italics" ng-if="user == undefined && !$parent.newUser">No user selected.</p>
-            </div>
-
-            <div ng-show="!$parent.newUser && user && permissionsPanel == true && !editUser">
-              <div class="property-panel-header">
-                <div class="row table-header-row">
-                  <div class="col s6 table-header bottom-bordered shift-25px-right">Action</div>
-                  <div class="col s6 table-header bottom-bordered shift-7px-right">Realm</div>
-                </div>
-              </div>
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="basePermission in user.basePermissions" ng-class="{'shake z-depth-4':basePermission.attention == true}">
-                <div class="col s6 table-cell">
-                  {{basePermission.action}}
-                </div>
-                <div class="col s6 table-cell">
-                  {{basePermission.realm}}
-                </div>
-              </div>
-
-              <div class="row table-row valign-wrapper link no-hover" ng-click="hidePermissionsPanel()">
-                <div class="col s12 table-cell light-blue-text">
-                  &#8592; Back
-                </div>
+          </div>
+          <div ng-show="key != undefined && !$parent.newKey">
+            <div class="property-panel-header">
+              <div class="row table-header-row">
+                <div class="col s6 table-header bottom-bordered shift-25px-right">Action</div>
+                <div class="col s6 table-header bottom-bordered shift-7px-right">Realm</div>
               </div>
             </div>
-
-            <div ng-if="user.isAdmin == false && permissionsPanel == true && editUser == true">
-              <div class="property-panel-header">
-                <div class="row table-header-row">
-                  <div class="col s5 table-header bottom-bordered shift-25px-right">Action</div>
-                  <div class="col s5 table-header bottom-bordered shift-7px-right">Realm</div>
-                  <div class="col s2 table-header bottom-bordered shift-7px-right">&nbsp;</div>
-                </div>
+            <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="permission in key.permissions">
+              <div class="col s6 table-cell">
+                {{permission.action}}
               </div>
-              <div class="row table-row valign-wrapper" on-finish-render="initializeMaterialSelect" ng-repeat="basePermission in user.basePermissions" ng-class="{'shake z-depth-4':basePermission.attention == true}">
-                <div class="col s5 table-cell">
-                  <select ng-model="basePermission.action" ng-options="action1 as action1 for action1 in allowedActions"></select>
-                </div>
-                <div class="col s5 table-cell">
-                  <span>
-                    <select ng-model="basePermission.realm" ng-options="realm1 as realm1 for realm1 in allowedRealms"></select>
-                  </span>
-                </div>
-                <div class="col s2 table-cell">
-                  <a ng-if="user.basePermissions.length > 1" material-dropdown class='dropdown-button text-center' href="#" ng-attr-data-activates='{{"dropdown" + $index}}'><span class="mdi-navigation-more-vert medium-text"></span></a>
-                  <ul ng-if="user.basePermissions.length > 1" ng-attr-id='{{"dropdown" + $index}}' class='dropdown-content'>
-                    <li><a ng-click="removePropertyAt($index)">Remove</a></li>
-                  </ul>
-                </div>
+              <div class="col s6 table-cell">
+                {{permission.realm}}
               </div>
-
-              <div class="row table-row valign-wrapper link no-hover">
-                <div class="col s6 table-cell light-blue-text" ng-click="cancelManagePermissions(user)">
-                  <span class="pull-right">&#8592; Cancel</span>
-                </div>
-                <div class="col s6 table-cell light-blue-text" ng-click="updateUserPermissions(user)">
-                  Save
-                </div>
-              </div>
-            </div>-->
-
+            </div>
           </div>
         </div>
       </div>
