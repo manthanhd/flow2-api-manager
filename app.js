@@ -92,8 +92,6 @@ function authenticate(req, res, next) {
         case "/user/reset":
         case "/user/register":
         case "/user/logout":
-        case "/user/whoami":
-        case "/user/key":
             return next();
     }
 
@@ -105,7 +103,19 @@ function authenticate(req, res, next) {
         return res.status(403).send({error: "AuthorisationRequired", errorCode: 403});
     }
 
+    function filterWhiteListURLs(url) {
+        if(url.indexOf("/user/key") == 0 || url.indexOf("/user/whoami") == 0) {
+            return true;
+        }
+    }
+
     if(req.session.account) {
+
+        var result = filterWhiteListURLs(req.path);
+
+        if(result == true) {
+            return next();
+        }
 
         var foundCallback = function(user) {
             req.session.account = user;
@@ -126,7 +136,6 @@ function authenticate(req, res, next) {
             };
 
             UserAccountManager.hasBasePermission(user, {action: action, realm: realm}, hasRequiredPermissionsCallback);
-
         };
 
         var notFoundCallback = function() {
@@ -156,7 +165,11 @@ function authenticate(req, res, next) {
         } else if (url.indexOf("/instance") == 0) {
             realm = "instance";
         } else if (url.indexOf("/user") == 0) {
-            realm = "user";
+            if(url.indexOf("/user/key") == 0 || url.indexOf("/user/whoami") == 0) { // These two URLs need authentication but no authorisation and hence are open.
+                realm = "open";
+            } else {
+                realm = "user";
+            }
         }
 
         return realm;
