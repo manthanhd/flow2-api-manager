@@ -260,11 +260,21 @@ router.post('/key', function (req, res) {
     var userId = account._id;
     var permissions = req.body.permissions;
 
+    var name = req.body.name;
+    if(name == undefined || name == "") {
+        return res.status(400).send({error: "BadAPIKeyName", errorCode: 400});
+    } else {
+        var alphaNumericUnderscoreRegex = new RegExp("^[A-Za-z0-9_]+$");
+        if(alphaNumericUnderscoreRegex.test(name) != true) {
+            return res.status(400).send({error: "BadAPIKeyName", errorCode: 400});
+        }
+    }
+
     if(!permissions || !permissions.length || permissions.length == 0) {
         return res.status(400).send({error: "BadPermissions", errorCode: 400});
     }
 
-    var allowedPermissions = [];
+    var grantedPermissions = [];
 
     if(account.isAdmin != true) {
         for (var i = 0; i < permissions.length; i++) {
@@ -272,26 +282,28 @@ router.post('/key', function (req, res) {
             for (var j = 0; j < account.basePermissions.length; j++) {
                 var basePermission = account.basePermissions[j];
                 if (basePermission.action == permission.action && basePermission.realm == permission.realm) {
-                    allowedPermissions.push({action: basePermission.action, realm: basePermission.realm});
+                    grantedPermissions.push({action: basePermission.action, realm: basePermission.realm});
                 }
             }
         }
     } else {
         for(var i = 0; i < permissions.length; i++) {
             var permission = permissions[i];
-            allowedPermissions.push({action: permission.action, realm: permission.realm});
+            grantedPermissions.push({action: permission.action, realm: permission.realm});
         }
     }
 
-    if(allowedPermissions.length != permissions.length) {
+    if(grantedPermissions.length != permissions.length) {
         return res.status(401).send({error: "PermissionGrantNotAuthorized", errorCode: 403});
     }
 
     var foundCallback = function(user) {
 
-        ApiKeyManager.registerKey(user._id, permissions, function (registeredKey) {
+        ApiKeyManager.registerKey(user._id, name, grantedPermissions, function (registeredKey) {
             if (!registeredKey) {
                 return res.status(500).send();
+            } else if (registeredKey.error && registeredKey.error == "KeyNameExists") {
+                return res.status(409).send({error: "KeyNameExists", errorCode: 409});
             }
 
             return res.send(registeredKey);
@@ -305,22 +317,22 @@ router.post('/key', function (req, res) {
     return UserAccountManager.doesUserIdExist(account.accountId, userId, foundCallback, notFoundCallback);
 });
 
-router.delete('/key/:apiKey', function (req, res) {
+router.delete('/key/:apiKeyId', function (req, res) {
     var account = req.session.account || req.account;
     if (!account) {
         res.status(403).send({error: "AuthenticationRequired", errorCode: 403});
         return;
     }
 
-    var apiKey = req.params.apiKey;
+    var apiKeyId = req.params.apiKeyId;
     var userId = account._id;
 
-    if(!apiKey) {
+    if(!apiKeyId) {
         return res.status(404).send({error: "InvalidApiKeyError", errorCode: 400});
     }
 
     var foundCallback = function(user) {
-        ApiKeyManager.deleteKey(user._id, apiKey, function(deleteStatus) {
+        ApiKeyManager.deleteKey(user._id, apiKeyId, function(deleteStatus) {
             if(!deleteStatus) {
                 return res.status(500).send();
             } else if (deleteStatus == false) {
