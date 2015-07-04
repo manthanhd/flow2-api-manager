@@ -162,4 +162,16 @@ sharedModule.service("RequestService", function($http) {
         });
     };
 
+    this.deleteKey = function(keyId, onSuccess, onFailure) {
+        $http.delete("/user/key/" + keyId).success(function(data, statusCode) {
+            onSuccess(data, statusCode);
+        }).error(function(data, statusCode) {
+            if(statusCode == 401 && data && data.errorCode == 401 && data.error == "AuthenticationRequired") {
+                window.location.href = "/user/login";
+            } else {
+                onFailure(data, statusCode);
+            }
+        });
+    };
+
 });
