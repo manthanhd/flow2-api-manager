@@ -346,6 +346,10 @@ a, .link{
     justify-content: flex-start;
 }
 
+.btn-row {
+    font-size: 12px;
+}
+
 @keyframes shake {
     0% {transform: translateX(0);}
     12.5% {transform: translateX(-6px) rotateY(-5deg)}
