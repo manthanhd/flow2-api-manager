@@ -91,7 +91,7 @@ entitiesModule.controller("APIKeysListController", function($scope, $http, Reque
         });
     }
 
-    $scope.userSearchFilter = function(key) {
+    $scope.keySearchFilter = function(key) {
         if($scope.$parent.searchKeyNameText == undefined || $scope.$parent.searchKeyNameText == "") {
             return true;
         }
