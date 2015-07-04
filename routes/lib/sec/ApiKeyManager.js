@@ -7,19 +7,26 @@ var hat = require("hat");
 
 var ApiKeyManager = {};
 
-ApiKeyManager.registerKey = function(userId, permissions, callback) {
-    if(userId && permissions && permissions.length && permissions.length > 0) {
-        var apiKey = new ApiKeyModel();
-        apiKey.userId = userId;
-        apiKey.apiKey = hat();
-        apiKey.permissions = permissions;
-        apiKey.save(function(err, savedApiKey) {
-            if(err) {
-                console.log(err);
-                return callback(undefined);
+ApiKeyManager.registerKey = function(userId, name, permissions, callback) {
+    if(userId && name && permissions && permissions.length && permissions.length > 0) {
+        return ApiKeyManager.doesKeyNameExistForUser(userId, name, function(alreadyRegisteredKey) {
+            if(alreadyRegisteredKey) {
+                return callback({error: "KeyNameExists"});
             }
 
-            return callback(savedApiKey);
+            var apiKey = new ApiKeyModel();
+            apiKey.userId = userId;
+            apiKey.name = name;
+            apiKey.apiKey = hat();
+            apiKey.permissions = permissions;
+            apiKey.save(function(err, savedApiKey) {
+                if(err) {
+                    console.log(err);
+                    return callback(undefined);
+                }
+
+                return callback(savedApiKey);
+            });
         });
     } else {
         callback(undefined);
@@ -41,6 +48,21 @@ ApiKeyManager.getAllKeysForUser = function(userId, callback) {
     }
 };
 
+ApiKeyManager.doesKeyNameExistForUser = function(userId, name, callback) {
+    if(userId && name) {
+        ApiKeyModel.findOne({userId: userId, name: name}, function(err, foundApiKey) {
+            if(err) {
+                console.log(err);
+                return callback(undefined);
+            }
+
+            callback(foundApiKey);
+        });
+    } else {
+        return callback(undefined);
+    }
+};
+
 ApiKeyManager.doesKeyExistForUser = function(userId, apiKey, callback) {
     if(userId && apiKey) {
         ApiKeyModel.findOne({userId: userId, apiKey: apiKey}, function(err, foundApiKey) {
@@ -58,12 +80,12 @@ ApiKeyManager.doesKeyExistForUser = function(userId, apiKey, callback) {
 
 ApiKeyManager.deleteKey = function(userId, apiKey, callback) {
     if(userId && apiKey) {
-        ApiKeyModel.findOneAndRemove({userId: userId, apiKey: apiKey}, function(err) {
+        ApiKeyModel.findOne({userId: userId, _id: apiKey}, function(err, keyToDelete) {
             if(err) {
                 console.log(err);
                 return callback(undefined);
             }
-
+            keyToDelete.remove();
             return callback(true);
         });
     }
@@ -74,6 +96,10 @@ ApiKeyManager.hasActionPermissionsInRealm = function(apiKey, action, realm, call
         if(err) {
             console.log(err);
             return callback(undefined);
+        }
+
+        if(realm == "open") {
+            return callback(true, {action: action, realm: realm}, apiKeyObject);
         }
 
         var permissions = apiKeyObject.permissions;
