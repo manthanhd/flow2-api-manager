@@ -104,4 +104,8 @@ entitiesModule.controller("APIKeysListController", function($scope, $http, Reque
         }
         return false;
     }
+
+    $scope.copyToClipboard = function(text) {
+        window.prompt("Copy to clipboard: Ctrl + C, Enter", text);
+    }
 });
